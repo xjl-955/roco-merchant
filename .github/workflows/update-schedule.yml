@@ -1,16 +1,10 @@
 name: Update merchant data
 
-# 可靠性设计：
-# 1. 每轮开售后 3 个时间点重试（:12 / :27 / :42），GitHub cron 丢点时后续点能补上
-# 2. 每次运行先抓后比对：数据无变化则不提交（脚本内置增量逻辑）
-# 3. 档期表每天 09:05（北京）更新一次
-
 on:
   schedule:
-    # 北京 08:12/08:27/08:42、12:12/12:27/12:42、16:12/16:27/16:42、20:12/20:27/20:42
     - cron: '12,27,42 0,4,8,12 * * *'
-    - cron: '5 1 * * *'          # 北京 09:05 档期表
-  workflow_dispatch: {}          # 支持手动触发
+    - cron: '5 1 * * *'
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -38,7 +32,7 @@ jobs:
         if: github.event.schedule == '5 1 * * *'
         run: node server/fetch-schedule.mjs
 
-      - name: Commit if changed
+      - name: Commit to self repo
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -50,3 +44,8 @@ jobs:
             git commit -m "chore: update merchant data ($(date -u +%F-%H:%M))"
             git push
           fi
+
+      - name: Sync live.json to data repo
+        env:
+          TOKEN: ${{ secrets.DATA_REPO_TOKEN }}
+        run: node server/sync-to-data-repo.mjs

@@ -56,8 +56,10 @@ function fetchLive(callback) {
       return;
     }
     var url = LIVE_URLS[idx++];
+    // 加时间戳参数绕过 CDN/浏览器缓存（GitHub Pages 静态文件会被 CDN 缓存数分钟）
+    var bustUrl = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
     wx.request({
-      url: url,
+      url: bustUrl,
       timeout: 8000,
       success: function (res) {
         if (res.statusCode !== 200 || !res.data) {

@@ -5,8 +5,9 @@ Page({
     grids: [
       { icon: '⚖️', name: '属性克制', url: '/pages/typechart/typechart', badge: '' },
       { icon: '🎭', name: '性格修正', url: '/pages/nature/nature', badge: '' },
+      { icon: '🔍', name: '孵蛋鉴定', url: '/pages/eggid/eggid', badge: '新' },
       { icon: '📖', name: '精灵图鉴', url: '/pages/dex/dex', badge: '' },
-      { icon: '🥚', name: '孵蛋工具', url: '/pages/breed/breed', badge: '' },
+      { icon: '🐣', name: '孵蛋工具', url: '/pages/breed/breed', badge: '' },
       { icon: '🗺️', name: '地图资源', url: '/pages/map/map', badge: '外链' },
       { icon: '商人', name: '远行商人', url: '/pages/index/index', badge: '', tab: true }
     ]

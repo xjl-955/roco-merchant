@@ -4,8 +4,8 @@
 var DEX_URL = 'https://xjl-955.github.io/roco-data/spirits.json';
 var BREED_URL = 'https://xjl-955.github.io/roco-data/breeding.json';
 
-var DEX_KEY = 'roco_dex_cache_v1';
-var BREED_KEY = 'roco_breed_cache_v1';
+var DEX_KEY = 'roco_dex_cache_v2'; // v2: WIKI分类数据
+var BREED_KEY = 'roco_breed_cache_v2';
 var CACHE_TTL = 24 * 60 * 60 * 1000; // 24 小时
 
 /** 通用缓存读取 */
@@ -28,10 +28,10 @@ function loadDex(callback) {
   var cached = readCache(DEX_KEY);
   if (cached) { callback(cached, true); return; }
   wx.request({
-    url: DEX_URL,
+    url: DEX_URL + (DEX_URL.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now(),
     timeout: 10000,
     success: function (res) {
-      if (res.statusCode === 200 && res.data && res.data.spirits && res.data.spirits.length > 0) {
+      if (res.statusCode === 200 && res.data && res.data.formatVersion >= 3 && res.data.spirits && res.data.spirits.length > 0) {
         writeCache(DEX_KEY, res.data);
         callback(res.data, false);
       } else {
@@ -47,7 +47,7 @@ function loadBreed(callback) {
   var cached = readCache(BREED_KEY);
   if (cached) { callback(cached, true); return; }
   wx.request({
-    url: BREED_URL,
+    url: BREED_URL + (BREED_URL.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now(),
     timeout: 10000,
     success: function (res) {
       if (res.statusCode === 200 && res.data && res.data.eggs) {

@@ -2,37 +2,45 @@ name: Update merchant data
 
 on:
   schedule:
+    - cron: '12,27,42 0,4,8,12 * * *'
     - cron: '5 1 * * *'
-    - cron: '12 0,4,8,12 * * *'
   workflow_dispatch: {}
 
 permissions:
   contents: write
+
+concurrency:
+  group: update-merchant-data
+  cancel-in-progress: false
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Fetch daily schedule from wiki
-        run: node server/fetch-schedule.mjs
-
       - name: Fetch live rounds data
         run: node server/fetch-live.mjs
+
+      - name: Fetch daily schedule from wiki
+        if: github.event.schedule == '5 1 * * *'
+        run: node server/fetch-schedule.mjs
 
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/schedule.json public/live.json
+          git add public/live.json
+          if [ -f public/schedule.json ]; then git add public/schedule.json; fi
           if git diff --cached --quiet; then
             echo "No changes, skip commit"
           else
-            git commit -m "chore: update merchant data"
+            git commit -m "chore: update merchant data ($(date -u +%F-%H:%M))"
             git push
           fi

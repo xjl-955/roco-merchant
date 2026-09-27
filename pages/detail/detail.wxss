@@ -1,0 +1,158 @@
+.page {
+  padding: 24rpx 24rpx 60rpx;
+}
+
+.card {
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 22rpx;
+}
+
+.state {
+  text-align: center;
+  padding: 120rpx 40rpx;
+  color: #8FA0B5;
+  font-size: 28rpx;
+}
+
+/* —— 头部 —— */
+.hero {
+  display: flex;
+  align-items: center;
+}
+
+.hero-img {
+  width: 180rpx;
+  height: 180rpx;
+  flex-shrink: 0;
+}
+
+.hero-info {
+  margin-left: 24rpx;
+  flex: 1;
+}
+
+.hero-name {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #F5F8FC;
+}
+
+.hero-no {
+  font-size: 24rpx;
+  color: #8FA0B5;
+  margin-top: 6rpx;
+}
+
+.hero-types {
+  margin-top: 12rpx;
+}
+
+.type-tag {
+  display: inline-block;
+  font-size: 22rpx;
+  color: #F5F8FC;
+  border: 1rpx solid;
+  border-radius: 8rpx;
+  padding: 4rpx 16rpx;
+  margin-right: 10rpx;
+}
+
+.hero-total {
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  color: #9AA7B8;
+}
+
+.total-num {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #FFB86C;
+  margin-left: 8rpx;
+}
+
+/* —— 通用 —— */
+.sec {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #C6D2E0;
+  margin-bottom: 16rpx;
+}
+
+.kv {
+  display: flex;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #3A4A5F;
+}
+
+.kv:last-child { border-bottom: none; }
+
+.k {
+  width: 160rpx;
+  color: #6E7F94;
+  font-size: 26rpx;
+  flex-shrink: 0;
+}
+
+.v {
+  flex: 1;
+  color: #EAF0F7;
+  font-size: 26rpx;
+}
+
+/* —— 进化链 —— */
+.family-scroll {
+  white-space: nowrap;
+}
+
+.family-row {
+  display: inline-flex;
+  padding-bottom: 8rpx;
+}
+
+.f-item {
+  width: 150rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14rpx 8rpx;
+  border-radius: 14rpx;
+  border: 1rpx solid transparent;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.f-current {
+  background: rgba(240, 162, 74, 0.14);
+  border-color: #F0A24A;
+}
+
+.f-img {
+  width: 100rpx;
+  height: 100rpx;
+}
+
+.f-name {
+  font-size: 24rpx;
+  color: #F5F8FC;
+  font-weight: bold;
+  margin-top: 6rpx;
+  max-width: 140rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.f-stage {
+  font-size: 20rpx;
+  color: #8FA0B5;
+  margin-top: 4rpx;
+}
+
+.tip {
+  font-size: 24rpx;
+  color: #6E7F94;
+  margin-top: 8rpx;
+}

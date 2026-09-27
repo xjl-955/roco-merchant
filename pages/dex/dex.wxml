@@ -25,10 +25,12 @@
 
   <!-- 列表 -->
   <view class="grid" wx:if="{{!loading && !error}}">
-    <view class="cell" wx:for="{{list}}" wx:key="id">
+    <view class="cell" wx:for="{{list}}" wx:key="id"
+          data-name="{{item.name}}" data-slug="{{item.slug}}" bindtap="onSpiritTap">
       <image class="cell-img" src="{{item.image}}" mode="aspectFit" lazy-load="true"></image>
       <view class="cell-no">{{item.no}}</view>
       <view class="cell-name">{{item.name}}</view>
+      <view class="cell-total" wx:if="{{item.total}}">种族值 {{item.total}}</view>
       <view class="cell-types">
         <text class="type-tag" wx:for="{{item.types}}" wx:for-item="t" wx:key="*this">{{t}}</text>
       </view>

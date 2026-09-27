@@ -82,5 +82,14 @@ Page({
         list: that._filtered.slice(0, that.data.list.length + that.data.pageSize)
       });
     }, 100);
+  },
+
+  /** 点击精灵 → 详情页 */
+  onSpiritTap: function (e) {
+    var name = e.currentTarget.dataset.name;
+    var slug = e.currentTarget.dataset.slug;
+    wx.navigateTo({
+      url: '/pages/detail/detail?name=' + encodeURIComponent(name) + '&slug=' + (slug || '')
+    });
   }
 });

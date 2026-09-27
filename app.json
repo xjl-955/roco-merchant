@@ -7,7 +7,8 @@
     "pages/map/map",
     "pages/nature/nature",
     "pages/typechart/typechart",
-    "pages/eggid/eggid"
+    "pages/eggid/eggid",
+    "pages/detail/detail"
   ],
   "window": {
     "navigationBarTitleText": "洛克工坊助手",

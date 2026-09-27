@@ -1,21 +1,24 @@
 var tools = require('../../utils/tools.js');
+var wikidex = require('../../utils/wikidex.js');
 
 Page({
   data: {
     loading: true,
     error: false,
     keyword: '',
-    typeIcons: [],        // 前5个属性图标
-    moreTypes: [],        // 其余属性
+    // WIKI 分类体系
+    typeIcons: [],        // 属性图标（前5）
+    moreTypes: [],
     showMoreTypes: false,
-    typeIndex: -1,        // 选中的属性（-1 全部）
+    selType: '',          // 选中属性（'' 全部）
+    stages: ['阶段', '一阶', '二阶', '三阶', '首领'],
     stageIndex: 0,
-    stages: ['形态', '一阶', '二阶', '三阶', '首领化'],
-    eggGroups: ['蛋组'],
-    eggIndex: 0,
-    sortIndex: 0,
+    seasons: ['赛季', 'S1', 'S2', 'S3', 'S4'],
+    seasonIndex: 0,
     sorts: ['数值排序', '种族值降序', '编号升序'],
+    sortIndex: 0,
     shinyOnly: false,
+    // 列表
     list: [],
     total: 0,
     count: 0,
@@ -42,19 +45,11 @@ Page({
         return { name: t, color: that._typeColor(t) };
       });
 
-      var eggSet = {};
-      that.all.forEach(function (s) {
-        var g = s.egg || '';
-        if (g && g !== '未发现') eggSet[g] = 1;
-      });
-      var eggGroups = ['蛋组'].concat(Object.keys(eggSet).sort());
-
       that.setData({
         loading: false,
         count: payload.count,
         typeIcons: typeIcons,
-        moreTypes: moreTypes,
-        eggGroups: eggGroups
+        moreTypes: moreTypes
       });
       that.applyFilter();
     });
@@ -78,7 +73,7 @@ Page({
 
   onTypeIconTap: function (e) {
     var t = e.currentTarget.dataset.type;
-    this.setData({ typeIndex: this.data.typeIndex === t ? -1 : t });
+    this.setData({ selType: this.data.selType === t ? '' : t });
     this.applyFilter();
   },
 
@@ -91,8 +86,8 @@ Page({
     this.applyFilter();
   },
 
-  onEggChange: function (e) {
-    this.setData({ eggIndex: +e.detail.value });
+  onSeasonChange: function (e) {
+    this.setData({ seasonIndex: +e.detail.value });
     this.applyFilter();
   },
 
@@ -110,14 +105,20 @@ Page({
     var that = this;
     var kw = (this.data.keyword || '').trim().toLowerCase();
     var stage = this.data.stages[this.data.stageIndex];
-    var egg = this.data.eggGroups[this.data.eggIndex];
-    var selType = this.data.typeIndex;
+    var season = this.data.seasons[this.data.seasonIndex];
+    var selType = this.data.selType;
 
     var filtered = this.all.filter(function (s) {
       if (kw && s.name.toLowerCase().indexOf(kw) < 0 && (s.no || '').toLowerCase().indexOf(kw) < 0) return false;
-      if (that.data.stageIndex > 0 && s.stageLabel !== stage) return false;
-      if (that.data.eggIndex > 0 && (s.egg || '') !== egg) return false;
-      if (selType >= 0 && (s.types || []).indexOf(selType) < 0) return false;
+      if (that.data.stageIndex > 0) {
+        // 阶段筛选：首领单独一类；一/二/三阶按 stage 数字
+        if (stage === '首领' && s.stageText !== '首领') return false;
+        if (stage === '一阶' && s.stageText !== '一阶') return false;
+        if (stage === '二阶' && s.stageText !== '二阶') return false;
+        if (stage === '三阶' && s.stageText !== '三阶') return false;
+      }
+      if (that.data.seasonIndex > 0 && (s.season || 'none') !== season) return false;
+      if (selType && (s.types || []).indexOf(selType) < 0) return false;
       if (that.data.shinyOnly && !s.shiny) return false;
       return true;
     });
@@ -148,9 +149,8 @@ Page({
 
   onSpiritTap: function (e) {
     var name = e.currentTarget.dataset.name;
-    var slug = e.currentTarget.dataset.slug;
     wx.navigateTo({
-      url: '/pages/detail/detail?name=' + encodeURIComponent(name) + '&slug=' + (slug || '')
+      url: '/pages/detail/detail?name=' + encodeURIComponent(name)
     });
   }
 });

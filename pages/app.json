@@ -1,0 +1,35 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/dex/dex",
+    "pages/breed/breed",
+    "pages/tools/tools",
+    "pages/map/map",
+    "pages/nature/nature",
+    "pages/typechart/typechart",
+    "pages/eggid/eggid",
+    "pages/detail/detail"
+  ],
+  "window": {
+    "navigationBarTitleText": "洛克工坊助手",
+    "navigationBarBackgroundColor": "#1C2634",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#232E3D",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#6E7F94",
+    "selectedColor": "#F0A24A",
+    "backgroundColor": "#1C2634",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "商人", "iconPath": "assets/tab-merchant.png", "selectedIconPath": "assets/tab-merchant-on.png" },
+      { "pagePath": "pages/dex/dex", "text": "图鉴", "iconPath": "assets/tab-dex.png", "selectedIconPath": "assets/tab-dex-on.png" },
+      { "pagePath": "pages/breed/breed", "text": "孵蛋", "iconPath": "assets/tab-breed.png", "selectedIconPath": "assets/tab-breed-on.png" },
+      { "pagePath": "pages/map/map", "text": "地图", "iconPath": "assets/tab-tools.png", "selectedIconPath": "assets/tab-tools-on.png" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

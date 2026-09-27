@@ -1,4 +1,5 @@
 var tools = require('../../utils/tools.js');
+var wikidex = require('../../utils/wikidex.js');
 var typechart = require('../../utils/typechart.js');
 
 var TYPE_COLOR = {
@@ -10,150 +11,119 @@ var TYPE_COLOR = {
 };
 
 var STAT_LABEL = {
-  hp: '生命', atk: '物攻', satk: '魔攻',
-  def: '物防', sdef: '魔防', spd: '速度'
+  HP: '生命', ATK: '攻击', MATK: '魔攻',
+  DEF: '物防', MDEF: '魔防', SPD: '速度'
 };
 
-var TYPE_EN2CN = {
-  Normal: '普通', Grass: '草', Fire: '火', Water: '水', Light: '光',
-  Ground: '地', Ice: '冰', Dragon: '龙', Electric: '电', Poison: '毒',
-  Bug: '虫', Fighting: '武', Wing: '翼', Cute: '萌', Ghost: '幽',
-  Dark: '恶', Machine: '机械', Psychic: '幻'
-};
+var SKILL_SRC = [
+  { key: 'level', label: '升级技能' },
+  { key: 'machine', label: '可学技能石' },
+  { key: 'blood', label: '血脉技能' }
+];
 
 Page({
   data: {
     loading: true,
     notFound: false,
+    name: '',
     spirit: null,
+    detail: null,
     statBars: [],
-    family: [],
-    typeColor: TYPE_COLOR,
     atkGroups: null,
     defGroups: null,
-    skillTab: 0,
-    skillFilter: '全部',
-    skillTypes: [],
-    skills: [],
-    skillCounts: { level: 0, blood: 0, stone: 0 },
-    traits: [],
-    detailDesc: ''
+    typeColor: TYPE_COLOR,
+    skillSrc: 0,       // 当前技能来源 tab
+    skillSrcList: SKILL_SRC,
+    skills: []
   },
 
   onLoad: function (options) {
     var name = decodeURIComponent(options.name || '');
-    var slug = options.slug || '';
-    if (!name && !slug) {
-      this.setData({ loading: false, notFound: true });
-      return;
-    }
+    if (!name) { this.setData({ loading: false, notFound: true }); return; }
     var that = this;
+    this.setData({ name: name });
+
     tools.loadDex(function (payload) {
       if (!payload) { that.setData({ loading: false, notFound: true }); return; }
       var spirit = null;
       for (var i = 0; i < payload.spirits.length; i++) {
-        var s = payload.spirits[i];
-        if ((slug && s.slug === slug) || (!slug && s.name === name)) { spirit = s; break; }
+        if (payload.spirits[i].name === name) { spirit = payload.spirits[i]; break; }
       }
       if (!spirit) { that.setData({ loading: false, notFound: true }); return; }
+      that.spirit = spirit;
+      that.applyBase(spirit);
+      that.setData({ loading: false, spirit: spirit });
+      wx.setNavigationBarTitle({ title: spirit.name });
 
-      var family = [];
-      payload.spirits.forEach(function (s) {
-        if (spirit.family && s.family === spirit.family) family.push(s);
-      });
-      var stageOrder = { '1': 1, '2': 2, '3': 3, '4': 4 };
-      family.sort(function (a, b) {
-        return (stageOrder[a.stage] || 9) - (stageOrder[b.stage] || 9) || (a.name < b.name ? -1 : 1);
-      });
-
-      // 详细数据：缓存优先 → 远程
-      var detail = null;
-      try { detail = wx.getStorageSync('roco_detail_' + (spirit.slug || spirit.name)); } catch (e) { }
-      that.applyDetail(spirit, family, detail);
-
-      if (!detail && spirit.slug) {
-        wx.request({
-          url: 'https://xjl-955.github.io/roco-data/spirits-detail.json',
-          timeout: 15000,
-          success: function (res) {
-            if (res.statusCode === 200 && res.data && res.data[spirit.slug]) {
-              var d = res.data[spirit.slug];
-              that.detail = d;
-              try { wx.setStorageSync('roco_detail_' + spirit.slug, d); } catch (e) { }
-              that.applyDetail(spirit, family, d);
-            }
-          }
+      // 属性克制
+      var mainType = (spirit.types || [])[0];
+      if (mainType && typechart.TYPE_CHART[mainType]) {
+        that.setData({
+          atkGroups: that._groupAtk(mainType),
+          defGroups: typechart.defenseProfile([mainType])
         });
       }
+
+      // WIKI 详情（种族值分项/特长/技能）
+      wikidex.loadWikiDetails(function (details) {
+        if (!details) return;
+        var d = details[name];
+        if (!d) return;
+        that.detail = d;
+        that.applyWikiDetail(d);
+      });
     });
   },
 
-  applyDetail: function (spirit, family, detail) {
+  applyBase: function (spirit) {
+    // 静态基础信息展示（总种族值兜底）
+    this.setData({ spirit: spirit });
+  },
+
+  applyWikiDetail: function (d) {
+    // 种族值进度条
     var statBars = [];
-    if (detail && detail.stats) {
-      var maxVal = 160;
-      var keys = ['hp', 'atk', 'satk', 'def', 'sdef', 'spd'];
-      for (var i = 0; i < keys.length; i++) {
-        var v = detail.stats[keys[i]] || 0;
-        statBars.push({
-          key: keys[i],
-          label: STAT_LABEL[keys[i]],
-          value: v,
-          pct: Math.min(100, Math.round(v / maxVal * 100))
-        });
-      }
-    }
-
-    var mainType = (spirit.types && spirit.types[0]) || '';
-    var atkGroups = null, defGroups = null;
-    if (mainType && typechart.TYPE_CHART[mainType]) {
-      atkGroups = this._groupAtk(mainType);
-      defGroups = typechart.defenseProfile([mainType]);
-    }
-
-    var skillCounts = { level: 0, blood: 0, stone: 0 };
-    var skills = [];
-    var skillTypes = ['全部'];
-    if (detail && detail.skills) {
-      skillCounts = {
-        level: (detail.skills.level || []).length,
-        blood: (detail.skills.blood || []).length,
-        stone: (detail.skills.stone || []).length
-      };
-      var all = detail.skills.level || [];
-      all.forEach(function (s) {
-        var cn = TYPE_EN2CN[s.type] || s.type;
-        if (skillTypes.indexOf(cn) < 0) skillTypes.push(cn);
+    var maxVal = 160;
+    var keys = ['HP', 'ATK', 'MATK', 'DEF', 'MDEF', 'SPD'];
+    var labels = { HP: '生命', ATK: '攻击', MATK: '魔攻', DEF: '物防', MDEF: '魔防', SPD: '速度' };
+    for (var i = 0; i < keys.length; i++) {
+      var v = (d.stats || {})[keys[i]] || 0;
+      statBars.push({
+        key: keys[i],
+        label: labels[keys[i]],
+        value: v,
+        pct: Math.min(100, Math.round(v / maxVal * 100))
       });
-      skills = this._mapSkills(all);
     }
-
-    wx.setNavigationBarTitle({ title: spirit.name });
-    this.setData({
-      loading: false,
-      notFound: false,
-      spirit: spirit,
-      statBars: statBars,
-      family: family,
-      atkGroups: atkGroups,
-      defGroups: defGroups,
-      skillCounts: skillCounts,
-      skillTypes: skillTypes,
-      skillFilter: '全部',
-      skills: skills,
-      detailDesc: (detail && detail.desc) || '',
-      traits: (detail && detail.traits) || []
-    });
+    this.setData({ detail: d, statBars: statBars });
+    this._renderSkills(0);
   },
 
-  _mapSkills: function (list) {
-    return (list || []).map(function (s) {
-      return {
-        name: s.name, lv: s.lv, type: TYPE_EN2CN[s.type] || s.type,
-        kind: s.kind, power: s.power, pp: s.pp, desc: s.desc,
-        color: TYPE_COLOR[TYPE_EN2CN[s.type]] || '#9AA7B3'
-      };
+  _renderSkills: function (srcIdx) {
+    var d = this.detail;
+    if (!d || !d.skills) { this.setData({ skills: [] }); return; }
+    var key = SKILL_SRC[srcIdx].key;
+    var list = (d.skills || []).filter(function (s) { return s.source === key; })
+      .map(function (s) {
+        return {
+          name: s.name, type: s.type, cat: s.cat, power: s.power,
+          cost: s.cost, lv: s.lv, desc: s.desc,
+          color: TYPE_COLOR[s.type] || '#9AA7B3'
+        };
+      });
+    // 按 lv 排序（LV1 在前，空在后）
+    list.sort(function (a, b) {
+      var na = parseInt(String(a.lv).replace(/\D/g, ''), 10);
+      var nb = parseInt(String(b.lv).replace(/\D/g, ''), 10);
+      return (isNaN(na) ? 999 : na) - (isNaN(nb) ? 999 : nb);
     });
+    this.setData({ skills: list });
+  },
+
+  onSkillSrcTap: function (e) {
+    var idx = +e.currentTarget.dataset.idx;
+    this.setData({ skillSrc: idx });
+    this._renderSkills(idx);
   },
 
   _groupAtk: function (attackType) {
@@ -166,34 +136,5 @@ Page({
       else groups.x1.push(def);
     });
     return groups;
-  },
-
-  onSkillTab: function (e) {
-    var idx = +e.currentTarget.dataset.idx;
-    this.setData({ skillTab: idx, skillFilter: '全部' });
-    this._renderSkills(idx, '全部');
-  },
-
-  onSkillFilter: function (e) {
-    var f = e.currentTarget.dataset.f;
-    this.setData({ skillFilter: f });
-    this._renderSkills(this.data.skillTab, f);
-  },
-
-  _renderSkills: function (tab, filter) {
-    var d = this.detail;
-    if (!d || !d.skills) { this.setData({ skills: [] }); return; }
-    var src = tab === 0 ? d.skills.level : tab === 1 ? d.skills.blood : d.skills.stone;
-    var list = this._mapSkills((src || []).filter(function (s) {
-      if (filter === '全部') return true;
-      return (TYPE_EN2CN[s.type] || s.type) === filter;
-    }));
-    this.setData({ skills: list });
-  },
-
-  onFamilyTap: function (e) {
-    var name = e.currentTarget.dataset.name;
-    var slug = e.currentTarget.dataset.slug;
-    wx.redirectTo({ url: '/pages/detail/detail?name=' + encodeURIComponent(name) + '&slug=' + slug });
   }
 });

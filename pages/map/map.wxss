@@ -1,0 +1,52 @@
+.page {
+  padding: 24rpx 24rpx 60rpx;
+}
+
+.card {
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.hero {
+  background: rgba(240, 154, 62, 0.10);
+  border: 1rpx solid rgba(240, 154, 62, 0.45);
+}
+
+.t {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #F0A24A;
+}
+
+.t2 {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #F5F8FC;
+  margin-bottom: 10rpx;
+}
+
+.d {
+  font-size: 26rpx;
+  color: #9AA7B8;
+  line-height: 1.6;
+}
+
+.step {
+  font-size: 26rpx;
+  color: #C6D2E0;
+  margin-top: 10rpx;
+}
+
+.btn {
+  margin-top: 24rpx;
+  text-align: center;
+  background: linear-gradient(90deg, #F2A44A, #E0762A);
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: bold;
+  padding: 20rpx 0;
+  border-radius: 16rpx;
+}

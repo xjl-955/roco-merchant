@@ -1,0 +1,40 @@
+<view class="page">
+
+  <view class="card">
+    <view class="tip">点选你想要提升的能力（再点一次选择想降低的），下方列出匹配的性格：</view>
+    <view class="stat-grid">
+      <view class="stat {{selected[item.key] ? 'stat-on-up' : ''}} {{wantDown === item.key ? 'stat-on-down' : ''}}"
+            wx:for="{{stats}}" wx:key="*this"
+            data-stat="{{item.key}}" bindtap="onStatTap">
+        {{item.name}}
+        <text wx:if="{{wantUp === item.key}}" class="mark up">▲想升</text>
+        <text wx:if="{{wantDown === item.key}}" class="mark down">▼想降</text>
+      </view>
+    </view>
+    <view class="reset" bindtap="onReset">↺ 重置</view>
+  </view>
+
+  <!-- 详情 -->
+  <view class="card" wx:if="{{detail}}">
+    <view class="d-name">{{detail.name}}</view>
+    <view class="d-line">
+      <text class="d-up">▲ {{detail.upText}}</text>
+      <text class="d-down">▼ {{detail.downText}}</text>
+      <text class="d-neutral" wx:if="{{detail.neutral}}">无能力修正</text>
+    </view>
+  </view>
+
+  <!-- 结果列表 -->
+  <view class="card">
+    <view class="sec">匹配的性格（{{results.length}}）</view>
+    <view class="n-row {{item.perfect ? 'perfect' : ''}}" wx:for="{{results}}" wx:key="name"
+          data-name="{{item.name}}" bindtap="onNatureTap">
+      <text class="n-name">{{item.name}}</text>
+      <text class="n-up">+{{item.upText}}</text>
+      <text class="n-down">-{{item.downText}}</text>
+      <text class="n-badge" wx:if="{{item.perfect}}">完美</text>
+    </view>
+    <view class="empty" wx:if="{{results.length === 0}}">该组合不存在，试试只选一项</view>
+  </view>
+
+</view>

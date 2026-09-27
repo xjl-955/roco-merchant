@@ -1,0 +1,17 @@
+/* 全局样式（深色主题） */
+page {
+  background: #232E3D;
+  color: #EAF0F7;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+.card {
+  background: #2C3A4D;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-top: 24rpx;
+  border: 1rpx solid #3A4A5F;
+}

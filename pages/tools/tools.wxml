@@ -1,0 +1,24 @@
+<view class="page">
+
+  <view class="header">
+    <view class="title">🧰 工具箱</view>
+    <view class="sub">洛克王国：世界 · 玩家实用工具</view>
+  </view>
+
+  <view class="grid">
+    <view class="g-item" wx:for="{{grids}}" wx:key="name"
+          data-item="{{item}}" bindtap="onGridTap">
+      <view class="g-icon">{{item.icon}}</view>
+      <view class="g-name">{{item.name}}</view>
+      <view class="g-badge" wx:if="{{item.badge}}">{{item.badge}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="sec">ℹ️ 说明</view>
+    <view class="tip">· 性格修正：25 种性格的 ±10% 能力修正速查与反向推荐</view>
+    <view class="tip">· 属性克制：18 系进攻/防守倍率查询，单系与双系组合</view>
+    <view class="tip">· 数据来源：洛克王国世界WIKI 与 好游快爆工具箱</view>
+  </view>
+
+</view>

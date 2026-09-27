@@ -1,0 +1,87 @@
+.page {
+  padding: 24rpx 24rpx 60rpx;
+}
+
+.header {
+  padding: 10rpx 8rpx 20rpx;
+}
+
+.title {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #F5F8FC;
+}
+
+.sub {
+  font-size: 24rpx;
+  color: #8FA0B5;
+  margin-top: 6rpx;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 20rpx;
+  padding: 20rpx 10rpx;
+}
+
+.g-item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18rpx 0;
+  position: relative;
+}
+
+.g-icon {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 22rpx;
+  background: #223042;
+  border: 1rpx solid #3A4A5F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46rpx;
+}
+
+.g-name {
+  font-size: 24rpx;
+  color: #C6D2E0;
+  margin-top: 12rpx;
+}
+
+.g-badge {
+  position: absolute;
+  top: 8rpx;
+  right: 18rpx;
+  font-size: 18rpx;
+  color: #fff;
+  background: #E0762A;
+  border-radius: 8rpx;
+  padding: 2rpx 10rpx;
+}
+
+.card {
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 20rpx;
+  padding: 26rpx;
+  margin-top: 24rpx;
+}
+
+.sec {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #C6D2E0;
+  margin-bottom: 10rpx;
+}
+
+.tip {
+  font-size: 24rpx;
+  color: #6E7F94;
+  margin-top: 8rpx;
+}

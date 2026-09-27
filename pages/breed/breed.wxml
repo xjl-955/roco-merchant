@@ -1,0 +1,54 @@
+<view class="page">
+
+  <!-- 搜索（查个体蛋组） -->
+  <view class="search-wrap">
+    <input class="search" placeholder="输入精灵名查蛋组，如 迪莫"
+           value="{{keyword}}" bindinput="onSearchInput" />
+  </view>
+
+  <!-- 个体结果 -->
+  <view class="card" wx:if="{{result}}">
+    <view class="r-title">🔍 {{keyword}} 的蛋组</view>
+    <view class="r-groups">{{resultGroupText}}</view>
+    <view class="r-meta" wx:if="{{result.attrs}}">属性：{{result.attrs}}</view>
+    <view class="r-meta" wx:if="{{result.size}}">体型：{{result.size}}m · {{result.weight}}kg</view>
+  </view>
+
+  <view class="card hint-card" wx:if="{{keyword && !result}}">
+    <view class="hint">未找到「{{keyword}}」的蛋组记录，试试全名</view>
+  </view>
+
+  <!-- 蛋组筛选浏览 -->
+  <view class="toolbar" wx:if="{{!loading && !error}}">
+    <picker mode="selector" range="{{groupNames}}" value="{{groupIndex}}" bindchange="onGroupChange">
+      <view class="filter-btn">{{groupNames[groupIndex]}} ▾</view>
+    </picker>
+    <view class="result-line">共 {{total}} 只</view>
+  </view>
+
+  <view class="state" wx:if="{{loading}}">⏳ 孵蛋数据加载中…</view>
+  <view class="state" wx:if="{{error}}">数据加载失败，请检查网络后重试</view>
+
+  <view class="list" wx:if="{{!loading && !error}}">
+    <view class="row" wx:for="{{list}}" wx:key="name">
+      <image class="row-img" src="{{item.egg.image}}" mode="aspectFit" lazy-load="true"></image>
+      <view class="row-info">
+        <view class="row-name">{{item.name}} <text class="row-no">{{item.egg.no}}</text></view>
+        <view class="row-groups">
+          <text class="g-tag" wx:for="{{item.egg.groups}}" wx:for-item="g" wx:key="*this">{{g}}</text>
+        </view>
+        <view class="row-attrs" wx:if="{{item.egg.attrs}}">{{item.egg.attrs}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 巢穴摆法推荐 -->
+  <view class="card" wx:if="{{nests.length > 0}}">
+    <view class="sec-title">🪺 巢穴摆法推荐</view>
+    <view class="nest" wx:for="{{nests}}" wx:key="title">
+      <image class="nest-img" src="{{item.image}}" mode="widthFix" lazy-load="true"></image>
+      <view class="nest-title">{{item.title}} <text class="nest-tag">{{item.tag}}</text></view>
+    </view>
+  </view>
+
+</view>

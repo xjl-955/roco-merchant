@@ -1,0 +1,123 @@
+.page {
+  padding: 24rpx 24rpx 60rpx;
+}
+
+.card {
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 20rpx;
+  padding: 26rpx;
+  margin-bottom: 20rpx;
+}
+
+.tip {
+  font-size: 26rpx;
+  color: #9AA7B8;
+  margin-bottom: 18rpx;
+}
+
+.stat-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.stat {
+  width: 30%;
+  margin: 1.5%;
+  text-align: center;
+  padding: 20rpx 0;
+  border-radius: 14rpx;
+  background: #223042;
+  border: 1rpx solid #3A4A5F;
+  color: #EAF0F7;
+  font-size: 28rpx;
+  position: relative;
+}
+
+.stat-on-up {
+  background: rgba(61, 190, 123, 0.18);
+  border-color: #4CD494;
+  color: #4CD494;
+}
+
+.stat-on-down {
+  background: rgba(240, 100, 100, 0.18);
+  border-color: #F06464;
+  color: #F06464;
+}
+
+.mark {
+  display: block;
+  font-size: 18rpx;
+  margin-top: 4rpx;
+}
+
+.mark.up { color: #4CD494; }
+.mark.down { color: #F06464; }
+
+.reset {
+  text-align: center;
+  color: #6FB1E8;
+  font-size: 26rpx;
+  margin-top: 18rpx;
+}
+
+.d-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #F5F8FC;
+}
+
+.d-line {
+  display: flex;
+  margin-top: 14rpx;
+}
+
+.d-up { color: #4CD494; font-size: 28rpx; margin-right: 30rpx; }
+.d-down { color: #F06464; font-size: 28rpx; }
+.d-neutral { color: #9AA7B8; font-size: 28rpx; }
+
+.sec {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #C6D2E0;
+  margin-bottom: 8rpx;
+}
+
+.n-row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #3A4A5F;
+}
+
+.n-row:last-child { border-bottom: none; }
+
+.n-row.perfect {
+  background: rgba(240, 154, 62, 0.08);
+}
+
+.n-name {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #F5F8FC;
+}
+
+.n-up { color: #4CD494; font-size: 24rpx; margin-right: 20rpx; }
+.n-down { color: #F06464; font-size: 24rpx; margin-right: 16rpx; }
+
+.n-badge {
+  font-size: 20rpx;
+  color: #A4662B;
+  background: #FFB86C;
+  border-radius: 8rpx;
+  padding: 2rpx 12rpx;
+}
+
+.empty {
+  text-align: center;
+  color: #6E7F94;
+  font-size: 26rpx;
+  padding: 30rpx 0;
+}

@@ -1,0 +1,44 @@
+<view class="page">
+
+  <view class="mode-row">
+    <view class="mode {{mode === 'defense' ? 'mode-on' : ''}}" data-mode="defense" bindtap="setMode">🛡 防守视角</view>
+    <view class="mode {{mode === 'attack' ? 'mode-on' : ''}}" data-mode="attack" bindtap="setMode">⚔️ 进攻视角</view>
+  </view>
+
+  <view class="hint" wx:if="{{mode === 'defense'}}">点选 1~2 个防守系（再点取消），查看弱点与抗性：</view>
+  <view class="hint" wx:if="{{mode === 'attack'}}">点选攻击系，查看克制/抵抗关系：</view>
+
+  <!-- 18 系选择器 -->
+  <view class="type-grid">
+    <view class="type" wx:for="{{types}}" wx:key="*this"
+          style="background: {{colors[item]}}22; border-color: {{colors[item]}}; {{(mode === 'defense' && (defSel[0] === item || defSel[1] === item)) || (mode === 'attack' && atkSel === item) ? 'box-shadow: 0 0 0 4rpx ' + colors[item] + '88;' : ''}}"
+          data-type="{{item}}" bindtap="onTypeTap">
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 结果 -->
+  <block wx:if="{{result}}">
+    <view class="card" wx:if="{{result.x4.length}}">
+      <view class="g-title t-x4">×4 弱点</view>
+      <view class="chips"><text class="chip" wx:for="{{result.x4}}" wx:key="*this">{{item}}</text></view>
+    </view>
+    <view class="card" wx:if="{{result.x2.length}}">
+      <view class="g-title t-x2">×2 克制</view>
+      <view class="chips"><text class="chip" wx:for="{{result.x2}}" wx:key="*this">{{item}}</text></view>
+    </view>
+    <view class="card" wx:if="{{result.x05.length}}">
+      <view class="g-title t-x05">×0.5 抵抗</view>
+      <view class="chips"><text class="chip" wx:for="{{result.x05}}" wx:key="*this">{{item}}</text></view>
+    </view>
+    <view class="card" wx:if="{{result.x0.length}}">
+      <view class="g-title t-x0">×0 免疫</view>
+      <view class="chips"><text class="chip" wx:for="{{result.x0}}" wx:key="*this">{{item}}</text></view>
+    </view>
+    <view class="card" wx:if="{{result.x1.length && mode === 'attack'}}">
+      <view class="g-title t-x1">×1 普通</view>
+      <view class="chips"><text class="chip chip-gray" wx:for="{{result.x1}}" wx:key="*this">{{item}}</text></view>
+    </view>
+  </block>
+
+</view>

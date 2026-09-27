@@ -1,0 +1,129 @@
+<view class="container">
+
+  <!-- 顶部标题 -->
+  <view class="header">
+    <view>
+      <view class="app-title">远行商人</view>
+      <view class="app-date">{{dayView.dateText}}</view>
+    </view>
+    <view class="refresh-mini {{refreshing ? 'spin' : ''}}" bindtap="onCheckUpdate">⟳</view>
+  </view>
+
+  <!-- 状态徽标 -->
+  <view class="pill-row">
+    <view class="pill pill-green" wx:if="{{dayView.hasSession}}">当前商品数 {{dayView.currentCount}}</view>
+    <view class="pill pill-blue" wx:if="{{dayView.totalRounds > 0}}">第{{dayView.currentRound || '-'}}/{{dayView.totalRounds}}轮</view>
+    <view class="pill pill-orange" wx:if="{{dayView.liveActive}}">实时数据</view>
+    <view class="pill pill-gray" wx:if="{{status.progressText}}">{{status.progressText}}</view>
+    <view class="pill pill-gray" wx:if="{{!dayView.hasSession}}">{{sourceText}}</view>
+  </view>
+
+  <!-- 无档期提示 -->
+  <view class="card center-card" wx:if="{{!dayView.hasSession}}">
+    <view class="empty-label">{{status.countdownLabel}}</view>
+    <view class="empty-count">{{status.countdownText}}</view>
+    <view class="empty-sub">{{status.subText}}</view>
+  </view>
+
+  <!-- 功能导航（对应快爆工具箱） -->
+  <view class="nav-row">
+    <view class="nav-item" bindtap="goTab" data-url="/pages/dex/dex">
+      <view class="nav-icon">📖</view>
+      <view class="nav-name">图鉴</view>
+    </view>
+    <view class="nav-item" bindtap="goTab" data-url="/pages/breed/breed">
+      <view class="nav-icon">🥚</view>
+      <view class="nav-name">孵蛋</view>
+    </view>
+    <view class="nav-item" bindtap="goTab" data-url="/pages/tools/tools">
+      <view class="nav-icon">🧰</view>
+      <view class="nav-name">工具箱</view>
+    </view>
+  </view>
+
+  <!-- 物品提醒 -->
+  <view class="card remind-card" wx:if="{{dayView.items.length > 0}}">
+    <view class="remind-left">
+      <view class="remind-title">物品提醒</view>
+      <view class="remind-desc">选择物品，到点上架即提醒（小程序内弹窗）</view>
+    </view>
+    <view class="remind-btn" bindtap="onOpenSubscribe">选择物品订阅</view>
+  </view>
+
+  <!-- 物品卡片（当前/下一轮） -->
+  <block wx:if="{{displayItems.length > 0}}">
+    <view class="card item-card" wx:for="{{displayItems}}" wx:key="key">
+      <image class="item-img" src="{{item.image}}" mode="aspectFill" wx:if="{{item.image}}"></image>
+      <view class="item-icon" wx:else>{{item.icon}}</view>
+      <view class="item-info">
+        <view class="item-name">{{item.name}} <text wx:if="{{subscribed[item.name]}}" class="bell">🔔</text></view>
+        <view class="item-meta">
+          <text class="item-price" wx:if="{{item.price}}">💰 {{item.price}}</text>
+          <text class="item-limit" wx:if="{{item.limit}}">限购 {{item.limit}}</text>
+        </view>
+        <view class="item-window">{{item.windowText}}</view>
+      </view>
+      <view class="chip {{item.chipClass}}" wx:if="{{item.countdownText}}">⏳ {{item.countdownText}}</view>
+      <view class="chip chip-done" wx:else>已结束</view>
+    </view>
+  </block>
+
+  <!-- 轮次列表 -->
+  <view class="card" wx:if="{{dayView.rounds.length > 0}}">
+    <view class="tip-title">今日轮次</view>
+    <view class="round-row" wx:for="{{dayView.rounds}}" wx:key="index">
+      <view class="round-left">
+        <view class="round-name">第 {{item.index}} 轮</view>
+        <view class="round-state rs-{{item.state}}">{{item.stateText}}</view>
+      </view>
+      <view class="round-items">
+        <view class="round-item" wx:for="{{item.items}}" wx:for-item="it" wx:key="key">
+          <image class="mini-img" src="{{it.image}}" mode="aspectFill" wx:if="{{it.image}}"></image>
+          <view class="mini-icon" wx:else>{{it.icon}}</view>
+          <view class="mini-name">{{it.name}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 档期一览 -->
+  <view class="card">
+    <view class="tip-title">📅 档期一览</view>
+    <view class="round-row" wx:for="{{sessions}}" wx:key="dateText">
+      <view class="round-left">
+        <view class="round-name">{{item.dateText}}</view>
+        <view class="round-state state-{{item.state}}">{{item.stateText}}</view>
+      </view>
+      <view class="session-goods">{{item.goodsText}}</view>
+    </view>
+  </view>
+
+  <!-- 小贴士 -->
+  <view class="card">
+    <view class="tip-title">ℹ️ 小贴士</view>
+    <view class="tip">· 商人营业时间：{{meta.businessHours}}，非营业时间商人不会出现</view>
+    <view class="tip">· 新档期通常在首日 04:00 生效，每天 08:00 补货上架</view>
+    <view class="tip">· 数据来源：{{meta.source}}（更新于 {{meta.updatedAt}}，{{sourceText}}）</view>
+    <view class="tip">· 数据每天自动同步；也可下拉页面或点右上角 ⟳ 手动同步</view>
+    <view class="tip">· 微信推送提醒需申请订阅消息模板并部署后端，当前为打开时提醒</view>
+  </view>
+
+  <!-- 订阅弹窗 -->
+  <view class="mask" wx:if="{{showSubscribe}}" bindtap="onCancelSubscribe">
+    <view class="dialog" catchtap="noop">
+      <view class="dialog-title">选择提醒物品</view>
+      <scroll-view scroll-y class="dialog-list">
+        <view class="dialog-item" wx:for="{{subscribeOptions}}" wx:key="name"
+              data-index="{{index}}" bindtap="onToggleOption">
+          <view class="check {{item.checked ? 'checked' : ''}}">{{item.checked ? '✓' : ''}}</view>
+          <view class="dialog-name">{{item.icon}} {{item.name}}（{{item.windowText}}）</view>
+        </view>
+      </scroll-view>
+      <view class="dialog-btns">
+        <view class="dlg-btn dlg-cancel" bindtap="onCancelSubscribe">取消</view>
+        <view class="dlg-btn dlg-ok" bindtap="onConfirmSubscribe">确定</view>
+      </view>
+    </view>
+  </view>
+
+</view>

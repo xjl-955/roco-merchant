@@ -1,0 +1,40 @@
+<view class="page">
+
+  <!-- 搜索与筛选 -->
+  <view class="toolbar">
+    <input class="search" placeholder="搜索名称或编号，如 迪莫 / NO.001"
+           value="{{keyword}}" bindinput="onSearchInput" />
+    <view class="filters">
+      <picker mode="selector" range="{{stages}}" value="{{stageIndex}}" bindchange="onStageChange">
+        <view class="filter-btn">{{stages[stageIndex]}} ▾</view>
+      </picker>
+      <picker mode="selector" range="{{types}}" value="{{typeIndex}}" bindchange="onTypeChange">
+        <view class="filter-btn">{{types[typeIndex] || '全部属性'}} ▾</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="result-line" wx:if="{{!loading && !error}}">共 {{total}} 只（图鉴总量 {{count}}）</view>
+
+  <!-- 加载/错误态 -->
+  <view class="state" wx:if="{{loading}}">⏳ 图鉴数据加载中…</view>
+  <view class="state" wx:if="{{error}}">
+    数据加载失败
+    <view class="state-sub">请检查网络后下拉重试；首次使用需联网下载数据</view>
+  </view>
+
+  <!-- 列表 -->
+  <view class="grid" wx:if="{{!loading && !error}}">
+    <view class="cell" wx:for="{{list}}" wx:key="id">
+      <image class="cell-img" src="{{item.image}}" mode="aspectFit" lazy-load="true"></image>
+      <view class="cell-no">{{item.no}}</view>
+      <view class="cell-name">{{item.name}}</view>
+      <view class="cell-types">
+        <text class="type-tag" wx:for="{{item.types}}" wx:for-item="t" wx:key="*this">{{t}}</text>
+      </view>
+      <view class="cell-stage">{{item.stageLabel}}<text wx:if="{{item.shiny}}"> · 异色</text></view>
+    </view>
+  </view>
+
+  <view class="end-tip" wx:if="{{!loading && !error && list.length >= total && total > 0}}">— 已全部加载 —</view>
+</view>

@@ -1,40 +1,65 @@
 <view class="page">
 
-  <!-- 搜索与筛选 -->
-  <view class="toolbar">
-    <input class="search" placeholder="搜索名称或编号，如 迪莫 / NO.001"
+  <!-- 搜索 -->
+  <view class="search-wrap">
+    <input class="search" placeholder="请输入精灵名或编号进行搜索"
            value="{{keyword}}" bindinput="onSearchInput" />
-    <view class="filters">
-      <picker mode="selector" range="{{stages}}" value="{{stageIndex}}" bindchange="onStageChange">
-        <view class="filter-btn">{{stages[stageIndex]}} ▾</view>
-      </picker>
-      <picker mode="selector" range="{{types}}" value="{{typeIndex}}" bindchange="onTypeChange">
-        <view class="filter-btn">{{types[typeIndex] || '全部属性'}} ▾</view>
-      </picker>
+  </view>
+
+  <!-- 属性图标行 -->
+  <view class="type-row">
+    <view class="type-icon {{typeIndex === item.name ? 'type-on' : ''}}"
+          wx:for="{{typeIcons}}" wx:key="name"
+          style="{{typeIndex === item.name ? 'background:' + item.color + '33; border-color:' + item.color : ''}}"
+          data-type="{{item.name}}" bindtap="onTypeIconTap">
+      <view class="type-dot" style="background: {{item.color}}"></view>
+      <view class="type-name">{{item.name}}</view>
+    </view>
+    <view class="type-icon {{showMoreTypes ? 'type-on' : ''}}" bindtap="onToggleMore">
+      <view class="type-dot type-dot-more">···</view>
+      <view class="type-name">更多</view>
     </view>
   </view>
 
-  <view class="result-line" wx:if="{{!loading && !error}}">共 {{total}} 只（图鉴总量 {{count}}）</view>
-
-  <!-- 加载/错误态 -->
-  <view class="state" wx:if="{{loading}}">⏳ 图鉴数据加载中…</view>
-  <view class="state" wx:if="{{error}}">
-    数据加载失败
-    <view class="state-sub">请检查网络后下拉重试；首次使用需联网下载数据</view>
+  <!-- 更多属性展开 -->
+  <view class="more-row" wx:if="{{showMoreTypes}}">
+    <view class="type-pill" wx:for="{{moreTypes}}" wx:key="name"
+          style="border-color: {{item.color}}; {{typeIndex === item.name ? 'background:' + item.color + '33' : ''}}"
+          data-type="{{item.name}}" bindtap="onTypeIconTap">{{item.name}}</view>
   </view>
 
-  <!-- 列表 -->
+  <!-- 筛选器 -->
+  <view class="filter-row">
+    <picker mode="selector" range="{{stages}}" value="{{stageIndex}}" bindchange="onStageChange">
+      <view class="filter-btn">{{stages[stageIndex]}} ▾</view>
+    </picker>
+    <picker mode="selector" range="{{eggGroups}}" value="{{eggIndex}}" bindchange="onEggChange">
+      <view class="filter-btn">{{eggGroups[eggIndex]}} ▾</view>
+    </picker>
+    <picker mode="selector" range="{{sorts}}" value="{{sortIndex}}" bindchange="onSortChange">
+      <view class="filter-btn">{{sorts[sortIndex]}} ▾</view>
+    </picker>
+  </view>
+
+  <!-- 异色筛选 + 统计 -->
+  <view class="meta-row">
+    <view class="shiny-toggle {{shinyOnly ? 'shiny-on' : ''}}" bindtap="onShinyToggle">
+      ✦ 异色{{shinyOnly ? '：开' : ''}}
+    </view>
+    <view class="count-line">共 {{total}} 只</view>
+  </view>
+
+  <view class="state" wx:if="{{loading}}">⏳ 图鉴数据加载中…</view>
+  <view class="state" wx:if="{{error}}">数据加载失败，下拉重试</view>
+
+  <!-- 宫格：带编号徽章 -->
   <view class="grid" wx:if="{{!loading && !error}}">
     <view class="cell" wx:for="{{list}}" wx:key="id"
           data-name="{{item.name}}" data-slug="{{item.slug}}" bindtap="onSpiritTap">
+      <view class="cell-badge">{{item.no}}</view>
+      <view class="cell-total-badge" wx:if="{{item.total}}">{{item.total}}</view>
       <image class="cell-img" src="{{item.image}}" mode="aspectFit" lazy-load="true"></image>
-      <view class="cell-no">{{item.no}}</view>
       <view class="cell-name">{{item.name}}</view>
-      <view class="cell-total" wx:if="{{item.total}}">种族值 {{item.total}}</view>
-      <view class="cell-types">
-        <text class="type-tag" wx:for="{{item.types}}" wx:for-item="t" wx:key="*this">{{t}}</text>
-      </view>
-      <view class="cell-stage">{{item.stageLabel}}<text wx:if="{{item.shiny}}"> · 异色</text></view>
     </view>
   </view>
 

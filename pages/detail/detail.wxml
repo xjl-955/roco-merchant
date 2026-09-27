@@ -1,37 +1,107 @@
 <view class="page">
 
   <view class="state" wx:if="{{loading}}">⏳ 加载中…</view>
-  <view class="state" wx:if="{{notFound}}">未找到该精灵（数据可能未同步，下拉图鉴页刷新试试）</view>
+  <view class="state" wx:if="{{notFound}}">未找到该精灵（数据可能未同步，请刷新图鉴）</view>
 
   <block wx:if="{{!loading && spirit}}">
 
-    <!-- 头部卡片 -->
-    <view class="card hero">
+    <!-- 英雄区：大图 + 名称 + 属性 -->
+    <view class="hero">
+      <view class="hero-no">No.{{spirit.no}}</view>
       <image class="hero-img" src="{{spirit.image}}" mode="aspectFit" lazy-load="true"></image>
-      <view class="hero-info">
+      <view class="hero-name-row">
         <view class="hero-name">{{spirit.name}}</view>
-        <view class="hero-no">{{spirit.no}} · {{spirit.stageLabel}}<text wx:if="{{spirit.shiny}}"> · 异色</text></view>
         <view class="hero-types">
-          <text class="type-tag" wx:for="{{spirit.types}}" wx:key="*this"
-                style="background: {{typeColor[item]}}33; border-color: {{typeColor[item]}};"
-                data-type="{{item}}" bindtap="onCopyType">{{item}}</text>
+          <text class="type-pill" wx:for="{{spirit.types}}" wx:key="*this"
+                style="background: {{typeColor[item]}}">{{item}}</text>
         </view>
-        <view class="hero-total" wx:if="{{spirit.total}}">种族值总和 <text class="total-num">{{spirit.total}}</text></view>
+      </view>
+      <view class="hero-meta" wx:if="{{spirit.total}}">种族值总和 {{spirit.total}} · {{spirit.stageLabel}}</view>
+    </view>
+
+    <!-- 种族值进度条 -->
+    <view class="card" wx:if="{{statBars.length > 0}}">
+      <view class="sec">✨ 种族值</view>
+      <view class="stat-row" wx:for="{{statBars}}" wx:key="key">
+        <view class="stat-label">{{item.label}}</view>
+        <view class="stat-bar-bg">
+          <view class="stat-bar" style="width: {{item.pct}}%"></view>
+        </view>
+        <view class="stat-value">{{item.value}}</view>
       </view>
     </view>
 
-    <!-- 基本信息 -->
+    <!-- 特长概率 -->
+    <view class="card" wx:if="{{traits.length > 0}}">
+      <view class="sec">🎴 特长概率</view>
+      <view class="trait-row" wx:for="{{traits}}" wx:key="name">
+        <text class="trait-name">{{item.name}}</text>
+        <text class="trait-p">{{item.p}}</text>
+      </view>
+    </view>
+
+    <!-- 属性克制 -->
+    <view class="card" wx:if="{{atkGroups}}">
+      <view class="sec">⚔️ 属性克制（以 {{spirit.types[0]}} 系）</view>
+      <view class="g-block" wx:if="{{atkGroups.x2.length}}">
+        <view class="g-title t-x2">2倍克制</view>
+        <view class="chips"><text class="chip" wx:for="{{atkGroups.x2}}" wx:key="*this">{{item}}</text></view>
+      </view>
+      <view class="g-block" wx:if="{{atkGroups.x05.length}}">
+        <view class="g-title t-x05">1/2 抵抗</view>
+        <view class="chips"><text class="chip" wx:for="{{atkGroups.x05}}" wx:key="*this">{{item}}</text></view>
+      </view>
+      <view class="g-block" wx:if="{{defGroups && defGroups.x2.length}}">
+        <view class="g-title t-x2">被克制（防守弱点）</view>
+        <view class="chips"><text class="chip" wx:for="{{defGroups.x2}}" wx:key="*this">{{item}}</text></view>
+      </view>
+      <view class="g-block" wx:if="{{defGroups && defGroups.x05.length}}">
+        <view class="g-title t-x05">抵抗（防守优势）</view>
+        <view class="chips"><text class="chip" wx:for="{{defGroups.x05}}" wx:key="*this">{{item}}</text></view>
+      </view>
+    </view>
+
+    <!-- 技能三标签 -->
     <view class="card">
-      <view class="sec">📋 基本信息</view>
-      <view class="kv"><text class="k">蛋组</text><text class="v">{{spirit.egg}}</text></view>
-      <view class="kv"><text class="k">骑乘</text><text class="v">{{spirit.ride || '—'}}</text></view>
-      <view class="kv"><text class="k">图鉴编号</text><text class="v">{{spirit.no}}</text></view>
-      <view class="kv"><text class="k">形态</text><text class="v">{{spirit.stageLabel}}</text></view>
+      <view class="sec">⚔️ 技能</view>
+      <view class="skill-tabs">
+        <view class="stab {{skillTab === 0 ? 'stab-on' : ''}}" data-idx="0" bindtap="onSkillTab">升级[{{skillCounts.level}}]</view>
+        <view class="stab {{skillTab === 1 ? 'stab-on' : ''}}" data-idx="1" bindtap="onSkillTab">血脉[{{skillCounts.blood}}]</view>
+        <view class="stab {{skillTab === 2 ? 'stab-on' : ''}}" data-idx="2" bindtap="onSkillTab">技能石[{{skillCounts.stone}}]</view>
+      </view>
+
+      <view class="skill-filters" wx:if="{{skillTypes.length > 1}}">
+        <view class="sfilter {{skillFilter === item ? 'sfilter-on' : ''}}"
+              wx:for="{{skillTypes}}" wx:key="*this"
+              data-f="{{item}}" bindtap="onSkillFilter">{{item}}</view>
+      </view>
+
+      <view class="skill" wx:for="{{skills}}" wx:key="name">
+        <view class="skill-head">
+          <text class="skill-name">{{item.name}}</text>
+          <text class="skill-type" style="background: {{item.color}}33; color: {{item.color}}">{{item.type}}</text>
+        </view>
+        <view class="skill-meta">
+          <text class="meta-chip">Lv {{item.lv}}</text>
+          <text class="meta-chip" wx:if="{{item.power && item.power !== '-'}}">威力 {{item.power}}</text>
+          <text class="meta-chip">PP {{item.pp}}</text>
+          <text class="meta-chip">{{item.kind}}</text>
+        </view>
+        <view class="skill-desc" wx:if="{{item.desc}}">{{item.desc}}</view>
+      </view>
+      <view class="empty" wx:if="{{skills.length === 0}}">暂无该分类技能数据</view>
+      <view class="load-note" wx:if="{{skillCounts.level === 0 && skillCounts.blood === 0 && skillCounts.stone === 0}}">技能详细数据加载中，或该精灵暂未收录</view>
+    </view>
+
+    <!-- 简介 -->
+    <view class="card" wx:if="{{detailDesc}}">
+      <view class="sec">📖 简介</view>
+      <view class="desc">{{detailDesc}}</view>
     </view>
 
     <!-- 进化链 -->
     <view class="card" wx:if="{{family.length > 1}}">
-      <view class="sec">🔗 进化链 / 同族形态</view>
+      <view class="sec">🔗 同族形态（点击切换）</view>
       <scroll-view scroll-x class="family-scroll">
         <view class="family-row">
           <view class="f-item {{item.name === spirit.name ? 'f-current' : ''}}"
@@ -43,13 +113,6 @@
           </view>
         </view>
       </scroll-view>
-    </view>
-
-    <!-- 提示 -->
-    <view class="card">
-      <view class="sec">ℹ️ 说明</view>
-      <view class="tip">· 点击属性标签可复制；点击进化链成员可切换查看</view>
-      <view class="tip">· 详细技能表请看参照站：rocokingdomworld.org/zh/pokedex/{{spirit.slug}}/</view>
     </view>
 
   </block>

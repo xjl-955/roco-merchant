@@ -2,12 +2,9 @@
   padding: 24rpx 24rpx 60rpx;
 }
 
-.toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: #232E3D;
-  padding-bottom: 16rpx;
+/* —— 搜索 —— */
+.search-wrap {
+  margin-bottom: 18rpx;
 }
 
 .search {
@@ -19,40 +16,121 @@
   color: #EAF0F7;
 }
 
-.filters {
+/* —— 属性图标行 —— */
+.type-row {
   display: flex;
-  margin-top: 16rpx;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.type-icon {
+  width: 18%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14rpx 0;
+  border-radius: 16rpx;
+  border: 2rpx solid transparent;
+}
+
+.type-on {
+  background: rgba(240, 162, 74, 0.12);
+}
+
+.type-dot {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  margin-bottom: 8rpx;
+}
+
+.type-dot-more {
+  background: #223042;
+  border: 1rpx solid #3A4A5F;
+  color: #9AA7B8;
+  text-align: center;
+  line-height: 50rpx;
+  font-size: 26rpx;
+}
+
+.type-name {
+  font-size: 22rpx;
+  color: #C6D2E0;
+}
+
+.more-row {
+  display: flex;
+  flex-wrap: wrap;
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 16rpx;
+  padding: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.type-pill {
+  font-size: 24rpx;
+  color: #EAF0F7;
+  border: 1rpx solid;
+  border-radius: 999rpx;
+  padding: 8rpx 24rpx;
+  margin: 6rpx;
+}
+
+/* —— 筛选器 —— */
+.filter-row {
+  display: flex;
+  margin-bottom: 14rpx;
+}
+
+.filter-row picker {
+  flex: 1;
+  margin-right: 14rpx;
+}
+
+.filter-row picker:last-child {
+  margin-right: 0;
 }
 
 .filter-btn {
   background: #2C3A4D;
   border: 1rpx solid #3A4A5F;
-  border-radius: 999rpx;
-  padding: 12rpx 26rpx;
+  border-radius: 14rpx;
+  padding: 16rpx 20rpx;
+  font-size: 26rpx;
+  color: #C6D2E0;
+  text-align: center;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+  padding: 0 6rpx;
+}
+
+.shiny-toggle {
   font-size: 24rpx;
   color: #9AA7B8;
-  margin-right: 16rpx;
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 999rpx;
+  padding: 8rpx 22rpx;
 }
 
-.result-line {
+.shiny-on {
+  color: #FFD59E;
+  border-color: #F0C94A;
+  background: rgba(240, 201, 74, 0.12);
+}
+
+.count-line {
   font-size: 24rpx;
   color: #6E7F94;
-  margin-bottom: 12rpx;
 }
 
-.state {
-  text-align: center;
-  padding: 120rpx 40rpx;
-  color: #8FA0B5;
-  font-size: 28rpx;
-}
-
-.state-sub {
-  font-size: 24rpx;
-  color: #6E7F94;
-  margin-top: 12rpx;
-}
-
+/* —— 宫格 —— */
 .grid {
   display: flex;
   flex-wrap: wrap;
@@ -64,58 +142,61 @@
   background: #2C3A4D;
   border: 1rpx solid #3A4A5F;
   border-radius: 20rpx;
-  padding: 20rpx 14rpx;
+  padding: 16rpx 12rpx 20rpx;
   margin-bottom: 18rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+}
+
+.cell-badge {
+  position: absolute;
+  top: 10rpx;
+  left: 10rpx;
+  font-size: 18rpx;
+  font-weight: bold;
+  color: #4A3524;
+  background: #F0C94A;
+  border-radius: 8rpx;
+  padding: 2rpx 10rpx;
+}
+
+.cell-total-badge {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  font-size: 18rpx;
+  font-weight: bold;
+  color: #EAF0F7;
+  background: #223042;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 8rpx;
+  padding: 2rpx 10rpx;
 }
 
 .cell-img {
-  width: 120rpx;
-  height: 120rpx;
-}
-
-.cell-no {
-  font-size: 20rpx;
-  color: #6E7F94;
-  margin-top: 8rpx;
+  width: 130rpx;
+  height: 130rpx;
+  margin-top: 26rpx;
 }
 
 .cell-name {
-  font-size: 28rpx;
+  font-size: 26rpx;
   font-weight: bold;
   color: #F5F8FC;
-  margin-top: 4rpx;
-}
-
-.cell-total {
-  font-size: 20rpx;
-  color: #FFB86C;
-  margin-top: 4rpx;
-}
-
-.cell-types {
   margin-top: 8rpx;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  max-width: 200rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.type-tag {
-  font-size: 20rpx;
-  color: #6FB1E8;
-  background: rgba(74, 144, 217, 0.15);
-  border: 1rpx solid #4A90D9;
-  border-radius: 8rpx;
-  padding: 2rpx 10rpx;
-  margin: 0 4rpx;
-}
-
-.cell-stage {
-  font-size: 20rpx;
-  color: #9AA7B8;
-  margin-top: 8rpx;
+.state {
+  text-align: center;
+  padding: 120rpx 40rpx;
+  color: #8FA0B5;
+  font-size: 28rpx;
 }
 
 .end-tip {

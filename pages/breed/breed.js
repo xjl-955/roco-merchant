@@ -2,6 +2,7 @@ var tools = require('../../utils/tools.js');
 
 Page({
   data: {
+    mode: 'groups', // 'groups' 蛋组查询 | 'identify' 孵蛋鉴定
     loading: true,
     error: false,
     keyword: '',
@@ -15,6 +16,11 @@ Page({
   },
 
   breed: null,   // breeding.json payload
+
+  /** 顶部模式切换 */
+  setMode: function (e) {
+    this.setData({ mode: e.currentTarget.dataset.mode });
+  },
 
   onLoad: function () {
     var that = this;

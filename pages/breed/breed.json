@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "孵蛋工具"
+  "navigationBarTitleText": "孵蛋工具",
+  "usingComponents": {
+    "eggid-panel": "/components/eggid/eggid"
+  }
 }

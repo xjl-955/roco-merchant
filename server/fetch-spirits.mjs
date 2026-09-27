@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 /**
- * 精灵图鉴数据抓取（增强版：含种族值/进化家族/详情 slug）
+ * 精灵图鉴数据抓取（v3 —— WIKI 官方分类体系）
  *
  * 数据源：
  *   1. onebiji 图鉴 data.php —— 基础数据（621只：编号/名称/阶段/属性/蛋组/图片）
- *   2. rocokingdomworld.org/zh/pokedex/ —— 增强（种族值 total / 进化家族 / 详情页 slug）
+ *   2. rocokingdomworld.org/zh/pokedex/ —— 增强（种族值/家族/slug）
+ *   3. wiki.biligame.com/nrc/精灵图鉴 —— WIKI 官方分类维度（阶段/形态/赛季/异色）
  *
- * 产出 public/spirits.json（小程序图鉴 + 详情页共用）。
- * 数据月度级稳定；想更新时手动跑一次。
+ * 分类维度（与 WIKI 图鉴页一致）：
+ *   stageLabel: 一阶/二阶/三阶/首领
+ *   form: 原始形态/地区形态/首领形态（main/regional/lord）
+ *   season: S1/S2/S3/S4/未分类
+ *   shiny: true/false
  *
+ * 产出 public/spirits.json（formatVersion 3）
  * 用法：node server/fetch-spirits.mjs
  */
 
@@ -68,30 +73,46 @@ function norm(name) {
     .trim();
 }
 
-/** 从列表页解析 644 张卡（slug/total/family），链接在 cell 内部，边界用下一 cell */
-function parseCards(html) {
-  const cellStarts = [];
-  const pre = /<div class="spirit-cell"/g;
-  let pm;
-  while ((pm = pre.exec(html)) !== null) cellStarts.push(pm.index);
-
+/** 解析 WIKI 图鉴卡（分类维度在 data- 属性里） */
+function parseWikiCards(html) {
   const cards = [];
-  const cellRe = /<div class="spirit-cell"([^>]*)>/g;
-  let cm, idx = 0;
-  while ((cm = cellRe.exec(html)) !== null) {
-    const attrs = cm[1];
+  // 预计算所有 npc-card 起点作为边界
+  const starts = [];
+  const pre = /<div class="npc-card"/g;
+  let pm;
+  while ((pm = pre.exec(html)) !== null) starts.push(pm.index);
+
+  const re = /<div class="npc-card"([^>]*)>/g;
+  let m, idx = 0;
+  while ((m = re.exec(html)) !== null) {
+    const attrs = m[1];
     const attr = (name) => {
       const am = new RegExp('data-' + name + '="([^"]*)"').exec(attrs);
       return am ? am[1] : '';
     };
-    const end = idx + 1 < cellStarts.length ? cellStarts[idx + 1] : html.length;
-    const after = html.slice(cm.index, end);
-    const am = /<a href="\/zh\/pokedex\/([a-z0-9-]+)" class="group block"/.exec(after);
+    const aria = /aria-label="([^"]*)"/.exec(attrs);
+    const end = idx + 1 < starts.length ? starts[idx + 1] : Math.min(html.length, m.index + 6000);
+    const seg = html.slice(m.index, end);
+    const nameM = /<div class="npc-name">([^<]+)<\/div>/.exec(seg);
+    const imgM = /npc-art-normal"><img[^>]*src="([^"]+)"/.exec(seg);
+    const stageTxt = /<div class="npc-stage">([^<]*)<\/div>/.exec(seg);
+
+    // 名字：aria-label 优先（含形态全名，如"鸭吉吉（蓬松的样子）"）
+    // npc-name 是简短名（"鸭吉吉"），形态卡会撞名导致覆盖
+    const name = aria ? aria[1].replace(/^\d+\s*/, '').trim()
+      : (nameM ? nameM[1].trim() : '');
+
     cards.push({
-      slug: am ? am[1] : '',
-      name: attr('title'),
-      total: parseInt(attr('total'), 10) || 0,
-      family: attr('family')
+      id: attr('id'),
+      number: attr('number'),
+      stage: attr('stage'),           // 1/2/3/''（空=首领或特殊）
+      form: attr('form'),             // main/regional/lord 及组合
+      shiny: attr('shiny'),           // yes/no
+      season: attr('season'),         // S1~S4/none
+      types: attr('type').split('|').filter(Boolean),
+      name: name,
+      image: imgM ? imgM[1] : '',
+      stageText: stageTxt ? stageTxt[1] : ''
     });
     idx++;
   }
@@ -103,64 +124,84 @@ async function main() {
   const dexText = await get('https://www.onebiji.com/hykb_tools/lkwg/jltj/data.php');
   const SPIRITS = extractFromJs(dexText, 'SPIRITS');
   const TYPE_META = extractFromJs(dexText, 'TYPE_META');
-  console.log(`      ${SPIRITS.length} 只精灵, ${Object.keys(TYPE_META).length} 种属性`);
+  console.log(`      ${SPIRITS.length} 只基础精灵`);
 
-  console.log('[2/4] 抓取增强列表页（种族值/家族/slug）...');
-  const listHtml = await get('https://rocokingdomworld.org/zh/pokedex/');
-  const cards = parseCards(listHtml);
-  const withSlug = cards.filter((c) => c.slug).length;
-  console.log(`      ${cards.length} 张卡片（${withSlug} 条含 slug）`);
-
-  console.log('[3/4] 合并 ...');
+  console.log('[2/4] 抓取 WIKI 图鉴（官方分类 625 卡）...');
+  const wikiHtml = await get('https://wiki.biligame.com/nrc/%E7%B2%BE%E7%81%B5%E5%9B%BE%E9%89%B4');
+  const wikiCards = parseWikiCards(wikiHtml);
   const byName = {};
-  cards.forEach((c) => { if (c.slug) byName[norm(c.name)] = c; });
+  wikiCards.forEach((c) => { if (c.name) byName[norm(c.name)] = c; });
+  console.log(`      ${wikiCards.length} 张 WIKI 卡`);
 
-  let merged = 0;
-  const spirits = SPIRITS.map((s) => {
+  console.log('[3/4] 合并（WIKI 分类为准）...');
+  const spirits = [];
+  let matched = 0;
+  for (const s of SPIRITS) {
+    let wc = byName[norm(s.name)];
+    // 兜底：形态名（如"板板壳(本来的样子)"）在 WIKI 中可能就叫基础名"板板壳"
+    if (!wc) {
+      const baseName = norm(s.name).replace(/\([^)]*\)/, '');
+      wc = byName[baseName];
+    }
+    // 兜底2：棋契陛下类——WIKI 名带"分支"后缀（"棋契陛下（白棋棋骑士分支）"）
+    if (!wc) {
+      const m2 = /^(.+?)\((.+?)\)$/.exec(norm(s.name));
+      if (m2) {
+        const stem = m2[1];
+        const branch = m2[2];
+        wc = byName[stem + '(' + branch + '分支)'] || null;
+      }
+    }
+    // 兜底3：白子/黑子 → 按 编号+颜色 映射（WIKI 用分支名，基础图鉴用白子/黑子）
+    if (!wc) {
+      const m3 = /^(.+?)\((白|黑)子\)$/.exec(norm(s.name));
+      if (m3) {
+        const color = m3[2] === '白' ? '白' : '黑';
+        const no = String(s.no).replace(/^NO\.?/, '');
+        for (const c of wikiCards) {
+          if (c.number === no && c.name.indexOf('棋契陛下') >= 0 && c.name.indexOf(color) >= 0) { wc = c; break; }
+        }
+      }
+    }
     const out = {
       id: s.id,
       no: s.no,
       name: s.name,
-      stage: s.stage,
-      stageLabel: s.stageLabel,
       types: s.types || [],
       egg: s.egg || '未发现',
       ride: s.ride || '',
       shiny: s.shiny === 'yes',
-      image: s.image || ''
+      image: s.image || '',
+      // WIKI 官方分类维度
+      stage: wc ? wc.stage : '',
+      form: wc ? wc.form : '',
+      season: wc ? wc.season : 'none',
+      stageText: wc ? wc.stageText : ''
     };
-    // 两轮匹配：先精确（归一化），再形态变体去括号挂到基础形态
-    let c = byName[norm(s.name)];
-    if (!c) {
-      const baseName = norm(s.name).replace(/\([^)]*\)/, '');
-      c = byName[baseName];
+    if (wc) {
+      out.wikiImage = wc.image;
+      matched++;
     }
-    if (c) {
-      out.slug = c.slug;
-      out.total = c.total;
-      out.family = c.family;
-      merged++;
-    }
-    return out;
-  });
-  console.log(`      合并 ${merged}/${spirits.length}`);
-  if (merged < spirits.length * 0.9) throw new Error(`合并率过低（${merged}/${spirits.length}），中止`);
+    spirits.push(out);
+  }
+  console.log(`      WIKI 匹配 ${matched}/${spirits.length}`);
+  if (matched < spirits.length * 0.9) throw new Error(`WIKI 匹配率过低（${matched}/${spirits.length}），中止`);
 
   console.log('[4/4] 写入 ...');
   const outDir = join(ROOT, 'public');
   await mkdir(outDir, { recursive: true });
   await writeFile(join(outDir, 'spirits.json'), JSON.stringify({
-    formatVersion: 2,
+    formatVersion: 3,
     generatedAt: new Date().toISOString(),
-    meta: { updatedAt: new Date().toISOString().slice(0, 10), source: 'rocokingdomworld.org 图鉴（含种族值/进化家族/详情slug）' },
+    meta: {
+      updatedAt: new Date().toISOString().slice(0, 10),
+      source: '洛克王国世界WIKI · 精灵图鉴（官方分类：阶段/形态/赛季/异色）'
+    },
     types: TYPE_META,
     count: spirits.length,
     spirits
   }));
-  console.log(`      ✓ public/spirits.json（${spirits.length} 只，formatVersion 2）`);
+  console.log(`      ✓ public/spirits.json（${spirits.length} 只，formatVersion 3）`);
 }
 
-main().catch((e) => {
-  console.error('抓取失败:', e.message);
-  process.exit(1);
-});
+main().catch((e) => { console.error('抓取失败:', e.message); process.exit(1); });

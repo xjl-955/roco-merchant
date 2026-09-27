@@ -79,6 +79,14 @@ Page({
     if (url) wx.switchTab({ url: url });
   },
 
+  goNature: function () {
+    wx.navigateTo({ url: '/pages/nature/nature' });
+  },
+
+  goTypechart: function () {
+    wx.navigateTo({ url: '/pages/typechart/typechart' });
+  },
+
   onUnload: function () {
     this.stopTimer();
   },

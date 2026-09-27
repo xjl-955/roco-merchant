@@ -1,5 +1,13 @@
 <view class="page">
 
+  <!-- 功能切换 -->
+  <view class="mode-row">
+    <view class="mode {{mode === 'groups' ? 'mode-on' : ''}}" data-mode="groups" bindtap="setMode">🧬 蛋组查询</view>
+    <view class="mode {{mode === 'identify' ? 'mode-on' : ''}}" data-mode="identify" bindtap="setMode">🔍 孵蛋鉴定</view>
+  </view>
+
+  <!-- ===== 蛋组查询模式 ===== -->
+  <block wx:if="{{mode === 'groups'}}">
   <!-- 搜索（查个体蛋组） -->
   <view class="search-wrap">
     <input class="search" placeholder="输入精灵名查蛋组，如 迪莫"
@@ -50,5 +58,11 @@
       <view class="nest-title">{{item.title}} <text class="nest-tag">{{item.tag}}</text></view>
     </view>
   </view>
+  </block>
+
+  <!-- ===== 孵蛋鉴定模式 ===== -->
+  <block wx:if="{{mode === 'identify'}}">
+    <eggid-panel />
+  </block>
 
 </view>

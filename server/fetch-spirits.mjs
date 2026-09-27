@@ -133,6 +133,26 @@ async function main() {
   wikiCards.forEach((c) => { if (c.name) byName[norm(c.name)] = c; });
   console.log(`      ${wikiCards.length} 张 WIKI 卡`);
 
+  // 参照站列表页（种族值 total 数据源）
+  console.log('[2.5/4] 抓取参照站列表页（种族值）...');
+  const totalByName = {};
+  try {
+    const rkwHtml = await get('https://rocokingdomworld.org/zh/pokedex/');
+    const cellRe = /<div class="spirit-cell"([^>]*)>/g;
+    let cm;
+    while ((cm = cellRe.exec(rkwHtml)) !== null) {
+      const attrs = cm[1];
+      const titleM = /data-title="([^"]*)"/.exec(attrs);
+      const totalM = /data-total="(\d+)"/.exec(attrs);
+      if (titleM && totalM) {
+        totalByName[norm(titleM[1])] = parseInt(totalM[1], 10);
+      }
+    }
+    console.log(`      ${Object.keys(totalByName).length} 条种族值`);
+  } catch (e) {
+    console.warn('      ⚠ 参照站种族值抓取失败（不影响分类，仅缺 total）:', e.message);
+  }
+
   console.log('[3/4] 合并（WIKI 分类为准）...');
   const spirits = [];
   let matched = 0;
@@ -163,6 +183,9 @@ async function main() {
         }
       }
     }
+    // 种族值（参照站 total，形态名去括号兜底）
+    const total = totalByName[norm(s.name)] ||
+                  totalByName[norm(s.name).replace(/\([^)]*\)/, '')] || 0;
     const out = {
       id: s.id,
       no: s.no,
@@ -176,7 +199,9 @@ async function main() {
       stage: wc ? wc.stage : '',
       form: wc ? wc.form : '',
       season: wc ? wc.season : 'none',
-      stageText: wc ? wc.stageText : ''
+      stageText: wc ? wc.stageText : '',
+      // 种族值总和
+      total: total || 0
     };
     if (wc) {
       out.wikiImage = wc.image;

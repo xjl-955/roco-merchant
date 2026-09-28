@@ -108,6 +108,14 @@ function applyLiveToday(payload) {
   if (typeof payload.startedAtBeijing !== 'string') return false;
   if (!TIME_RE.test(payload.startedAtBeijing.slice(0, 16))) return false;
 
+  // 完整性校验：必须含"网兜球"（常驻商品，四轮都在售）
+  // 快爆源页面在轮次切换瞬间可能返回残缺快照（缺常驻商品），这种数据不可用
+  var hasUniversal = false;
+  for (var chk = 0; chk < payload.items.length; chk++) {
+    if (payload.items[chk] && payload.items[chk].name === '网兜球') { hasUniversal = true; break; }
+  }
+  if (!hasUniversal) return false;
+
   var items = [];
   for (var i = 0; i < payload.items.length; i++) {
     var it = payload.items[i];

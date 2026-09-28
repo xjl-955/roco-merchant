@@ -479,6 +479,43 @@
   padding: 24rpx 0;
 }
 
+/* ═══ 性格推荐 ═══ */
+.nature-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border: 2rpx solid #3A2E20;
+  border-radius: 12rpx;
+  padding: 12rpx 18rpx;
+  margin-bottom: 10rpx;
+}
+
+.nature-row:last-child { margin-bottom: 0; }
+
+.nature-main {
+  display: flex;
+  align-items: center;
+}
+
+.nature-name {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #3A2E20;
+  margin-right: 14rpx;
+}
+
+.nature-detail {
+  font-size: 22rpx;
+  color: #B0413E;
+}
+
+.nature-pct {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #6B5D45;
+}
+
 /* ═══ 简介 ═══ */
 .desc {
   font-size: 26rpx;

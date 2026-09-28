@@ -74,6 +74,26 @@
         <text class="obtain-k">获取方式</text>
         <text class="obtain-v">{{extra.obtain}}</text>
       </view>
+      <view class="obtain-row" wx:if="{{eggGroup}}">
+        <text class="obtain-k">蛋组</text>
+        <text class="obtain-v">{{eggGroup}}</text>
+      </view>
+      <view class="obtain-row" wx:if="{{wikiKind}}">
+        <text class="obtain-k">种类</text>
+        <text class="obtain-v">{{wikiKind}}</text>
+      </view>
+    </view>
+
+    <!-- ═══ 性格推荐（WIKI 数据）═══ -->
+    <view class="card" wx:if="{{natures.length > 0}}">
+      <view class="sec">🧠 性格推荐</view>
+      <view class="nature-row" wx:for="{{natures}}" wx:key="name">
+        <view class="nature-main">
+          <text class="nature-name">{{item.name}}</text>
+          <text class="nature-detail">{{item.detail}}</text>
+        </view>
+        <text class="nature-pct">{{item.pct}}</text>
+      </view>
     </view>
 
     <!-- ═══ 进化链 ═══ -->
@@ -166,10 +186,10 @@
       <view class="empty" wx:if="{{skills.length === 0}}">技能数据加载中，或该精灵暂未收录</view>
     </view>
 
-    <!-- ═══ 简介 ═══ -->
-    <view class="card" wx:if="{{extra.desc}}">
+    <!-- ═══ 简介（WIKI 优先，参照站兜底）═══ -->
+    <view class="card" wx:if="{{wikiDesc || extra.desc}}">
       <view class="sec">📝 简介</view>
-      <view class="desc">{{extra.desc}}</view>
+      <view class="desc">{{wikiDesc || extra.desc}}</view>
     </view>
 
   </block>

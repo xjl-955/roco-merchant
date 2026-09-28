@@ -39,6 +39,11 @@ Page({
     total: 0,
     // 补充信息（参照站抓取）
     extra: null,
+    // WIKI 补充（简介/种类/性格推荐/蛋组）
+    wikiDesc: '',
+    wikiKind: '',
+    natures: [],
+    eggGroup: '',
     // 克制
     atkGroups: null,
     defGroups: null,
@@ -94,14 +99,22 @@ Page({
         });
       }
 
-      // WIKI 技能
+      // WIKI 技能 + 简介/种类/性格推荐
       wikidex.loadWikiDetails(function (details) {
         if (!details || !details[name]) return;
         that.detail = details[name];
         that._applySkills();
+        // WIKI 补充板块
+        var d = details[name];
+        that.setData({
+          wikiDesc: d.wikiDesc || '',
+          wikiKind: d.kind || '',
+          natures: d.natures || [],
+          eggGroup: d.eggGroup || ''
+        });
       });
 
-      // 参照站补充（特性/简介/获取方式）
+      // 参照站补充（特性/获取方式）
       that._loadExtra(name);
     });
   },

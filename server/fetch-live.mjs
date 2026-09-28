@@ -168,6 +168,16 @@ async function main() {
     payload = existing;
   }
 
+  // 完整性防回退：快爆源在轮次切换瞬间可能返回残缺快照（缺常驻"网兜球"）
+  // 这种数据不可用——若旧数据是今天的且比新抓取更完整，保留旧数据
+  var newHasUniversal = items.some(function (i) { return i.name === '网兜球'; });
+  var oldHasUniversal = existing && existing.items &&
+    existing.items.some(function (i) { return i.name === '网兜球'; });
+  if (!newHasUniversal && existing && existing.date === payload.date && oldHasUniversal) {
+    console.log('      ⚠ 本次抓取缺常驻商品（残缺快照），保留今天的既有数据');
+    payload = existing;
+  }
+
   await writeFile(outPath, JSON.stringify(payload), 'utf8');
   console.log('      ✓ public/live.json | round=' + payload.round, '| items=' + payload.items.length);
 }

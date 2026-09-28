@@ -8,9 +8,8 @@
 
   <!-- 属性图标行 -->
   <view class="type-row">
-    <view class="type-icon {{typeIndex === item.name ? 'type-on' : ''}}"
+    <view class="type-icon {{selType === item.name ? 'type-on' : ''}}"
           wx:for="{{typeIcons}}" wx:key="name"
-          style="{{typeIndex === item.name ? 'background:' + item.color + '33; border-color:' + item.color : ''}}"
           data-type="{{item.name}}" bindtap="onTypeIconTap">
       <view class="type-dot" style="background: {{item.color}}"></view>
       <view class="type-name">{{item.name}}</view>
@@ -24,42 +23,60 @@
   <!-- 更多属性展开 -->
   <view class="more-row" wx:if="{{showMoreTypes}}">
     <view class="type-pill" wx:for="{{moreTypes}}" wx:key="name"
-          style="border-color: {{item.color}}; {{typeIndex === item.name ? 'background:' + item.color + '33' : ''}}"
+          style="border-color: {{item.color}}; {{selType === item.name ? 'background:' + item.color + '33' : ''}}"
           data-type="{{item.name}}" bindtap="onTypeIconTap">{{item.name}}</view>
   </view>
 
-  <!-- 筛选器 -->
+  <!-- 第一行筛选：形态 / 蛋组 / 数值排序 -->
   <view class="filter-row">
     <picker mode="selector" range="{{stages}}" value="{{stageIndex}}" bindchange="onStageChange">
       <view class="filter-btn">{{stages[stageIndex]}} ▾</view>
     </picker>
-    <picker mode="selector" range="{{seasons}}" value="{{seasonIndex}}" bindchange="onSeasonChange">
-      <view class="filter-btn">{{seasons[seasonIndex]}} ▾</view>
+    <picker mode="selector" range="{{eggGroups}}" value="{{eggIndex}}" bindchange="onEggChange">
+      <view class="filter-btn">{{eggGroups[eggIndex]}} ▾</view>
     </picker>
     <picker mode="selector" range="{{sorts}}" value="{{sortIndex}}" bindchange="onSortChange">
       <view class="filter-btn">{{sorts[sortIndex]}} ▾</view>
     </picker>
   </view>
 
-  <!-- 异色筛选 + 统计 -->
+  <!-- 第二行筛选：异色 / 性别 / 赛季 -->
+  <view class="filter-row">
+    <picker mode="selector" range="{{['异色', '只看异色']}}" value="{{shinyOnly ? 1 : 0}}" bindchange="onShinyPick">
+      <view class="filter-btn {{shinyOnly ? 'filter-on' : ''}}">{{shinyOnly ? '只看异色' : '异色'}} ▾</view>
+    </picker>
+    <picker mode="selector" range="{{genders}}" value="{{genderIndex}}" bindchange="onGenderChange">
+      <view class="filter-btn">{{genders[genderIndex]}} ▾</view>
+    </picker>
+    <picker mode="selector" range="{{seasons}}" value="{{seasonIndex}}" bindchange="onSeasonChange">
+      <view class="filter-btn">{{seasons[seasonIndex]}} ▾</view>
+    </picker>
+  </view>
+
+  <!-- 统计 -->
   <view class="meta-row">
-    <view class="shiny-toggle {{shinyOnly ? 'shiny-on' : ''}}" bindtap="onShinyToggle">
-      ✦ 异色{{shinyOnly ? '：开' : ''}}
-    </view>
     <view class="count-line">共 {{total}} 只</view>
   </view>
 
   <view class="state" wx:if="{{loading}}">⏳ 图鉴数据加载中…</view>
   <view class="state" wx:if="{{error}}">数据加载失败，下拉重试</view>
 
-  <!-- 宫格：带编号徽章 -->
+  <!-- 宫格（参照站风：图卡 + 底部色块名条 + 编号徽章 + 属性点） -->
   <view class="grid" wx:if="{{!loading && !error}}">
     <view class="cell" wx:for="{{list}}" wx:key="id"
-          data-name="{{item.name}}" data-slug="{{item.slug}}" bindtap="onSpiritTap">
-      <view class="cell-badge">{{item.no}}</view>
-      <view class="cell-total-badge" wx:if="{{item.total}}">{{item.total}}</view>
-      <image class="cell-img" src="{{item.image}}" mode="aspectFit" lazy-load="true"></image>
-      <view class="cell-name">{{item.name}}</view>
+          data-name="{{item.name}}" bindtap="onSpiritTap">
+      <view class="cell-stage" wx:if="{{item.stageText}}">{{item.stageText}}</view>
+      <view class="cell-imgwrap">
+        <image class="cell-img" src="{{item.wikiImage || item.image}}" mode="aspectFit" lazy-load="true"></image>
+        <view class="cell-no">NO.{{item.no}}</view>
+      </view>
+      <view class="cell-namebar">
+        <text class="cell-name">{{item.name}}</text>
+        <view class="cell-types">
+          <view class="cell-type" wx:for="{{item.types}}" wx:for-item="tp" wx:key="*this"
+                style="background: {{item._colors[tp] || '#999'}}"></view>
+        </view>
+      </view>
     </view>
   </view>
 

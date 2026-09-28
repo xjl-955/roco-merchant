@@ -5,79 +5,171 @@
 
   <block wx:if="{{!loading && spirit}}">
 
-    <!-- 基础信息条 -->
-    <view class="card">
-      <view class="sec">📋 基础信息</view>
-      <view class="pills">
-        <view class="pill"><text class="pill-k">属性</text><text class="pill-v" wx:for="{{spirit.types}}" wx:key="*this" style="color: {{typeColor[item]}}">{{item}}</text></view>
-        <view class="pill" wx:if="{{spirit.stageText}}"><text class="pill-k">阶段</text><text class="pill-v">{{spirit.stageText}}</text></view>
-        <view class="pill" wx:if="{{spirit.season && spirit.season !== 'none'}}"><text class="pill-k">赛季</text><text class="pill-v">{{spirit.season}}</text></view>
-        <view class="pill" wx:if="{{detail.eggGroup}}"><text class="pill-k">蛋组</text><text class="pill-v">{{detail.eggGroup}}</text></view>
-        <view class="pill" wx:if="{{detail.body}}"><text class="pill-k">身高</text><text class="pill-v">{{detail.body.h}}</text></view>
-        <view class="pill" wx:if="{{detail.body}}"><text class="pill-k">体重</text><text class="pill-v">{{detail.body.w}}</text></view>
+    <!-- ═══ 黄色英雄区（参照站）═══ -->
+    <view class="hero">
+      <view class="hero-badges">
+        <view class="hb-no">No.{{spirit.no}}</view>
+        <view class="hb-shiny">{{spirit.shiny ? '异色' : '未知'}}</view>
+      </view>
+      <image class="hero-img" src="{{spirit.wikiImage || spirit.image}}" mode="aspectFit"></image>
+      <view class="hero-swtich">
+        <view class="sw-item sw-on">精灵</view>
+        <view class="sw-item">果实</view>
+        <view class="sw-item">精灵蛋</view>
       </view>
     </view>
 
-    <!-- 种族值 -->
+    <!-- 名称卡（深色横条） -->
+    <view class="namecard">
+      <view class="nc-left">
+        <view class="nc-name">{{spirit.name}} <text class="nc-trait" wx:if="{{extra.trait}}">{{extra.trait}}</text></view>
+        <view class="nc-badges">
+          <text class="nc-badge" wx:if="{{spirit.stageText}}">{{spirit.stageText}}</text>
+          <text class="nc-badge" wx:if="{{spirit.season && spirit.season !== 'none'}}">{{spirit.season}}</text>
+        </view>
+        <view class="nc-chips">
+          <text class="nc-chip" wx:if="{{extra.h}}">📏 {{extra.h}}</text>
+          <text class="nc-chip" wx:if="{{extra.w}}">⚖️ {{extra.w}}</text>
+        </view>
+      </view>
+      <view class="nc-types">
+        <text class="nc-type" wx:for="{{spirit.types}}" wx:key="*this"
+              style="background: {{typeColor[item]}}">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- ═══ 种族值 ═══ -->
     <view class="card" wx:if="{{statBars.length > 0}}">
-      <view class="sec">✨ 种族值 <text class="sec-total" wx:if="{{detail.total}}">总和 {{detail.total}}</text></view>
+      <view class="sec-row">
+        <view class="sec">✨ 种族值</view>
+        <view class="sec-total" wx:if="{{total}}">{{total}}</view>
+      </view>
       <view class="stat-row" wx:for="{{statBars}}" wx:key="key">
         <view class="stat-label">{{item.label}}</view>
         <view class="stat-bar-bg">
-          <view class="stat-bar" style="width: {{item.pct}}%"></view>
+          <view class="stat-bar" style="width: {{item.pct}}%; background: {{item.color}}"></view>
         </view>
         <view class="stat-value">{{item.value}}</view>
       </view>
     </view>
 
-    <!-- 特长概率 -->
-    <view class="card" wx:if="{{detail.talents.length > 0}}">
-      <view class="sec">🎴 特长概率</view>
-      <view class="trait-row" wx:for="{{detail.talents}}" wx:key="name">
-        <text class="trait-name">{{item.name}}</text>
-        <text class="trait-p">{{item.p}}</text>
-      </view>
-    </view>
-
-    <!-- 受击关系 -->
-    <view class="card" wx:if="{{atkGroups}}">
-      <view class="sec">🛡️ 受击关系（{{spirit.types[0]}}系）</view>
-      <view class="g-block" wx:if="{{defGroups.x2.length}}">
-        <view class="g-title t-x2">×2 弱点</view>
-        <view class="chips"><text class="chip" wx:for="{{defGroups.x2}}" wx:key="*this">{{item}}</text></view>
-      </view>
-      <view class="g-block" wx:if="{{defGroups.x05.length}}">
-        <view class="g-title t-x05">×0.5 抵抗</view>
-        <view class="chips"><text class="chip" wx:for="{{defGroups.x05}}" wx:key="*this">{{item}}</text></view>
-      </view>
-      <view class="g-block" wx:if="{{atkGroups.x2.length}}">
-        <view class="g-title t-x2">⚔️ 进攻 2倍克制</view>
-        <view class="chips"><text class="chip" wx:for="{{atkGroups.x2}}" wx:key="*this">{{item}}</text></view>
-      </view>
-    </view>
-
-    <!-- 技能表 -->
+    <!-- ═══ 精灵资质 ═══ -->
     <view class="card">
-      <view class="sec">⚔️ 技能表</view>
-      <view class="skill-tabs">
-        <view class="stab {{skillSrc === index ? 'stab-on' : ''}}"
-              wx:for="{{skillSrcList}}" wx:key="key"
-              data-idx="{{index}}" bindtap="onSkillSrcTap">{{item.label}}</view>
+      <view class="sec">🎴 精灵资质</view>
+      <view class="qual-row">
+        <view class="qual-item">
+          <text class="qual-k">⭐ 星光值</text>
+          <text class="qual-v">{{extra.star || '-'}}</text>
+        </view>
+        <view class="qual-item">
+          <text class="qual-k">🪙 洛克贝</text>
+          <text class="qual-v">{{extra.review || '-'}}</text>
+        </view>
       </view>
+      <view class="trait-block" wx:if="{{extra.trait}}">
+        <view class="trait-name">特性 · {{extra.trait}}</view>
+        <view class="trait-desc">{{extra.traitDesc}}</view>
+      </view>
+      <view class="obtain-row" wx:if="{{extra.obtain}}">
+        <text class="obtain-k">获取方式</text>
+        <text class="obtain-v">{{extra.obtain}}</text>
+      </view>
+    </view>
+
+    <!-- ═══ 进化链 ═══ -->
+    <view class="card" wx:if="{{family.length > 1}}">
+      <view class="sec-row">
+        <view class="sec">🔗 进化链</view>
+      </view>
+      <scroll-view scroll-x class="fam-scroll">
+        <view class="fam-row">
+          <block wx:for="{{family}}" wx:key="name">
+            <view class="fam-item {{item.name === spirit.name ? 'fam-cur' : ''}}"
+                  data-name="{{item.name}}" bindtap="onFamilyTap">
+              <image class="fam-img" src="{{item.image}}" mode="aspectFit" lazy-load="true"></image>
+              <view class="fam-name">{{item.name}}</view>
+            </view>
+            <view class="fam-arrow" wx:if="{{index < family.length - 1}}">→</view>
+          </block>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- ═══ 属性克制（攻/防双 tab）═══ -->
+    <view class="card" wx:if="{{atkGroups}}">
+      <view class="sec">⚔️ 属性克制</view>
+      <view class="tab-row">
+        <view class="tab {{tab === 0 ? 'tab-on' : ''}}" data-idx="0" bindtap="onTab">作为进攻方</view>
+        <view class="tab {{tab === 1 ? 'tab-on' : ''}}" data-idx="1" bindtap="onTab">作为防守方</view>
+      </view>
+
+      <block wx:if="{{tab === 0}}">
+        <view class="g-block" wx:if="{{atkGroups.x2.length}}">
+          <view class="g-title t-strong">2倍克制</view>
+          <view class="chips">
+            <text class="chip" wx:for="{{atkGroups.x2}}" wx:key="*this"
+                  style="background: {{typeColor[item]}}">{{item}}</text>
+          </view>
+        </view>
+        <view class="g-block" wx:if="{{atkGroups.x05.length}}">
+          <view class="g-title t-weak">1/2倍克制</view>
+          <view class="chips">
+            <text class="chip" wx:for="{{atkGroups.x05}}" wx:key="*this"
+                  style="background: {{typeColor[item]}}">{{item}}</text>
+          </view>
+        </view>
+      </block>
+
+      <block wx:if="{{tab === 1}}">
+        <view class="g-block" wx:if="{{defGroups.x2.length}}">
+          <view class="g-title t-strong">受到 2倍克制</view>
+          <view class="chips">
+            <text class="chip" wx:for="{{defGroups.x2}}" wx:key="*this"
+                  style="background: {{typeColor[item]}}">{{item}}</text>
+          </view>
+        </view>
+        <view class="g-block" wx:if="{{defGroups.x05.length}}">
+          <view class="g-title t-resist">受到 1/2倍伤害</view>
+          <view class="chips">
+            <text class="chip" wx:for="{{defGroups.x05}}" wx:key="*this"
+                  style="background: {{typeColor[item]}}">{{item}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- ═══ 技能（三标签 + 属性筛选 + 卡片）═══ -->
+    <view class="card">
+      <view class="sec">📖 技能</view>
+      <view class="tab-row">
+        <view class="tab {{skillSrc === index ? 'tab-on' : ''}}"
+              wx:for="{{skillSrcList}}" wx:key="key" wx:for-index="index"
+              data-idx="{{index}}" bindtap="onSkillSrcTap">{{item.label}}[{{index === 0 ? skillTotal : ''}}]</view>
+      </view>
+
+      <view class="skill-filters" wx:if="{{skillTypes.length > 1}}">
+        <view class="sfilter {{skillFilter === item ? 'sfilter-on' : ''}}"
+              wx:for="{{skillTypes}}" wx:key="*this"
+              data-f="{{item}}" bindtap="onSkillFilter">{{item}}</view>
+      </view>
+
       <view class="skill" wx:for="{{skills}}" wx:key="name">
-        <view class="skill-head">
-          <text class="skill-name">{{item.name}}</text>
-          <text class="skill-type" style="background: {{item.color}}33; color: {{item.color}}">{{item.type}}</text>
+        <view class="sk-head">
+          <image class="sk-ico" src="" mode="aspectFit"></image>
+          <text class="sk-name">{{item.name}}</text>
+          <text class="sk-cost" wx:if="{{item.cost}}">✦ 耗能 {{item.cost}}</text>
+          <text class="sk-power" wx:if="{{item.power && item.power !== '0'}}">威力 {{item.power}}</text>
+          <text class="sk-cat">{{item.cat}}</text>
         </view>
-        <view class="skill-meta">
-          <text class="meta-chip" wx:if="{{item.lv}}">{{item.lv}}</text>
-          <text class="meta-chip" wx:if="{{item.power && item.power !== '-'}}">威力 {{item.power}}</text>
-          <text class="meta-chip" wx:if="{{item.cost}}">能耗 {{item.cost}}</text>
-          <text class="meta-chip">{{item.cat}}</text>
-        </view>
-        <view class="skill-desc" wx:if="{{item.desc}}">{{item.desc}}</view>
+        <view class="sk-desc" wx:if="{{item.desc}}">{{item.desc}}</view>
       </view>
-      <view class="empty" wx:if="{{skills.length === 0}}">暂无该分类技能</view>
+      <view class="empty" wx:if="{{skills.length === 0}}">技能数据加载中，或该精灵暂未收录</view>
+    </view>
+
+    <!-- ═══ 简介 ═══ -->
+    <view class="card" wx:if="{{extra.desc}}">
+      <view class="sec">📝 简介</view>
+      <view class="desc">{{extra.desc}}</view>
     </view>
 
   </block>

@@ -1,13 +1,14 @@
 .page {
-  padding: 24rpx 24rpx 60rpx;
+  padding: 0 0 60rpx;
 }
 
 .card {
-  background: #2C3A4D;
-  border: 1rpx solid #3A4A5F;
+  background: #FFF6E0;
+  border: 2rpx solid #3A2E20;
   border-radius: 20rpx;
   padding: 28rpx;
-  margin-bottom: 22rpx;
+  margin: 20rpx 24rpx;
+  box-shadow: 4rpx 4rpx 0 rgba(58, 46, 32, 0.9);
 }
 
 .state {
@@ -17,100 +18,188 @@
   font-size: 28rpx;
 }
 
-/* —— 英雄区 —— */
+/* ═══ 黄色英雄区 ═══ */
 .hero {
-  background: linear-gradient(160deg, #C98A3D 0%, #A4662B 100%);
-  border-radius: 20rpx;
-  padding: 30rpx;
-  margin-bottom: 22rpx;
+  background: #F5C842;
+  padding: 30rpx 24rpx 24rpx;
   position: relative;
+  border-bottom: 3rpx solid #3A2E20;
 }
 
-.hero-no {
-  position: absolute;
-  top: 20rpx;
-  left: 20rpx;
-  font-size: 24rpx;
+.hero-badges {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.hb-no {
+  font-size: 26rpx;
   font-weight: bold;
-  color: #4A3524;
-  background: #F0C94A;
+  color: #3A2E20;
+  background: #fff;
+  border: 2rpx solid #3A2E20;
+  border-radius: 10rpx;
+  padding: 4rpx 16rpx;
+}
+
+.hb-shiny {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #3A2E20;
+  background: #fff;
+  border: 2rpx solid #3A2E20;
   border-radius: 10rpx;
   padding: 4rpx 16rpx;
 }
 
 .hero-img {
-  width: 260rpx;
-  height: 260rpx;
+  width: 340rpx;
+  height: 340rpx;
   display: block;
-  margin: 30rpx auto 10rpx;
+  margin: 10rpx auto 16rpx;
 }
 
-.hero-name-row {
+.hero-swtich {
+  display: flex;
+  background: #3A2E20;
+  border-radius: 14rpx;
+  overflow: hidden;
+  margin: 0 60rpx;
+}
+
+.sw-item {
+  flex: 1;
+  text-align: center;
+  padding: 12rpx 0;
+  color: #E8DCC8;
+  font-size: 26rpx;
+  font-weight: bold;
+}
+
+.sw-on {
+  background: #F5C842;
+  color: #3A2E20;
+}
+
+/* ═══ 名称卡（深色横条） ═══ */
+.namecard {
+  background: #2C3A4D;
+  margin: 20rpx 24rpx;
+  border-radius: 18rpx;
+  padding: 24rpx 28rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.hero-name {
-  font-size: 44rpx;
+.nc-name {
+  font-size: 40rpx;
   font-weight: bold;
   color: #fff;
 }
 
-.hero-types {
-  display: flex;
+.nc-trait {
+  font-size: 24rpx;
+  color: #F5C842;
+  margin-left: 12rpx;
 }
 
-.type-pill {
+.nc-badges {
+  margin-top: 10rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.nc-badge {
+  font-size: 22rpx;
+  color: #C6D2E0;
+  background: #223042;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 8rpx;
+  padding: 4rpx 14rpx;
+  margin-right: 10rpx;
+}
+
+.nc-chips {
+  margin-top: 10rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.nc-chip {
+  font-size: 22rpx;
+  color: #9AA7B8;
+  margin-right: 20rpx;
+}
+
+.nc-types {
+  display: flex;
+  flex-direction: column;
+}
+
+.nc-type {
   font-size: 24rpx;
   font-weight: bold;
   color: #fff;
   border-radius: 999rpx;
-  padding: 8rpx 24rpx;
-  margin-left: 12rpx;
+  padding: 6rpx 22rpx;
+  margin: 4rpx 0;
+  text-align: center;
+  min-width: 80rpx;
 }
 
-.hero-meta {
-  margin-top: 16rpx;
-  font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.85);
+/* ═══ 通用卡片头 ═══ */
+.sec-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
 }
 
-/* —— 通用 —— */
 .sec {
-  font-size: 28rpx;
+  font-size: 30rpx;
   font-weight: bold;
-  color: #C6D2E0;
-  margin-bottom: 18rpx;
+  color: #3A2E20;
 }
 
-/* —— 种族值进度条 —— */
+.sec-total {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #3A2E20;
+  background: #fff;
+  border: 2rpx solid #3A2E20;
+  border-radius: 12rpx;
+  padding: 2rpx 18rpx;
+}
+
+/* ═══ 种族值 ═══ */
 .stat-row {
   display: flex;
   align-items: center;
-  margin-bottom: 16rpx;
+  margin-bottom: 14rpx;
 }
 
 .stat-row:last-child { margin-bottom: 0; }
 
 .stat-label {
   width: 90rpx;
-  font-size: 24rpx;
-  color: #9AA7B8;
+  font-size: 25rpx;
+  font-weight: bold;
+  color: #6B5D45;
   flex-shrink: 0;
 }
 
 .stat-bar-bg {
   flex: 1;
-  height: 20rpx;
-  background: #223042;
+  height: 24rpx;
+  background: #EDE3C8;
+  border: 2rpx solid #3A2E20;
   border-radius: 999rpx;
   overflow: hidden;
 }
 
 .stat-bar {
   height: 100%;
-  background: linear-gradient(90deg, #F0A24A, #E0762A);
   border-radius: 999rpx;
 }
 
@@ -119,24 +208,158 @@
   text-align: right;
   font-size: 28rpx;
   font-weight: bold;
-  color: #F5F8FC;
+  color: #3A2E20;
   flex-shrink: 0;
 }
 
-/* —— 特长 —— */
-.trait-row {
+/* ═══ 精灵资质 ═══ */
+.qual-row {
   display: flex;
-  justify-content: space-between;
-  padding: 12rpx 0;
-  border-bottom: 1rpx solid #3A4A5F;
+  margin-bottom: 18rpx;
 }
 
-.trait-row:last-child { border-bottom: none; }
+.qual-item {
+  flex: 1;
+  background: #fff;
+  border: 2rpx solid #3A2E20;
+  border-radius: 14rpx;
+  padding: 14rpx 20rpx;
+  margin-right: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-.trait-name { font-size: 26rpx; color: #EAF0F7; }
-.trait-p { font-size: 26rpx; color: #8FA0B5; }
+.qual-item:last-child { margin-right: 0; }
 
-/* —— 克制 —— */
+.qual-k {
+  font-size: 24rpx;
+  color: #6B5D45;
+  font-weight: bold;
+}
+
+.qual-v {
+  font-size: 28rpx;
+  color: #3A2E20;
+  font-weight: bold;
+}
+
+.trait-block {
+  background: rgba(245, 200, 66, 0.35);
+  border: 2rpx solid #3A2E20;
+  border-radius: 14rpx;
+  padding: 16rpx 20rpx;
+  margin-bottom: 14rpx;
+}
+
+.trait-name {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #B0413E;
+  margin-bottom: 6rpx;
+}
+
+.trait-desc {
+  font-size: 25rpx;
+  color: #3A2E20;
+  line-height: 1.5;
+}
+
+.obtain-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border: 2rpx solid #3A2E20;
+  border-radius: 14rpx;
+  padding: 14rpx 20rpx;
+}
+
+.obtain-k {
+  font-size: 24rpx;
+  color: #6B5D45;
+  font-weight: bold;
+}
+
+.obtain-v {
+  font-size: 25rpx;
+  color: #3A2E20;
+  font-weight: bold;
+}
+
+/* ═══ 进化链 ═══ */
+.fam-scroll { white-space: nowrap; }
+
+.fam-row {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 0;
+}
+
+.fam-item {
+  width: 150rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border: 2rpx solid #3A2E20;
+  border-radius: 16rpx;
+  padding: 12rpx 8rpx;
+  flex-shrink: 0;
+}
+
+.fam-cur {
+  background: #F5C842;
+}
+
+.fam-img {
+  width: 100rpx;
+  height: 100rpx;
+}
+
+.fam-name {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #3A2E20;
+  margin-top: 6rpx;
+  max-width: 130rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fam-arrow {
+  font-size: 36rpx;
+  color: #B0413E;
+  font-weight: bold;
+  margin: 0 10rpx;
+}
+
+/* ═══ 克制 ═══ */
+.tab-row {
+  display: flex;
+  background: #EDE3C8;
+  border: 2rpx solid #3A2E20;
+  border-radius: 12rpx;
+  padding: 4rpx;
+  margin-bottom: 18rpx;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 12rpx 0;
+  border-radius: 8rpx;
+  color: #6B5D45;
+  font-size: 26rpx;
+  font-weight: bold;
+}
+
+.tab-on {
+  background: #F5C842;
+  color: #3A2E20;
+}
+
 .g-block { margin-bottom: 18rpx; }
 .g-block:last-child { margin-bottom: 0; }
 
@@ -146,176 +369,119 @@
   margin-bottom: 10rpx;
 }
 
-.t-x2 { color: #F0A24A; }
-.t-x05 { color: #4CD494; }
+.t-strong { color: #B0413E; }
+.t-weak { color: #4A7C59; }
+.t-resist { color: #2C6E8A; }
 
 .chips { display: flex; flex-wrap: wrap; }
 
 .chip {
   font-size: 24rpx;
-  color: #F5F8FC;
-  background: #223042;
-  border: 1rpx solid #3A4A5F;
-  border-radius: 10rpx;
-  padding: 6rpx 18rpx;
+  font-weight: bold;
+  color: #fff;
+  border: 2rpx solid #3A2E20;
+  border-radius: 999rpx;
+  padding: 6rpx 24rpx;
   margin: 0 12rpx 12rpx 0;
 }
 
-/* —— 技能 —— */
-.skill-tabs {
-  display: flex;
-  background: #223042;
-  border-radius: 12rpx;
-  padding: 6rpx;
-  margin-bottom: 16rpx;
-}
-
-.stab {
-  flex: 1;
-  text-align: center;
-  padding: 14rpx 0;
-  border-radius: 10rpx;
-  color: #9AA7B8;
-  font-size: 26rpx;
-}
-
-.stab-on {
-  background: #F0A24A;
-  color: #fff;
-  font-weight: bold;
-}
-
+/* ═══ 技能 ═══ */
 .skill-filters {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 16rpx;
+  margin-bottom: 14rpx;
 }
 
 .sfilter {
   font-size: 22rpx;
-  color: #9AA7B8;
-  border: 1rpx solid #3A4A5F;
+  color: #6B5D45;
+  background: #fff;
+  border: 2rpx solid #3A2E20;
   border-radius: 999rpx;
   padding: 6rpx 20rpx;
   margin: 0 10rpx 10rpx 0;
 }
 
 .sfilter-on {
-  color: #FFB86C;
-  border-color: #F09A3E;
-  background: rgba(240, 154, 62, 0.12);
+  background: #F5C842;
+  color: #3A2E20;
+  font-weight: bold;
 }
 
 .skill {
-  padding: 18rpx 0;
-  border-bottom: 1rpx solid #3A4A5F;
+  padding: 16rpx 0;
+  border-bottom: 2rpx dashed #D4C7A8;
 }
 
 .skill:last-child { border-bottom: none; }
 
-.skill-head {
+.sk-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.skill-name {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #F5F8FC;
-}
-
-.skill-type {
-  font-size: 22rpx;
-  border-radius: 8rpx;
-  padding: 4rpx 14rpx;
-}
-
-.skill-meta {
-  display: flex;
   flex-wrap: wrap;
-  margin-top: 10rpx;
 }
 
-.meta-chip {
-  font-size: 20rpx;
-  color: #9AA7B8;
-  background: #223042;
+.sk-ico {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 10rpx;
+  background: #EDE3C8;
+  margin-right: 12rpx;
+}
+
+.sk-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #3A2E20;
+  margin-right: 14rpx;
+}
+
+.sk-cost {
+  font-size: 22rpx;
+  color: #4A7C59;
+  background: #fff;
+  border: 1rpx solid #3A2E20;
   border-radius: 8rpx;
-  padding: 4rpx 12rpx;
+  padding: 2rpx 10rpx;
   margin-right: 10rpx;
 }
 
-.skill-desc {
+.sk-power {
+  font-size: 22rpx;
+  color: #B0413E;
+  background: #fff;
+  border: 1rpx solid #3A2E20;
+  border-radius: 8rpx;
+  padding: 2rpx 10rpx;
+  margin-right: 10rpx;
+}
+
+.sk-cat {
+  font-size: 22rpx;
+  color: #6B5D45;
+  background: #EDE3C8;
+  border-radius: 8rpx;
+  padding: 2rpx 10rpx;
+}
+
+.sk-desc {
   font-size: 24rpx;
-  color: #9AA7B8;
-  margin-top: 10rpx;
+  color: #6B5D45;
+  margin-top: 8rpx;
+  margin-left: 60rpx;
   line-height: 1.5;
 }
 
 .empty {
   text-align: center;
-  color: #6E7F94;
+  color: #9C8E72;
   font-size: 26rpx;
   padding: 24rpx 0;
 }
 
-.load-note {
-  text-align: center;
-  color: #6E7F94;
-  font-size: 22rpx;
-  padding: 12rpx 0;
-}
-
+/* ═══ 简介 ═══ */
 .desc {
   font-size: 26rpx;
-  color: #C6D2E0;
+  color: #3A2E20;
   line-height: 1.7;
-}
-
-/* —— 进化链 —— */
-.family-scroll { white-space: nowrap; }
-
-.family-row {
-  display: inline-flex;
-  padding-bottom: 8rpx;
-}
-
-.f-item {
-  width: 150rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 14rpx 8rpx;
-  border-radius: 14rpx;
-  border: 1rpx solid transparent;
-  margin-right: 12rpx;
-  flex-shrink: 0;
-}
-
-.f-current {
-  background: rgba(240, 162, 74, 0.14);
-  border-color: #F0A24A;
-}
-
-.f-img {
-  width: 100rpx;
-  height: 100rpx;
-}
-
-.f-name {
-  font-size: 24rpx;
-  color: #F5F8FC;
-  font-weight: bold;
-  margin-top: 6rpx;
-  max-width: 140rpx;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.f-stage {
-  font-size: 20rpx;
-  color: #8FA0B5;
-  margin-top: 4rpx;
 }

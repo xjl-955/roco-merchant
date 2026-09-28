@@ -1,23 +1,28 @@
 var tools = require('../../utils/tools.js');
-var wikidex = require('../../utils/wikidex.js');
 
 Page({
   data: {
     loading: true,
     error: false,
     keyword: '',
-    // WIKI 分类体系
-    typeIcons: [],        // 属性图标（前5）
+    // 属性图标行（参照站：普通/草/火/水/光 + 更多）
+    typeIcons: [],
     moreTypes: [],
     showMoreTypes: false,
-    selType: '',          // 选中属性（'' 全部）
-    stages: ['阶段', '一阶', '二阶', '三阶', '首领'],
+    selType: '',
+    // 第一行筛选：形态 / 蛋组 / 数值排序
+    stages: ['形态', '一阶', '二阶', '三阶', '首领'],
     stageIndex: 0,
+    eggGroups: ['蛋组', '百变怪', '水1', '水2', '水3', '虫', '陆上', '飞行', '植物', '矿物', '妖精', '未知', '未发现'],
+    eggIndex: 0,
+    sorts: ['数值排序', '种族值降序', '种族值升序', '编号升序', '编号倒序'],
+    sortIndex: 0,
+    // 第二行筛选：异色 / 性别 / 赛季
+    shinyOnly: false,
+    genders: ['性别', '有性别', '无性别'],
+    genderIndex: 0,
     seasons: ['赛季', 'S1', 'S2', 'S3', 'S4'],
     seasonIndex: 0,
-    sorts: ['数值排序', '种族值降序', '编号升序'],
-    sortIndex: 0,
-    shinyOnly: false,
     // 列表
     list: [],
     total: 0,
@@ -31,25 +36,33 @@ Page({
     var that = this;
     tools.loadDex(function (payload, fromCache) {
       if (!payload) {
-        that.setData({ loading: false, error: true });
+        if (!fromCache) that.setData({ loading: false, error: true });
         return;
       }
       that.all = payload.spirits;
       that.typesMeta = payload.types || {};
 
       var typeNames = Object.keys(that.typesMeta);
-      var typeIcons = typeNames.slice(0, 5).map(function (t) {
+      var icons = typeNames.slice(0, 5).map(function (t) {
         return { name: t, color: that._typeColor(t) };
       });
-      var moreTypes = typeNames.slice(5).map(function (t) {
+      var more = typeNames.slice(5).map(function (t) {
         return { name: t, color: that._typeColor(t) };
       });
 
       that.setData({
         loading: false,
+        error: false,
         count: payload.count,
-        typeIcons: typeIcons,
-        moreTypes: moreTypes
+        typeIcons: icons,
+        moreTypes: more
+      });
+      // 预计算每只精灵的属性色点（WXML 内不能用函数）
+      that.all = payload.spirits.map(function (s) {
+        var colors = {};
+        (s.types || []).forEach(function (t) { colors[t] = that._typeColor(t); });
+        s._colors = colors;
+        return s;
       });
       that.applyFilter();
     });
@@ -57,11 +70,11 @@ Page({
 
   _typeColor: function (t) {
     var m = {
-      '普通': '#9FA7B3', '草': '#5CB85C', '火': '#E8634C', '水': '#4A90D9',
-      '光': '#F0C94A', '地': '#C98A3D', '冰': '#6FC7E8', '龙': '#7A5AE0',
-      '电': '#F0A24A', '毒': '#A05AC8', '虫': '#9BB534', '武': '#D9534F',
-      '翼': '#8FA8D8', '萌': '#F08CB8', '幽': '#6A5A9A', '恶': '#5A5A6A',
-      '机械': '#8A9AAA', '幻': '#C87AD9'
+      '普通': '#A8A878', '草': '#78C850', '火': '#EE8130', '水': '#6390F0',
+      '光': '#F7D02C', '地': '#E2BF65', '冰': '#96D9D6', '龙': '#6F35FC',
+      '电': '#F7D02C', '毒': '#A33EA1', '虫': '#A6B91A', '武': '#C22E28',
+      '翼': '#A98FF3', '萌': '#F85888', '幽': '#735797', '恶': '#705746',
+      '机械': '#B7B7CE', '幻': '#D685AD'
     };
     return m[t] || '#9AA7B8';
   },
@@ -86,6 +99,16 @@ Page({
     this.applyFilter();
   },
 
+  onEggChange: function (e) {
+    this.setData({ eggIndex: +e.detail.value });
+    this.applyFilter();
+  },
+
+  onGenderChange: function (e) {
+    this.setData({ genderIndex: +e.detail.value });
+    this.applyFilter();
+  },
+
   onSeasonChange: function (e) {
     this.setData({ seasonIndex: +e.detail.value });
     this.applyFilter();
@@ -103,20 +126,22 @@ Page({
 
   applyFilter: function () {
     var that = this;
+    if (!this.all || !this.all.length) return;
     var kw = (this.data.keyword || '').trim().toLowerCase();
     var stage = this.data.stages[this.data.stageIndex];
+    var egg = this.data.eggGroups[this.data.eggIndex];
     var season = this.data.seasons[this.data.seasonIndex];
+    var gender = this.data.genders[this.data.genderIndex];
     var selType = this.data.selType;
 
     var filtered = this.all.filter(function (s) {
-      if (kw && s.name.toLowerCase().indexOf(kw) < 0 && (s.no || '').toLowerCase().indexOf(kw) < 0) return false;
+      if (kw && s.name.toLowerCase().indexOf(kw) < 0 && String(s.no || '').toLowerCase().indexOf(kw) < 0) return false;
       if (that.data.stageIndex > 0) {
-        // 阶段筛选：首领单独一类；一/二/三阶按 stage 数字
-        if (stage === '首领' && s.stageText !== '首领') return false;
-        if (stage === '一阶' && s.stageText !== '一阶') return false;
-        if (stage === '二阶' && s.stageText !== '二阶') return false;
-        if (stage === '三阶' && s.stageText !== '三阶') return false;
+        var st = s.stageText || '';
+        if (stage === '首领' && st.indexOf('首领') < 0) return false;
+        if (stage !== '首领' && st !== stage) return false;
       }
+      if (that.data.eggIndex > 0 && (s.egg || '') !== egg) return false;
       if (that.data.seasonIndex > 0 && (s.season || 'none') !== season) return false;
       if (selType && (s.types || []).indexOf(selType) < 0) return false;
       if (that.data.shinyOnly && !s.shiny) return false;
@@ -126,7 +151,9 @@ Page({
     var sort = this.data.sortIndex;
     filtered.sort(function (a, b) {
       if (sort === 1) return (b.total || 0) - (a.total || 0);
-      if (sort === 2) return (a.no || '') < (b.no || '') ? -1 : 1;
+      if (sort === 2) return (a.total || 0) - (b.total || 0);
+      if (sort === 3) return String(a.no).localeCompare(String(b.no)) || (a.id - b.id);
+      if (sort === 4) return String(b.no).localeCompare(String(a.no)) || (b.id - a.id);
       return 0;
     });
 

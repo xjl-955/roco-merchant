@@ -109,8 +109,8 @@ function applyLiveToday(payload) {
   if (!TIME_RE.test(payload.startedAtBeijing.slice(0, 16))) return false;
 
   // 完整性校验：快爆源在轮次切换瞬间可能返回残缺快照
-  // 特征：商品数异常少（正常每轮至少 3 种：常驻+轮换）
-  if (payload.items.length < 3) return false;
+  // 特征：商品数为 0 或 1（正常每轮至少 2 种：常驻+轮换）
+  if (payload.items.length < 2) return false;
 
   var items = [];
   for (var i = 0; i < payload.items.length; i++) {
@@ -209,6 +209,11 @@ function isOpenNow(now) {
   return minutes >= OPEN_MINUTE && minutes < CLOSE_MINUTE;
 }
 
+/** 把 now 转成 'YYYY-MM-DD'（北京时间以设备时区为准） */
+function todayKeyOf(now) {
+  return now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+}
+
 /** 距最近的营业时刻还有多久（营业中返回 null） */
 function nextOpenDelta(now) {
   var minutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
@@ -257,6 +262,38 @@ function getStatus(now) {
     nowText: now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) +
       ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes())
   };
+
+  // ── 档期表兜底：档期表未收录但实时源报告营业中 → 用实时数据补一档 ──
+  // （WIKI 档期表可能没记录日常营业档期，快爆源数据更真实）
+  if (!current && liveToday && liveToday.date === todayKeyOf(now) &&
+      liveToday.status === 'open' && liveToday.items && liveToday.items.length > 0) {
+    var liveStart = liveToday.date + ' 04:00';
+    var liveEnd = liveToday.date + ' 23:59';
+    current = {
+      start: liveStart,
+      end: liveEnd,
+      goods: liveToday.items.map(function (it) {
+        // 按轮次窗口生成时段
+        var rounds = it.rounds && it.rounds.length ? it.rounds : [1, 2, 3, 4];
+        var mn = Math.min.apply(null, rounds), mx = Math.max.apply(null, rounds);
+        var ROUND_WINDOWS = { 1: '08:00-11:59', 2: '12:00-15:59', 3: '16:00-19:59', 4: '20:00-23:59' };
+        return {
+          name: it.name,
+          daily: null,
+          window: ROUND_WINDOWS[mn].split('-')[0] + '-' + ROUND_WINDOWS[mx].split('-')[1],
+          price: it.price,
+          limit: it.limit,
+          image: it.image,
+          category: it.category,
+          rounds: it.rounds
+        };
+      })
+    };
+    // 标记为实时补录档期
+    current._liveInferred = true;
+    // 关键：result 在兜底前已创建（current 字段为 null），必须同步引用
+    result.current = current;
+  }
 
   if (current) {
     result.phase = open ? 'open' : 'resting';

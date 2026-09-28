@@ -168,12 +168,12 @@ async function main() {
     payload = existing;
   }
 
-  // 完整性防回退：快爆源在轮次切换瞬间可能返回残缺快照（商品数异常少）
-  // 若旧数据是今天的且比新抓取更完整，保留旧数据
+  // 完整性防回退：快爆源在轮次切换瞬间可能返回残缺快照（商品数为 0~1）
+  // 正常每天至少 2 种商品（常驻+轮换）；若旧数据是今天的且更完整，保留旧数据
   var newCount = items.length;
   var oldCount = existing && existing.items ? existing.items.length : 0;
-  if (newCount < 3 && existing && existing.date === payload.date && oldCount >= 3) {
-    console.log('      ⚠ 本次抓取商品数异常（' + newCount + ' 种，残缺快照），保留今天的既有数据');
+  if (newCount > 0 && newCount < 2 && existing && existing.date === payload.date && oldCount >= 2) {
+    console.log('      ⚠ 本次抓取商品数异常（' + newCount + ' 种，疑似残缺快照），保留今天的既有数据');
     payload = existing;
   }
 

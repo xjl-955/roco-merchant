@@ -3,7 +3,7 @@
 var DEX_URL = 'https://xjl-955.github.io/roco-data/spirits.json';
 var BREED_URL = 'https://xjl-955.github.io/roco-data/breeding.json';
 
-var DEX_KEY = 'roco_dex_cache_v3';  // v3: 含 slug/family/total 的完整版
+var DEX_KEY = 'roco_dex_cache_v4';  // v4: WIKI 625卡权威源
 var BREED_KEY = 'roco_breed_cache_v3';
 var CACHE_TTL = 24 * 60 * 60 * 1000; // 24 小时
 

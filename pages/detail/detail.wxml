@@ -5,10 +5,10 @@
 
   <block wx:if="{{!loading && spirit}}">
 
-    <!-- ═══ 黄色英雄区（参照站）═══ -->
+    <!-- ═══ 黄色英雄区（对应 WIKI 详情页顶部）═══ -->
     <view class="hero">
       <view class="hero-badges">
-        <view class="hb-no">No.{{spirit.no}}</view>
+        <view class="hb-no">{{spirit.no}}</view>
         <view class="hb-shiny">{{spirit.shiny ? '异色' : '未知'}}</view>
       </view>
       <image class="hero-img" src="{{spirit.wikiImage || spirit.image}}" mode="aspectFit"></image>
@@ -19,17 +19,18 @@
       </view>
     </view>
 
-    <!-- 名称卡（深色横条） -->
+    <!-- 名称卡（WIKI: 名字+种类+阶段+身高体重+属性） -->
     <view class="namecard">
       <view class="nc-left">
-        <view class="nc-name">{{spirit.name}} <text class="nc-trait" wx:if="{{extra.trait}}">{{extra.trait}}</text></view>
+        <view class="nc-name">{{spirit.name}} <text class="nc-trait" wx:if="{{wikiKind}}">{{wikiKind}}</text></view>
         <view class="nc-badges">
           <text class="nc-badge" wx:if="{{spirit.stageText}}">{{spirit.stageText}}</text>
           <text class="nc-badge" wx:if="{{spirit.season && spirit.season !== 'none'}}">{{spirit.season}}</text>
+          <text class="nc-badge" wx:if="{{eggGroup}}">蛋组 {{eggGroup}}</text>
         </view>
         <view class="nc-chips">
-          <text class="nc-chip" wx:if="{{extra.h}}">📏 {{extra.h}}</text>
-          <text class="nc-chip" wx:if="{{extra.w}}">⚖️ {{extra.w}}</text>
+          <text class="nc-chip" wx:if="{{detailBody.h}}">📏 {{detailBody.h}}</text>
+          <text class="nc-chip" wx:if="{{detailBody.w}}">⚖️ {{detailBody.w}}</text>
         </view>
       </view>
       <view class="nc-types">
@@ -38,11 +39,11 @@
       </view>
     </view>
 
-    <!-- ═══ 种族值 ═══ -->
+    <!-- ═══ 种族值（WIKI: 种族资质面板）═══ -->
     <view class="card" wx:if="{{statBars.length > 0}}">
       <view class="sec-row">
         <view class="sec">✨ 种族值</view>
-        <view class="sec-total" wx:if="{{total}}">{{total}}</view>
+        <view class="sec-total" wx:if="{{detailTotal}}">{{detailTotal}}</view>
       </view>
       <view class="stat-row" wx:for="{{statBars}}" wx:key="key">
         <view class="stat-label">{{item.label}}</view>
@@ -53,38 +54,16 @@
       </view>
     </view>
 
-    <!-- ═══ 精灵资质 ═══ -->
-    <view class="card">
-      <view class="sec">🎴 精灵资质</view>
-      <view class="qual-row">
-        <view class="qual-item">
-          <text class="qual-k">⭐ 星光值</text>
-          <text class="qual-v">{{extra.star || '-'}}</text>
-        </view>
-        <view class="qual-item">
-          <text class="qual-k">🪙 洛克贝</text>
-          <text class="qual-v">{{extra.review || '-'}}</text>
-        </view>
-      </view>
-      <view class="trait-block" wx:if="{{extra.trait}}">
-        <view class="trait-name">特性 · {{extra.trait}}</view>
-        <view class="trait-desc">{{extra.traitDesc}}</view>
-      </view>
-      <view class="obtain-row" wx:if="{{extra.obtain}}">
-        <text class="obtain-k">获取方式</text>
-        <text class="obtain-v">{{extra.obtain}}</text>
-      </view>
-      <view class="obtain-row" wx:if="{{eggGroup}}">
-        <text class="obtain-k">蛋组</text>
-        <text class="obtain-v">{{eggGroup}}</text>
-      </view>
-      <view class="obtain-row" wx:if="{{wikiKind}}">
-        <text class="obtain-k">种类</text>
-        <text class="obtain-v">{{wikiKind}}</text>
+    <!-- ═══ 特长概率（WIKI: roco-talent 面板）═══ -->
+    <view class="card" wx:if="{{talents.length > 0}}">
+      <view class="sec">🎴 特长概率</view>
+      <view class="trait-row" wx:for="{{talents}}" wx:key="name">
+        <text class="trait-name">{{item.name}}</text>
+        <text class="trait-p">{{item.p}}</text>
       </view>
     </view>
 
-    <!-- ═══ 性格推荐（WIKI 数据）═══ -->
+    <!-- ═══ 性格推荐（WIKI: pReference 面板）═══ -->
     <view class="card" wx:if="{{natures.length > 0}}">
       <view class="sec">🧠 性格推荐</view>
       <view class="nature-row" wx:for="{{natures}}" wx:key="name">
@@ -96,26 +75,7 @@
       </view>
     </view>
 
-    <!-- ═══ 进化链 ═══ -->
-    <view class="card" wx:if="{{family.length > 1}}">
-      <view class="sec-row">
-        <view class="sec">🔗 进化链</view>
-      </view>
-      <scroll-view scroll-x class="fam-scroll">
-        <view class="fam-row">
-          <block wx:for="{{family}}" wx:key="name">
-            <view class="fam-item {{item.name === spirit.name ? 'fam-cur' : ''}}"
-                  data-name="{{item.name}}" bindtap="onFamilyTap">
-              <image class="fam-img" src="{{item.image}}" mode="aspectFit" lazy-load="true"></image>
-              <view class="fam-name">{{item.name}}</view>
-            </view>
-            <view class="fam-arrow" wx:if="{{index < family.length - 1}}">→</view>
-          </block>
-        </view>
-      </scroll-view>
-    </view>
-
-    <!-- ═══ 属性克制（攻/防双 tab）═══ -->
+    <!-- ═══ 属性克制（进攻/防守双tab）═══ -->
     <view class="card" wx:if="{{atkGroups}}">
       <view class="sec">⚔️ 属性克制</view>
       <view class="tab-row">
@@ -158,13 +118,13 @@
       </block>
     </view>
 
-    <!-- ═══ 技能（三标签 + 属性筛选 + 卡片）═══ -->
+    <!-- ═══ 技能（精灵技能/血脉/技能石 三tab + 属性筛选）═══ -->
     <view class="card">
       <view class="sec">📖 技能</view>
       <view class="tab-row">
         <view class="tab {{skillSrc === index ? 'tab-on' : ''}}"
               wx:for="{{skillSrcList}}" wx:key="key" wx:for-index="index"
-              data-idx="{{index}}" bindtap="onSkillSrcTap">{{item.label}}[{{index === 0 ? skillTotal : ''}}]</view>
+              data-idx="{{index}}" bindtap="onSkillSrcTap">{{item.label}}</view>
       </view>
 
       <view class="skill-filters" wx:if="{{skillTypes.length > 1}}">
@@ -175,7 +135,6 @@
 
       <view class="skill" wx:for="{{skills}}" wx:key="name">
         <view class="sk-head">
-          <image class="sk-ico" src="" mode="aspectFit"></image>
           <text class="sk-name">{{item.name}}</text>
           <text class="sk-cost" wx:if="{{item.cost}}">✦ 耗能 {{item.cost}}</text>
           <text class="sk-power" wx:if="{{item.power && item.power !== '0'}}">威力 {{item.power}}</text>
@@ -186,10 +145,29 @@
       <view class="empty" wx:if="{{skills.length === 0}}">技能数据加载中，或该精灵暂未收录</view>
     </view>
 
-    <!-- ═══ 简介（WIKI 优先，参照站兜底）═══ -->
-    <view class="card" wx:if="{{wikiDesc || extra.desc}}">
+    <!-- ═══ 简介（WIKI: roco-desc）═══ -->
+    <view class="card" wx:if="{{wikiDesc}}">
       <view class="sec">📝 简介</view>
-      <view class="desc">{{wikiDesc || extra.desc}}</view>
+      <view class="desc">{{wikiDesc}}</view>
+    </view>
+
+    <!-- ═══ 进化分支（WIKI: pEvo 面板）═══ -->
+    <view class="card" wx:if="{{family.length > 1}}">
+      <view class="sec-row">
+        <view class="sec">🔗 进化分支</view>
+      </view>
+      <scroll-view scroll-x class="fam-scroll">
+        <view class="fam-row">
+          <block wx:for="{{family}}" wx:key="name">
+            <view class="fam-item {{item.name === spirit.name ? 'fam-cur' : ''}}"
+                  data-name="{{item.name}}" bindtap="onFamilyTap">
+              <image class="fam-img" src="{{item.image}}" mode="aspectFit" lazy-load="true"></image>
+              <view class="fam-name">{{item.name}}</view>
+            </view>
+            <view class="fam-arrow" wx:if="{{index < family.length - 1}}">→</view>
+          </block>
+        </view>
+      </scroll-view>
     </view>
 
   </block>

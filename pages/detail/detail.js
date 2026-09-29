@@ -39,11 +39,14 @@ Page({
     total: 0,
     // 补充信息（参照站抓取）
     extra: null,
-    // WIKI 补充（简介/种类/性格推荐/蛋组）
+    // WIKI 详情（原版搬运）
     wikiDesc: '',
     wikiKind: '',
     natures: [],
+    talents: [],
     eggGroup: '',
+    detailBody: {},
+    detailTotal: 0,
     // 克制
     atkGroups: null,
     defGroups: null,
@@ -75,11 +78,14 @@ Page({
       that.spirit = spirit;
       wx.setNavigationBarTitle({ title: spirit.name });
 
-      // 进化家族（同前缀家族）
+      // 进化家族（同编号家族：NO.001 的所有形态）
       var family = [];
-      if (spirit.family) {
+      var noKey = String(spirit.no || '').replace(/^NO\.?/, '');
+      if (noKey) {
         payload.spirits.forEach(function (s) {
-          if (s.family === spirit.family) family.push({ name: s.name, image: s.wikiImage || s.image, slug: s.slug });
+          if (String(s.no || '').replace(/^NO\.?/, '') === noKey) {
+            family.push({ name: s.name, image: s.wikiImage || s.image });
+          }
         });
       }
       that.setData({
@@ -99,22 +105,25 @@ Page({
         });
       }
 
-      // WIKI 技能 + 简介/种类/性格推荐
+      // WIKI 详情（技能/简介/种类/性格推荐/特长/身高体重）
       wikidex.loadWikiDetails(function (details) {
         if (!details || !details[name]) return;
-        that.detail = details[name];
-        that._applySkills();
-        // WIKI 补充板块
         var d = details[name];
+        that.detail = d;
+        that._applySkills();
         that.setData({
           wikiDesc: d.wikiDesc || '',
           wikiKind: d.kind || '',
           natures: d.natures || [],
-          eggGroup: d.eggGroup || ''
+          eggGroup: d.eggGroup || '',
+          talents: d.talents || [],
+          detailBody: d.body || {},
+          detailTotal: d.total || 0,
+          statBars: that._statBars(spirit)
         });
       });
 
-      // 参照站补充（特性/获取方式）
+      // 参照站补充（特性名兜底）
       that._loadExtra(name);
     });
   },

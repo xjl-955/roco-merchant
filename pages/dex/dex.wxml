@@ -27,29 +27,16 @@
           data-type="{{item.name}}" bindtap="onTypeIconTap">{{item.name}}</view>
   </view>
 
-  <!-- 第一行筛选：形态 / 蛋组 / 数值排序 -->
+  <!-- 第一行筛选：形态 / 异色 -->
   <view class="filter-row">
     <picker mode="selector" range="{{stages}}" value="{{stageIndex}}" bindchange="onStageChange">
       <view class="filter-btn">{{stages[stageIndex]}} ▾</view>
     </picker>
-    <picker mode="selector" range="{{eggGroups}}" value="{{eggIndex}}" bindchange="onEggChange">
-      <view class="filter-btn">{{eggGroups[eggIndex]}} ▾</view>
-    </picker>
-    <picker mode="selector" range="{{sorts}}" value="{{sortIndex}}" bindchange="onSortChange">
-      <view class="filter-btn">{{sorts[sortIndex]}} ▾</view>
-    </picker>
-  </view>
-
-  <!-- 第二行筛选：异色 / 性别 / 赛季 -->
-  <view class="filter-row">
-    <picker mode="selector" range="{{['异色', '只看异色']}}" value="{{shinyOnly ? 1 : 0}}" bindchange="onShinyPick">
-      <view class="filter-btn {{shinyOnly ? 'filter-on' : ''}}">{{shinyOnly ? '只看异色' : '异色'}} ▾</view>
-    </picker>
-    <picker mode="selector" range="{{genders}}" value="{{genderIndex}}" bindchange="onGenderChange">
-      <view class="filter-btn">{{genders[genderIndex]}} ▾</view>
+    <picker mode="selector" range="{{shinyOptions}}" value="{{shinyPickIndex}}" bindchange="onShinyPick">
+      <view class="filter-btn {{shinyPickIndex > 0 ? 'filter-on' : ''}}">{{shinyOptions[shinyPickIndex]}} ▾</view>
     </picker>
     <picker mode="selector" range="{{seasons}}" value="{{seasonIndex}}" bindchange="onSeasonChange">
-      <view class="filter-btn">{{seasons[seasonIndex]}} ▾</view>
+      <view class="filter-btn {{seasonIndex > 0 ? 'filter-on' : ''}}">{{seasons[seasonIndex]}} ▾</view>
     </picker>
   </view>
 
@@ -61,14 +48,14 @@
   <view class="state" wx:if="{{loading}}">⏳ 图鉴数据加载中…</view>
   <view class="state" wx:if="{{error}}">数据加载失败，下拉重试</view>
 
-  <!-- 宫格（参照站风：图卡 + 底部色块名条 + 编号徽章 + 属性点） -->
+  <!-- 宫格（图卡 + 底部色块名条 + 编号 + 属性点） -->
   <view class="grid" wx:if="{{!loading && !error}}">
     <view class="cell" wx:for="{{list}}" wx:key="id"
           data-name="{{item.name}}" bindtap="onSpiritTap">
       <view class="cell-stage" wx:if="{{item.stageText}}">{{item.stageText}}</view>
       <view class="cell-imgwrap">
         <image class="cell-img" src="{{item.wikiImage || item.image}}" mode="aspectFit" lazy-load="true"></image>
-        <view class="cell-no">NO.{{item.no}}</view>
+        <view class="cell-no">{{item.no}}</view>
       </view>
       <view class="cell-namebar">
         <text class="cell-name">{{item.name}}</text>

@@ -29,7 +29,17 @@
   },
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "folder", "value": "server" },
+      { "type": "folder", "value": "public" },
+      { "type": "folder", "value": ".github" },
+      { "type": "file", "value": "README.md" },
+      { "type": "file", "value": "DEPLOY.md" },
+      { "type": "file", "value": "REALDEVICE.md" },
+      { "type": "file", "value": "TUTORIAL.md" },
+      { "type": "file", "value": "LICENSE" },
+      { "type": "file", "value": ".gitignore" }
+    ],
     "include": []
   },
   "editorSetting": {}

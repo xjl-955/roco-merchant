@@ -1,16 +1,17 @@
 name: Update merchant data
 
-# 可靠性设计 v3：
-# GitHub cron 会大量丢点（实测 12/16/20 点整点触发几乎全部被跳过）。
-# 改为全天每 20 分钟触发一次（北京 08:00-24:00 每个时刻都可能命中），
+# 可靠性设计 v4：
+# GitHub cron 丢点严重（实测连续 5 小时全部被跳过），两层对冲：
+# 1. 高频 cron：每 5 分钟一次（丢点后下一次很快补上）
+# 2. workflow_dispatch：可被外部心跳（cron-job.org 等）主动触发
 # 脚本内置增量逻辑：内容无变化不提交，不会产生垃圾 commit。
-# 每天约 48 次运行 × 每次几分钟，远低于免费额度（2000 分钟/月）。
+# 预计月消耗 ~1700 分钟（免费额度 2000 分钟，够用）。
 
 on:
   schedule:
-    - cron: '*/20 * * * *'       # 全天每 20 分钟（UTC，= 北京 -8h）
+    - cron: '*/5 * * * *'        # 全天每 5 分钟（UTC，= 北京 -8h）
     - cron: '5 1 * * *'          # 北京 09:05 档期表专项
-  workflow_dispatch: {}          # 手动触发
+  workflow_dispatch: {}          # 手动触发 / 外部心跳触发入口
 
 permissions:
   contents: write

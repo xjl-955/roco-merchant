@@ -106,10 +106,9 @@ Page({
         });
       }
 
-      // WIKI 详情（技能/简介/种类/性格推荐/特长/身高体重/图鉴课题）
-      wikidex.loadWikiDetails(function (details) {
-        if (!details || !details[name]) return;
-        var d = details[name];
+      // WIKI 详情（按需加载单精灵文件 ~2.4KB，秒下）
+      wikidex.loadDetail(name, function (d) {
+        if (!d) return;
         that.detail = d;
         that._applySkills();
         that.setData({

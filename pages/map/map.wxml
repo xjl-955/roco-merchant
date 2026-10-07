@@ -7,7 +7,7 @@
   <block wx:if="{{!loading && !error && !mapMode}}">
     <view class="head">
       <view class="head-title">🗺️ 世界地图</view>
-      <view class="head-sub">{{total || 7148}} 个点位 · 点分类进入，可多选叠加</view>
+      <view class="head-sub">7148 个点位 · 点分类进入，可多选叠加</view>
     </view>
 
     <view class="cat-list">
@@ -28,10 +28,10 @@
 
     <view class="toolbar">
       <view class="tb-back" bindtap="onBackCats">‹ 分类</view>
-      <view class="tb-title">{{activeCatIcon}} {{activeCatLabel}}</view>
+      <view class="tb-title">{{activeCatIcon}} {{activeCat}}</view>
       <view class="zoom-btns">
         <view class="zoom-btn" bindtap="onZoomOut">−</view>
-        <view class="zoom-num">{{zoom}}x</view>
+        <view class="zoom-num">{{zoomText}}</view>
         <view class="zoom-btn" bindtap="onZoomIn">＋</view>
       </view>
     </view>
@@ -54,9 +54,10 @@
       </view>
     </scroll-view>
 
+    <!-- 互动地图：movable 只拖动；zoom 用 CSS transform 数据驱动 -->
     <movable-area class="map-area">
       <movable-view class="map-mover" direction="all" inertia out-of-bounds="{{false}}">
-        <view class="map-canvas" style="{{canvasStyle}}">
+        <view class="map-canvas" style="transform: scale({{zoom}});">
           <view class="tile-grid">
             <image class="tile" wx:for="{{tiles}}" wx:key="key" src="{{item.url}}" mode="scaleToFill"></image>
           </view>

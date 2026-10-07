@@ -55,7 +55,7 @@
 }
 
 .zoom-num {
-  min-width: 70rpx;
+  min-width: 80rpx;
   text-align: center;
   font-size: 24rpx;
   color: #C6D2E0;
@@ -123,24 +123,30 @@
   position: relative;
 }
 
+/* movable-view 尺寸 = canvas 原始尺寸（2048rpx） */
 .map-mover {
-  /* movable-view：由组件控制位置 */
+  width: 2048rpx;
+  height: 2048rpx;
+  position: relative;
 }
 
+/* canvas：transform-origin 左上，scale 数据驱动 */
 .map-canvas {
+  width: 2048rpx;
+  height: 2048rpx;
   position: relative;
   transform-origin: 0 0;
 }
 
 .tile-grid {
   display: grid;
-  grid-template-columns: repeat(8, 12.5%);
-  grid-template-rows: repeat(8, 12.5%);
-  width: 100%;
-  height: 100%;
+  grid-template-columns: repeat(8, 256rpx);
+  grid-template-rows: repeat(8, 256rpx);
+  width: 2048rpx;
+  height: 2048rpx;
 }
 
-.tile { width: 100%; height: 100%; }
+.tile { width: 256rpx; height: 256rpx; }
 
 .marker {
   position: absolute;

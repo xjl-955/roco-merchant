@@ -55,7 +55,7 @@
 }
 
 .zoom-num {
-  min-width: 80rpx;
+  min-width: 70rpx;
   text-align: center;
   font-size: 24rpx;
   color: #C6D2E0;
@@ -116,37 +116,33 @@
 }
 
 .map-area {
-  width: 100%;
-  height: calc(100vh - 400rpx);
+  width: 710rpx;
+  margin: 0 20rpx;
+  height: calc(100vh - 420rpx);
   overflow: hidden;
   background: #dfd4c5;
   position: relative;
 }
 
-/* movable-view 尺寸 = canvas 原始尺寸（2048rpx） */
+/* movable-view 尺寸 = canvas 当前尺寸（JS 设置 canvasStyle 时同步）*/
 .map-mover {
-  width: 2048rpx;
-  height: 2048rpx;
   position: relative;
 }
 
-/* canvas：transform-origin 左上，scale 数据驱动 */
 .map-canvas {
-  width: 2048rpx;
-  height: 2048rpx;
   position: relative;
   transform-origin: 0 0;
 }
 
 .tile-grid {
   display: grid;
-  grid-template-columns: repeat(8, 256rpx);
-  grid-template-rows: repeat(8, 256rpx);
-  width: 2048rpx;
-  height: 2048rpx;
+  grid-template-columns: repeat(8, 12.5%);
+  grid-template-rows: repeat(8, 12.5%);
+  width: 100%;
+  height: 100%;
 }
 
-.tile { width: 256rpx; height: 256rpx; }
+.tile { width: 100%; height: 100%; }
 
 .marker {
   position: absolute;

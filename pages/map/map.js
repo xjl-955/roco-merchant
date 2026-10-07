@@ -7,6 +7,8 @@ var TILE_FLOORS = {
 };
 var CAT_ICONS = { '地点': '📍', '宝箱': '🎁', '互动': '🤝', '采矿': '⛏️', '采集': '🌿', '果树': '🌳', '收集': '🏅' };
 var TILE_RANGE = [-4, -3, -2, -1, 0, 1, 2, 3];
+// 屏幕可用宽度（rpx）：750 - 左右 padding 40
+var AREA_W = 710;
 
 Page({
   data: {
@@ -24,7 +26,10 @@ Page({
     selected: null,
     total: 0,
     zoom: 1,
-    zoomText: '1x'
+    zoomText: '1x',
+    canvasStyle: 'width: 710rpx; height: 710rpx;',
+    x: 0,
+    y: 0
   },
 
   _markers: [],
@@ -110,24 +115,37 @@ Page({
     var subList = Object.keys(subs).map(function (n) { return { name: n, count: subs[n] }; });
     subList.sort(function (a, b) { return b.count - a.count; });
     this.setData({ loading: false, subs: subList });
+    this._applyZoom();
     this._filterMarkers();
   },
 
   _filterMarkers: function () {
     var floor = this.data.activeFloor;
     var sub = this.data.activeSub;
+    var size = Math.round(710 * this.data.zoom);
     var list = this._markers.filter(function (m) {
       if (floor !== 'G' && m.layer !== floor) return false;
       if (floor === 'G' && m.layer && m.layer !== 'G') return false;
       if (sub !== '全部' && m.sub !== sub) return false;
       return true;
     });
-    this.setData({ mapMarkers: list, total: list.length });
+    // 标记位置：rpx 像素（随 zoom 的 canvas 尺寸）
+    var positioned = list.map(function (mk, i) {
+      return {
+        i: i, name: mk.name, sub: mk.sub, desc: mk.desc, layer: mk.layer,
+        icon: mk.icon,
+        left: Math.round((parseFloat(mk.xPct) / 100) * size),
+        top: Math.round((parseFloat(mk.yPct) / 100) * size)
+      };
+    });
+    this.setData({ mapMarkers: positioned, total: list.length });
   },
 
   onFloorTap: function (e) {
-    this.setData({ activeFloor: e.currentTarget.dataset.floor });
-    this._buildTiles(this.data.activeFloor);
+    var floor = e.currentTarget.dataset.floor;
+    this.setData({ activeFloor: floor, zoom: 1, zoomText: '1x' });
+    this._buildTiles(floor);
+    this._applyZoom();
     this._filterMarkers();
   },
 
@@ -149,16 +167,25 @@ Page({
   },
 
   onZoomIn: function () {
-    this.setData({ zoom: Math.min(3, +(this.data.zoom + 0.4).toFixed(1)) });
+    this.setData({ zoom: Math.min(3, +(this.data.zoom + 0.5).toFixed(1)) });
     this._applyZoom();
+    this._filterMarkers();
   },
 
   onZoomOut: function () {
-    this.setData({ zoom: Math.max(0.4, +(this.data.zoom - 0.4).toFixed(1)) });
+    this.setData({ zoom: Math.max(1, +(this.data.zoom - 0.5).toFixed(1)) });
     this._applyZoom();
+    this._filterMarkers();
   },
 
+  /** zoom 变化：canvas 尺寸 = 710×zoom（最小 710=全图适配屏宽）+ 居中定位 */
   _applyZoom: function () {
-    this.setData({ zoomText: this.data.zoom + 'x' });
+    var z = this.data.zoom;
+    var size = Math.round(710 * z);
+    this.setData({ canvasStyle: 'width: ' + size + 'rpx; height: ' + size + 'rpx;' });
+    // movable-view 居中：x/y = -(content - area)/2（负值向左上偏移）
+    var off = Math.round((710 * z - 710) / 2);
+    this.setData({ x: -off, y: -off });
+    this.setData({ zoomText: z + 'x' });
   }
 });

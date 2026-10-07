@@ -1,22 +1,62 @@
 <view class="page">
-  <!-- 小程序 web-view 要求：个人主体小程序不支持 web-view 组件，
-       因此地图页提供引导式跳转，而不是内嵌iframe -->
 
-  <view class="card hero">
-    <view class="t">🗺️ 地图资源查询</view>
-    <view class="d">全地图资源点、刷新点、采集路线一站式查看。该功能由好游快爆工具箱提供。</view>
-  </view>
+  <view class="state" wx:if="{{loading}}">⏳ 地图资源加载中…</view>
+  <view class="state" wx:if="{{error}}">加载失败，请检查网络后重试</view>
 
-  <view class="card">
-    <view class="t2">无法内嵌打开？</view>
-    <view class="d">因平台限制，地图页暂不支持在小程序内直接展示。你可以：</view>
-    <view class="step">1. 点击下方按钮复制链接</view>
-    <view class="step">2. 在手机浏览器（或微信内）打开</view>
-    <view class="btn" bindtap="onCopyLink">📋 复制地图链接</view>
-  </view>
+  <!-- ═══ 分类选择（未选分类时）═══ -->
+  <block wx:if="{{!loading && !error && !activeCat}}">
+    <view class="head">
+      <view class="head-title">🗺️ 世界地图资源</view>
+      <view class="head-sub">共 7148 个点位 · 点位宝箱 / 采集 / 采矿 / 精灵聚集地</view>
+    </view>
 
-  <view class="card">
-    <view class="t2">数据说明</view>
-    <view class="d">地图数据由好游快爆社区维护，本小程序仅做入口聚合，数据归属原作者。</view>
-  </view>
+    <view class="cat-list">
+      <view class="cat-item" wx:for="{{cats}}" wx:key="name"
+            data-name="{{item.name}}" bindtap="onCatTap">
+        <text class="cat-icon">{{item.icon}}</text>
+        <view class="cat-info">
+          <view class="cat-name">{{item.name}}</view>
+          <view class="cat-count">{{item.count}} 个点位</view>
+        </view>
+        <view class="cat-arrow">›</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ═══ 点位浏览（已选分类）═══ -->
+  <block wx:if="{{!loading && !error && activeCat}}">
+
+    <!-- 搜索 + 子分类筛选 -->
+    <view class="filter-zone">
+      <input class="search" placeholder="搜索点位名称"
+             value="{{keyword}}" bindinput="onSearchInput" />
+
+      <scroll-view scroll-x class="sub-scroll" wx:if="{{subs.length > 1}}">
+        <view class="sub-row">
+          <view class="sub-chip {{activeSub === '' ? 'sub-on' : ''}}"
+                data-sub="" bindtap="onSubTap">全部</view>
+          <view class="sub-chip {{activeSub === item.name ? 'sub-on' : ''}}"
+                wx:for="{{subs}}" wx:key="name"
+                data-sub="{{item.name}}" bindtap="onSubTap">{{item.name}} {{item.count}}</view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 点位列表 -->
+    <view class="count-line">共 {{total}} 个点位</view>
+    <view class="point-list">
+      <view class="point" wx:for="{{list}}" wx:key="index"
+            data-key="{{index}}" bindtap="onPointTap">
+        <view class="point-head">
+          <text class="point-name">{{item.name}}</text>
+          <text class="point-sub" wx:if="{{item.sub}}">{{item.sub}}</text>
+        </view>
+        <view class="point-desc" wx:if="{{expanded === index && item.desc}}">{{item.desc}}</view>
+        <view class="point-floor" wx:if="{{item.floor}}">楼层 {{item.floor}}</view>
+      </view>
+    </view>
+
+    <view class="empty" wx:if="{{list.length === 0}}">没有匹配的点位</view>
+  </block>
+
 </view>

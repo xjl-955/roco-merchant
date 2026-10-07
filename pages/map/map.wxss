@@ -2,51 +2,169 @@
   padding: 24rpx 24rpx 60rpx;
 }
 
-.card {
-  background: #2C3A4D;
-  border: 1rpx solid #3A4A5F;
-  border-radius: 20rpx;
-  padding: 30rpx;
+.head {
   margin-bottom: 20rpx;
 }
 
-.hero {
-  background: rgba(240, 154, 62, 0.10);
-  border: 1rpx solid rgba(240, 154, 62, 0.45);
-}
-
-.t {
-  font-size: 34rpx;
-  font-weight: bold;
-  color: #F0A24A;
-}
-
-.t2 {
-  font-size: 30rpx;
+.head-title {
+  font-size: 38rpx;
   font-weight: bold;
   color: #F5F8FC;
-  margin-bottom: 10rpx;
 }
 
-.d {
-  font-size: 26rpx;
-  color: #9AA7B8;
-  line-height: 1.6;
+.head-sub {
+  font-size: 24rpx;
+  color: #8FA0B5;
+  margin-top: 8rpx;
 }
 
-.step {
-  font-size: 26rpx;
-  color: #C6D2E0;
+/* 分类列表 */
+.cat-list {
   margin-top: 10rpx;
 }
 
-.btn {
-  margin-top: 24rpx;
-  text-align: center;
-  background: linear-gradient(90deg, #F2A44A, #E0762A);
-  color: #fff;
+.cat-item {
+  display: flex;
+  align-items: center;
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 18rpx;
+  padding: 26rpx 28rpx;
+  margin-bottom: 16rpx;
+}
+
+.cat-icon {
+  font-size: 44rpx;
+  margin-right: 22rpx;
+}
+
+.cat-info {
+  flex: 1;
+}
+
+.cat-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #F5F8FC;
+}
+
+.cat-count {
+  font-size: 22rpx;
+  color: #8FA0B5;
+  margin-top: 4rpx;
+}
+
+.cat-arrow {
+  font-size: 40rpx;
+  color: #6E7F94;
+}
+
+/* 筛选区 */
+.filter-zone {
+  margin-bottom: 16rpx;
+}
+
+.search {
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 999rpx;
+  padding: 16rpx 30rpx;
+  font-size: 27rpx;
+  color: #EAF0F7;
+  margin-bottom: 14rpx;
+}
+
+.sub-scroll {
+  white-space: nowrap;
+}
+
+.sub-row {
+  display: inline-flex;
+}
+
+.sub-chip {
+  font-size: 23rpx;
+  color: #C6D2E0;
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 999rpx;
+  padding: 8rpx 22rpx;
+  margin-right: 12rpx;
+}
+
+.sub-on {
+  color: #3A2E20;
+  background: #F0C94A;
+  font-weight: bold;
+  border-color: #F0C94A;
+}
+
+.count-line {
+  font-size: 23rpx;
+  color: #6E7F94;
+  margin-bottom: 12rpx;
+}
+
+/* 点位列表 */
+.point-list {
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 18rpx;
+  padding: 6rpx 24rpx;
+}
+
+.point {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #3A4A5F;
+}
+
+.point:last-child { border-bottom: none; }
+
+.point-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.point-name {
   font-size: 28rpx;
   font-weight: bold;
-  padding: 20rpx 0;
-  border-radius: 16rpx;
+  color: #F5F8FC;
+  flex: 1;
+}
+
+.point-sub {
+  font-size: 22rpx;
+  color: #F0C94A;
+  background: #223042;
+  border-radius: 8rpx;
+  padding: 2rpx 12rpx;
+  margin-left: 10rpx;
+}
+
+.point-floor {
+  font-size: 20rpx;
+  color: #6E7F94;
+  margin-top: 6rpx;
+}
+
+.point-desc {
+  font-size: 24rpx;
+  color: #9AA7B8;
+  margin-top: 8rpx;
+  line-height: 1.5;
+}
+
+.state {
+  text-align: center;
+  padding: 120rpx 40rpx;
+  color: #8FA0B5;
+  font-size: 28rpx;
+}
+
+.empty {
+  text-align: center;
+  color: #6E7F94;
+  font-size: 26rpx;
+  padding: 40rpx 0;
 }

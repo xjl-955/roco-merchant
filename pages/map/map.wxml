@@ -26,14 +26,21 @@
   <!-- ═══ 互动地图（已选分类）═══ -->
   <block wx:if="{{mapMode}}">
 
-    <!-- 顶部工具条 -->
     <view class="toolbar">
       <view class="tb-back" bindtap="onBackCats">‹ 分类</view>
       <view class="tb-title">{{activeCatIcon}} {{activeCat}}</view>
       <view class="tb-count">{{total}} 点位</view>
     </view>
 
-    <!-- 子分类筛选（横向滚动） -->
+    <view class="floor-tabs">
+      <view class="floor-tab {{activeFloor === 'G' ? 'floor-on' : ''}}"
+            data-floor="G" bindtap="onFloorTap">🗺️ 大地图</view>
+      <view class="floor-tab {{activeFloor === 'B1' ? 'floor-on' : ''}}"
+            data-floor="B1" bindtap="onFloorTap">🕳️ 地底一层</view>
+      <view class="floor-tab {{activeFloor === 'B2' ? 'floor-on' : ''}}"
+            data-floor="B2" bindtap="onFloorTap">🕳️ 地底二层</view>
+    </view>
+
     <scroll-view scroll-x class="sub-scroll">
       <view class="sub-row">
         <view class="sub-chip {{activeSub === '全部' ? 'sub-on' : ''}}" data-sub="全部" bindtap="onSubTap">全部</view>
@@ -43,24 +50,20 @@
       </view>
     </scroll-view>
 
-    <!-- 互动地图 -->
     <movable-area class="map-area" scale-area>
-      <movable-view class="map-view" direction="all" scale scale-min="1" scale-max="5"
+      <movable-view class="map-view" direction="all" scale scale-min="0.6" scale-max="4"
                     inertia out-of-bounds="{{false}}">
-        <!-- 瓦片网格 4x4 -->
         <view class="tile-grid">
-          <image class="tile" wx:for="{{tiles}}" wx:key="*this" src="{{item}}" mode="scaleToFill"></image>
+          <image class="tile" wx:for="{{tiles}}" wx:key="key" src="{{item.url}}" mode="scaleToFill"></image>
         </view>
-        <!-- 标记层 -->
-        <view class="marker" wx:for="{{filtered}}" wx:key="i"
+        <view class="marker" wx:for="{{mapMarkers}}" wx:key="i"
               style="left: {{item.xPct}}%; top: {{item.yPct}}%;"
-              data-i="{{index}}" bindtap="onMarkerTap">
+              data-i="{{item.i}}" bindtap="onMarkerTap">
           <image class="mk-icon" src="{{item.icon}}" mode="aspectFit"></image>
         </view>
       </movable-view>
     </movable-area>
 
-    <!-- 底部信息条 -->
     <view class="info-bar" wx:if="{{selected}}">
       <view class="ib-close" bindtap="onClose">✕</view>
       <view class="ib-name">{{selected.name}}</view>
@@ -68,7 +71,7 @@
       <view class="ib-desc" wx:if="{{selected.desc}}">{{selected.desc}}</view>
     </view>
     <view class="info-bar ib-tip" wx:else>
-      💡 双指缩放 · 单指拖动 · 点标记看详情 · 共 {{total}} 个点位
+      💡 双指缩放 · 单指拖动 · 点标记看详情 · 当前楼层 {{mapMarkers.length}} 个点位
     </view>
 
   </block>

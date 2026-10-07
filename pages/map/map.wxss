@@ -20,10 +20,7 @@
   margin-top: 8rpx;
 }
 
-/* 分类列表 */
-.cat-list {
-  padding: 0 24rpx;
-}
+.cat-list { padding: 0 24rpx; }
 
 .cat-item {
   display: flex;
@@ -41,32 +38,43 @@
 .cat-count { font-size: 22rpx; color: #8FA0B5; margin-top: 4rpx; }
 .cat-arrow { font-size: 40rpx; color: #6E7F94; }
 
-/* 顶部工具条 */
 .toolbar {
   display: flex;
   align-items: center;
   padding: 16rpx 20rpx;
 }
 
-.tb-back {
-  color: #F0C94A;
-  font-size: 28rpx;
-  padding: 8rpx 20rpx 8rpx 0;
+.tb-back { color: #F0C94A; font-size: 28rpx; padding: 8rpx 20rpx 8rpx 0; }
+.tb-title { flex: 1; font-size: 30rpx; font-weight: bold; color: #F5F8FC; }
+.tb-count { font-size: 22rpx; color: #8FA0B5; }
+
+/* 楼层切换 */
+.floor-tabs {
+  display: flex;
+  padding: 0 20rpx 14rpx;
 }
 
-.tb-title {
+.floor-tab {
   flex: 1;
-  font-size: 30rpx;
+  text-align: center;
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 10rpx;
+  padding: 14rpx 0;
+  margin-right: 12rpx;
+  font-size: 25rpx;
+  color: #C6D2E0;
+}
+
+.floor-tab:last-child { margin-right: 0; }
+
+.floor-on {
+  background: #F0C94A;
+  color: #3A2E20;
   font-weight: bold;
-  color: #F5F8FC;
+  border-color: #F0C94A;
 }
 
-.tb-count {
-  font-size: 22rpx;
-  color: #8FA0B5;
-}
-
-/* 子分类滚动 */
 .sub-scroll {
   white-space: nowrap;
   padding: 0 20rpx 14rpx;
@@ -91,51 +99,45 @@
   border-color: #F0C94A;
 }
 
-/* ═══ 互动地图 ═══ */
 .map-area {
   width: 100%;
-  height: calc(100vh - 260rpx);
+  height: calc(100vh - 340rpx);
   overflow: hidden;
   background: #dfd4c5;
   position: relative;
 }
 
 .map-view {
-  width: 1024rpx;   /* z=6 拼图逻辑尺寸（4x4 × 256rpx） */
-  height: 1024rpx;
+  width: 2048rpx;   /* 8x8 瓦片 × 256rpx */
+  height: 2048rpx;
   position: relative;
 }
 
 .tile-grid {
   display: grid;
-  grid-template-columns: repeat(4, 256rpx);
-  grid-template-rows: repeat(4, 256rpx);
-  width: 1024rpx;
-  height: 1024rpx;
+  grid-template-columns: repeat(8, 256rpx);
+  grid-template-rows: repeat(8, 256rpx);
+  width: 2048rpx;
+  height: 2048rpx;
 }
 
-.tile {
-  width: 256rpx;
-  height: 256rpx;
-}
+.tile { width: 256rpx; height: 256rpx; }
 
-/* 标记层 */
 .marker {
   position: absolute;
-  width: 28rpx;
-  height: 28rpx;
-  margin-left: -14rpx;
-  margin-top: -28rpx; /* 图钉式：锚点在底部中心 */
+  width: 32rpx;
+  height: 32rpx;
+  margin-left: -16rpx;
+  margin-top: -32rpx;
   z-index: 5;
 }
 
 .mk-icon {
-  width: 28rpx;
-  height: 28rpx;
+  width: 32rpx;
+  height: 32rpx;
   filter: drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.6));
 }
 
-/* 信息条 */
 .info-bar {
   position: fixed;
   left: 20rpx;

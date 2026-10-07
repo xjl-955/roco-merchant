@@ -1,13 +1,13 @@
 <view class="page">
 
-  <view class="state" wx:if="{{loading}}">⏳ 地图资源加载中…</view>
-  <view class="state" wx:if="{{error}}">加载失败，请检查网络后重试</view>
+  <view class="state" wx:if="{{loading}}">⏳ 地图加载中…</view>
+  <view class="state" wx:if="{{error}}">加载失败，请检查网络</view>
 
-  <!-- ═══ 分类选择（未选分类时）═══ -->
-  <block wx:if="{{!loading && !error && !activeCat}}">
+  <!-- ═══ 分类选择（首屏）═══ -->
+  <block wx:if="{{!loading && !error && !mapMode}}">
     <view class="head">
-      <view class="head-title">🗺️ 世界地图资源</view>
-      <view class="head-sub">共 7148 个点位 · 点位宝箱 / 采集 / 采矿 / 精灵聚集地</view>
+      <view class="head-title">🗺️ 世界地图</view>
+      <view class="head-sub">7148 个点位 · 点击分类查看地图</view>
     </view>
 
     <view class="cat-list">
@@ -23,40 +23,54 @@
     </view>
   </block>
 
-  <!-- ═══ 点位浏览（已选分类）═══ -->
-  <block wx:if="{{!loading && !error && activeCat}}">
+  <!-- ═══ 互动地图（已选分类）═══ -->
+  <block wx:if="{{mapMode}}">
 
-    <!-- 搜索 + 子分类筛选 -->
-    <view class="filter-zone">
-      <input class="search" placeholder="搜索点位名称"
-             value="{{keyword}}" bindinput="onSearchInput" />
-
-      <scroll-view scroll-x class="sub-scroll" wx:if="{{subs.length > 1}}">
-        <view class="sub-row">
-          <view class="sub-chip {{activeSub === '' ? 'sub-on' : ''}}"
-                data-sub="" bindtap="onSubTap">全部</view>
-          <view class="sub-chip {{activeSub === item.name ? 'sub-on' : ''}}"
-                wx:for="{{subs}}" wx:key="name"
-                data-sub="{{item.name}}" bindtap="onSubTap">{{item.name}} {{item.count}}</view>
-        </view>
-      </scroll-view>
+    <!-- 顶部工具条 -->
+    <view class="toolbar">
+      <view class="tb-back" bindtap="onBackCats">‹ 分类</view>
+      <view class="tb-title">{{activeCatIcon}} {{activeCat}}</view>
+      <view class="tb-count">{{total}} 点位</view>
     </view>
 
-    <!-- 点位列表 -->
-    <view class="count-line">共 {{total}} 个点位</view>
-    <view class="point-list">
-      <view class="point" wx:for="{{list}}" wx:key="index"
-            data-key="{{index}}" bindtap="onPointTap">
-        <view class="point-head">
-          <text class="point-name">{{item.name}}</text>
-          <text class="point-sub" wx:if="{{item.sub}}">{{item.sub}}</text>
-        </view>
-        <view class="point-desc" wx:if="{{expanded === index && item.desc}}">{{item.desc}}</view>
-        <view class="point-floor" wx:if="{{item.floor}}">楼层 {{item.floor}}</view>
+    <!-- 子分类筛选（横向滚动） -->
+    <scroll-view scroll-x class="sub-scroll">
+      <view class="sub-row">
+        <view class="sub-chip {{activeSub === '全部' ? 'sub-on' : ''}}" data-sub="全部" bindtap="onSubTap">全部</view>
+        <view class="sub-chip {{activeSub === item.name ? 'sub-on' : ''}}"
+              wx:for="{{subs}}" wx:key="name"
+              data-sub="{{item.name}}" bindtap="onSubTap">{{item.name}} {{item.count}}</view>
       </view>
+    </scroll-view>
+
+    <!-- 互动地图 -->
+    <movable-area class="map-area" scale-area>
+      <movable-view class="map-view" direction="all" scale scale-min="1" scale-max="5"
+                    inertia out-of-bounds="{{false}}">
+        <!-- 瓦片网格 4x4 -->
+        <view class="tile-grid">
+          <image class="tile" wx:for="{{tiles}}" wx:key="*this" src="{{item}}" mode="scaleToFill"></image>
+        </view>
+        <!-- 标记层 -->
+        <view class="marker" wx:for="{{filtered}}" wx:key="i"
+              style="left: {{item.xPct}}%; top: {{item.yPct}}%;"
+              data-i="{{index}}" bindtap="onMarkerTap">
+          <image class="mk-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        </view>
+      </movable-view>
+    </movable-area>
+
+    <!-- 底部信息条 -->
+    <view class="info-bar" wx:if="{{selected}}">
+      <view class="ib-close" bindtap="onClose">✕</view>
+      <view class="ib-name">{{selected.name}}</view>
+      <view class="ib-meta">{{selected.sub}} <text wx:if="{{selected.layer}}" class="ib-floor">· 楼层 {{selected.layer}}</text></view>
+      <view class="ib-desc" wx:if="{{selected.desc}}">{{selected.desc}}</view>
+    </view>
+    <view class="info-bar ib-tip" wx:else>
+      💡 双指缩放 · 单指拖动 · 点标记看详情 · 共 {{total}} 个点位
     </view>
 
-    <view class="empty" wx:if="{{list.length === 0}}">没有匹配的点位</view>
   </block>
 
 </view>

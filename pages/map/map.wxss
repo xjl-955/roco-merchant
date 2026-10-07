@@ -1,9 +1,11 @@
 .page {
-  padding: 24rpx 24rpx 60rpx;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .head {
-  margin-bottom: 20rpx;
+  padding: 30rpx 28rpx 20rpx;
 }
 
 .head-title {
@@ -20,7 +22,7 @@
 
 /* 分类列表 */
 .cat-list {
-  margin-top: 10rpx;
+  padding: 0 24rpx;
 }
 
 .cat-item {
@@ -33,54 +35,44 @@
   margin-bottom: 16rpx;
 }
 
-.cat-icon {
-  font-size: 44rpx;
-  margin-right: 22rpx;
+.cat-icon { font-size: 44rpx; margin-right: 22rpx; }
+.cat-info { flex: 1; }
+.cat-name { font-size: 30rpx; font-weight: bold; color: #F5F8FC; }
+.cat-count { font-size: 22rpx; color: #8FA0B5; margin-top: 4rpx; }
+.cat-arrow { font-size: 40rpx; color: #6E7F94; }
+
+/* 顶部工具条 */
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 20rpx;
 }
 
-.cat-info {
+.tb-back {
+  color: #F0C94A;
+  font-size: 28rpx;
+  padding: 8rpx 20rpx 8rpx 0;
+}
+
+.tb-title {
   flex: 1;
-}
-
-.cat-name {
   font-size: 30rpx;
   font-weight: bold;
   color: #F5F8FC;
 }
 
-.cat-count {
+.tb-count {
   font-size: 22rpx;
   color: #8FA0B5;
-  margin-top: 4rpx;
 }
 
-.cat-arrow {
-  font-size: 40rpx;
-  color: #6E7F94;
-}
-
-/* 筛选区 */
-.filter-zone {
-  margin-bottom: 16rpx;
-}
-
-.search {
-  background: #2C3A4D;
-  border: 1rpx solid #3A4A5F;
-  border-radius: 999rpx;
-  padding: 16rpx 30rpx;
-  font-size: 27rpx;
-  color: #EAF0F7;
-  margin-bottom: 14rpx;
-}
-
+/* 子分类滚动 */
 .sub-scroll {
   white-space: nowrap;
+  padding: 0 20rpx 14rpx;
 }
 
-.sub-row {
-  display: inline-flex;
-}
+.sub-row { display: inline-flex; }
 
 .sub-chip {
   font-size: 23rpx;
@@ -99,58 +91,96 @@
   border-color: #F0C94A;
 }
 
-.count-line {
-  font-size: 23rpx;
-  color: #6E7F94;
-  margin-bottom: 12rpx;
+/* ═══ 互动地图 ═══ */
+.map-area {
+  width: 100%;
+  height: calc(100vh - 260rpx);
+  overflow: hidden;
+  background: #dfd4c5;
+  position: relative;
 }
 
-/* 点位列表 */
-.point-list {
+.map-view {
+  width: 1024rpx;   /* z=6 拼图逻辑尺寸（4x4 × 256rpx） */
+  height: 1024rpx;
+  position: relative;
+}
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 256rpx);
+  grid-template-rows: repeat(4, 256rpx);
+  width: 1024rpx;
+  height: 1024rpx;
+}
+
+.tile {
+  width: 256rpx;
+  height: 256rpx;
+}
+
+/* 标记层 */
+.marker {
+  position: absolute;
+  width: 28rpx;
+  height: 28rpx;
+  margin-left: -14rpx;
+  margin-top: -28rpx; /* 图钉式：锚点在底部中心 */
+  z-index: 5;
+}
+
+.mk-icon {
+  width: 28rpx;
+  height: 28rpx;
+  filter: drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.6));
+}
+
+/* 信息条 */
+.info-bar {
+  position: fixed;
+  left: 20rpx;
+  right: 20rpx;
+  bottom: 20rpx;
   background: #2C3A4D;
   border: 1rpx solid #3A4A5F;
-  border-radius: 18rpx;
-  padding: 6rpx 24rpx;
+  border-radius: 16rpx;
+  padding: 22rpx 26rpx;
+  z-index: 50;
 }
 
-.point {
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #3A4A5F;
+.ib-tip {
+  text-align: center;
+  color: #8FA0B5;
+  font-size: 23rpx;
 }
 
-.point:last-child { border-bottom: none; }
-
-.point-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.point-name {
+.ib-close {
+  position: absolute;
+  right: 20rpx;
+  top: 14rpx;
+  color: #8FA0B5;
   font-size: 28rpx;
+  padding: 4rpx 10rpx;
+}
+
+.ib-name {
+  font-size: 30rpx;
   font-weight: bold;
   color: #F5F8FC;
-  flex: 1;
+  padding-right: 50rpx;
 }
 
-.point-sub {
+.ib-meta {
   font-size: 22rpx;
   color: #F0C94A;
-  background: #223042;
-  border-radius: 8rpx;
-  padding: 2rpx 12rpx;
-  margin-left: 10rpx;
-}
-
-.point-floor {
-  font-size: 20rpx;
-  color: #6E7F94;
   margin-top: 6rpx;
 }
 
-.point-desc {
+.ib-floor { color: #8FA0B5; }
+
+.ib-desc {
   font-size: 24rpx;
-  color: #9AA7B8;
+  color: #C6D2E0;
   margin-top: 8rpx;
   line-height: 1.5;
 }
@@ -160,11 +190,4 @@
   padding: 120rpx 40rpx;
   color: #8FA0B5;
   font-size: 28rpx;
-}
-
-.empty {
-  text-align: center;
-  color: #6E7F94;
-  font-size: 26rpx;
-  padding: 40rpx 0;
 }

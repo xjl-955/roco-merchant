@@ -30,8 +30,19 @@ Page({
         return;
       }
       that.breed = payload;
+      // 蛋组按 WIKI 官方顺序排列（与孵蛋组别查询页一致），"无法孵蛋"对齐为"未发现"
+      var WIKI_ORDER = ['未发现', '动物组', '拟人组', '巨灵组', '魔力组', '天空组', '两栖组', '植物组', '大地组', '妖精组', '昆虫组', '软体组', '机械组', '海洋组', '飞龙组'];
       var names = ['全部蛋组'];
-      for (var k in payload.groupNames) names.push(payload.groupNames[k]);
+      WIKI_ORDER.forEach(function (n) { names.push(n); });
+      // 保存 ID 映射（groupNames 的 key 是 breeding 数据里的蛋组 ID）
+      var orderIds = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'];
+      var gnMap = payload.groupNames || {};
+      that.groupIdByName = {};
+      WIKI_ORDER.forEach(function (n, i) {
+        var origName = gnMap[orderIds[i]] || n; // 原名（如"无法孵蛋"）
+        that.groupIdByName[n] = orderIds[i];
+        that.groupIdByName[origName] = orderIds[i];
+      });
       that.setData({
         loading: false,
         groupNames: names,
@@ -66,6 +77,9 @@ Page({
     if (!this.breed) return;
     var gi = this.data.groupIndex;
     var groupName = this.data.groupNames[gi];
+    // 蛋组名→原数据名映射（"未发现"=原"无法孵蛋"，其他同名）
+    var nameMap = { '未发现': '无法孵蛋', '飞龙组': '龙组' };
+    var origName = nameMap[groupName] || groupName;
     var list = [];
     if (gi === 0) {
       // 全部：按名字排序取前 N
@@ -74,7 +88,7 @@ Page({
         list.push({ name: names[i], egg: this.breed.eggs[names[i]] });
       }
     } else {
-      var target = groupName;
+      var target = origName;
       var keys = Object.keys(this.breed.eggs);
       for (var j = 0; j < keys.length; j++) {
         var e = this.breed.eggs[keys[j]];

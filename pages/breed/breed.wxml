@@ -39,13 +39,13 @@
 
   <view class="list" wx:if="{{!loading && !error}}">
     <view class="row" wx:for="{{list}}" wx:key="name">
-      <image class="row-img" src="{{item.egg.image}}" mode="aspectFit" lazy-load="true"></image>
+      <image class="row-img" src="{{item.image}}" mode="aspectFit" lazy-load="true"></image>
       <view class="row-info">
-        <view class="row-name">{{item.name}} <text class="row-no">{{item.egg.no}}</text></view>
+        <view class="row-name">{{item.name}} <text class="row-no">{{item.no}}</text></view>
         <view class="row-groups">
-          <text class="g-tag" wx:for="{{item.egg.groups}}" wx:for-item="g" wx:key="*this">{{g}}</text>
+          <text class="g-tag" wx:for="{{item.groups}}" wx:for-item="g" wx:key="*this">{{g}}</text>
         </view>
-        <view class="row-attrs" wx:if="{{item.egg.attrs}}">{{item.egg.attrs}}</view>
+        <view class="row-attrs" wx:if="{{item.attrs}}">{{item.attrs}}</view>
       </view>
     </view>
   </view>

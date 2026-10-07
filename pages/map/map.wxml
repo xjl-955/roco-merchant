@@ -29,7 +29,11 @@
     <view class="toolbar">
       <view class="tb-back" bindtap="onBackCats">‹ 分类</view>
       <view class="tb-title">{{activeCatIcon}} {{activeCat}}</view>
-      <view class="tb-count">{{total}} 点位</view>
+      <view class="zoom-btns">
+        <view class="zoom-btn" bindtap="onZoomOut">−</view>
+        <view class="zoom-num">{{zoom}}x</view>
+        <view class="zoom-btn" bindtap="onZoomIn">＋</view>
+      </view>
     </view>
 
     <view class="floor-tabs">
@@ -50,16 +54,19 @@
       </view>
     </scroll-view>
 
-    <movable-area class="map-area" scale-area>
-      <movable-view class="map-view" direction="all" scale scale-min="0.15" scale-max="3" scale-value="0.15"
-                    inertia out-of-bounds="{{false}}">
-        <view class="tile-grid">
-          <image class="tile" wx:for="{{tiles}}" wx:key="key" src="{{item.url}}" mode="scaleToFill"></image>
-        </view>
-        <view class="marker" wx:for="{{mapMarkers}}" wx:key="i"
-              style="left: {{item.xPct}}%; top: {{item.yPct}}%;"
-              data-i="{{item.i}}" bindtap="onMarkerTap">
-          <image class="mk-icon" src="{{item.icon}}" mode="aspectFit"></image>
+    <!-- 互动地图（movable 只拖动；缩放用按钮数据驱动） -->
+    <movable-area class="map-area">
+      <movable-view class="map-mover" direction="all" inertia out-of-bounds="{{false}}"
+                    x="{{xPos}}" y="{{yPos}}">
+        <view class="map-inner" style="{{mapStyle}}">
+          <view class="tile-grid">
+            <image class="tile" wx:for="{{tiles}}" wx:key="key" src="{{item.url}}" mode="scaleToFill"></image>
+          </view>
+          <view class="marker" wx:for="{{mapMarkers}}" wx:key="i"
+                style="left: {{item.left}}rpx; top: {{item.top}}rpx;"
+                data-i="{{index}}" catchtap="onMarkerTap">
+            <image class="mk-icon" src="{{item.icon}}" mode="aspectFit"></image>
+          </view>
         </view>
       </movable-view>
     </movable-area>
@@ -71,7 +78,7 @@
       <view class="ib-desc" wx:if="{{selected.desc}}">{{selected.desc}}</view>
     </view>
     <view class="info-bar ib-tip" wx:else>
-      💡 双指缩放 · 单指拖动 · 点标记看详情 · 当前楼层 {{mapMarkers.length}} 个点位
+      💡 拖动地图 · ±按钮缩放 · 点标记看详情 · {{total}} 个点位
     </view>
 
   </block>

@@ -37,7 +37,7 @@ Page({
 
   onLoad: function () {
     var that = this;
-    var KEY = 'roco_maps_index_v5';
+    var KEY = 'roco_maps_index_v6';
     try {
       var c = wx.getStorageSync(KEY);
       if (c && c.data) { that._apply(c.data); }

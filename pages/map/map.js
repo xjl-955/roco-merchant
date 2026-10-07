@@ -1,16 +1,11 @@
-// v3 数据完成！实现互动地图页：
+// 互动地图页（v4）
 // - movable-area + movable-view（拖动+双指缩放）
 // - 4x4 瓦片网格背景（z=6 的 16 张瓦片，WIKI OSS 直连）
 // - 标记按 xPct/yPct 覆盖定位（分类筛选+图标显示）
-// 
-// 重写 map.js/wxml/wxss 为互动地图版
-var fs = require('fs');
 var MAPS_INDEX = 'https://xjl-955.github.io/roco-data/maps/index.json';
 var MAPS_BASE = 'https://xjl-955.github.io/roco-data/maps/';
 var TILE_BASE = 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-G/6/';
 var CAT_ICONS = { '地点': '📍', '宝箱': '🎁', '互动': '🤝', '采矿': '⛏️', '采集': '🌿', '果树': '🌳', '收集': '🏅' };
-
-var indexData = null;
 
 Page({
   data: {
@@ -22,14 +17,16 @@ Page({
     mapMode: false,
     activeCat: '',
     activeCatIcon: '📍',
-    markers: [],     // 当前分类全部标记（含xPct/yPct）
-    filtered: [],    // 子分类筛选后
+    markers: [],
+    filtered: [],
     subs: [],
     activeSub: '全部',
     scale: 1,
     // 选中标记
     selected: null
   },
+
+  _markers: [],
 
   onLoad: function () {
     var that = this;
@@ -54,7 +51,6 @@ Page({
   },
 
   _apply: function (indexData) {
-    indexData = indexData;
     var cats = (indexData.categories || []).map(function (c) {
       return { name: c.name, icon: CAT_ICONS[c.name] || '📍', count: c.count, file: c.file };
     });
@@ -89,14 +85,12 @@ Page({
   },
 
   _use: function (cat, markers) {
-    // 生成瓦片 URL（z=6 的 4x4）
     var tiles = [];
     for (var y = 0; y < 4; y++) {
       for (var x = 0; x < 4; x++) {
         tiles.push(TILE_BASE + 'tile-' + x + '_' + y + '.png');
       }
     }
-    // 标记（限制单分类最大渲染 600 个防卡顿）
     var shown = markers.slice(0, 600).map(function (mk, i) {
       return {
         i: i,

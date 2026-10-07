@@ -312,9 +312,8 @@
 
 .trait-name {
   font-size: 26rpx;
+  color: #3A2E20;
   font-weight: bold;
-  color: #B0413E;
-  margin-bottom: 6rpx;
 }
 
 .trait-desc {

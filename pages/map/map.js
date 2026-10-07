@@ -1,14 +1,14 @@
 var MAPS_INDEX = 'https://xjl-955.github.io/roco-data/maps/index.json';
 var MAPS_BASE = 'https://xjl-955.github.io/roco-data/maps/';
 var TILE_FLOORS = {
-  'G': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-G/6/',
-  'B1': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-B1/6/',
-  'B2': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-B2/6/'
+  'G': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-G/7/',
+  'B1': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-B1/7/',
+  'B2': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-B2/7/'
 };
 var FLOOR_NAMES = { 'G': '大地图', 'B1': '地底一层', 'B2': '地底二层' };
 var CAT_ICONS = { '地点': '📍', '宝箱': '🎁', '互动': '🤝', '采矿': '⛏️', '采集': '🌿', '果树': '🌳', '收集': '🏅' };
-// 瓦片编号 -4~3（8x8 网格）
-var TILE_RANGE = [-4, -3, -2, -1, 0, 1, 2, 3];
+// z=7 瓦片编号 -8~7（16x16 网格）
+var TILE_RANGE = [-8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7];
 
 Page({
   data: {
@@ -20,8 +20,7 @@ Page({
     activeCatIcon: '📍',
     activeFloor: 'G',
     tiles: [],
-    markers: [],
-    filtered: [],
+    mapMarkers: [],
     subs: [],
     activeSub: '全部',
     selected: null,
@@ -58,7 +57,6 @@ Page({
       return { name: c.name, icon: CAT_ICONS[c.name] || '📍', count: c.count, file: c.file };
     });
     this._cats = cats;
-    this._buildTiles('G');
     this.setData({ loading: false, cats: cats });
   },
 

@@ -108,17 +108,17 @@
 }
 
 .map-view {
-  width: 2048rpx;   /* 8x8 瓦片 × 256rpx */
-  height: 2048rpx;
+  width: 4096rpx;   /* z=7: 16x16 瓦片 × 256rpx */
+  height: 4096rpx;
   position: relative;
 }
 
 .tile-grid {
   display: grid;
-  grid-template-columns: repeat(8, 256rpx);
-  grid-template-rows: repeat(8, 256rpx);
-  width: 2048rpx;
-  height: 2048rpx;
+  grid-template-columns: repeat(16, 256rpx);
+  grid-template-rows: repeat(16, 256rpx);
+  width: 4096rpx;
+  height: 4096rpx;
 }
 
 .tile { width: 256rpx; height: 256rpx; }

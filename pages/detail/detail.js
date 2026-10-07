@@ -1,4 +1,5 @@
 var tools = require('../../utils/tools.js');
+var wikidex = require('../../utils/wikidex.js');
 var typechart = require('../../utils/typechart.js');
 
 var TYPE_COLOR = {
@@ -77,6 +78,7 @@ Page({
       }
       if (!spirit) { that.setData({ loading: false, notFound: true }); return; }
       that.spirit = spirit;
+      spirit.no = String(spirit.no || '').replace(/^NO\.?/, ''); // 编号去 NO. 前缀
       wx.setNavigationBarTitle({ title: spirit.name });
 
       // 进化家族（同编号家族：NO.001 的所有形态）

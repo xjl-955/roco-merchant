@@ -89,6 +89,51 @@ async function fetchWikiDetail(title) {
   }
   if (natures.length) out.natures = natures;
 
+  // 图鉴课题（pQuest 面板：罗马数字+任务+奖励）
+  var quests = [];
+  var pq = html.indexOf('id="rocodex-pQuest"');
+  if (pq > 0) {
+    var pseg = html.slice(pq, pq + 16000);
+    var pplain = pseg.replace(/<[^>]+>/g, '|').replace(/\|+/g, '|');
+    var romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+    for (var ri = 0; ri < romans.length; ri++) {
+      var rstart = pplain.indexOf('|' + romans[ri] + '|');
+      if (rstart < 0) break;
+      var rend = ri + 1 < romans.length ? pplain.indexOf('|' + romans[ri + 1] + '|', rstart) : pplain.indexOf('|图鉴记录|', rstart);
+      if (rend < 0) rend = rstart + 400;
+      var rchunk = pplain.slice(rstart, rend);
+      var rparts = rchunk.split('|').filter(function (p) { return p && p !== romans[ri]; });
+      if (rparts.length) {
+        var text = rparts[0];
+        var rest = rparts.slice(1);
+        // 任务里"使用1次"后跟技能名——合并
+        if (/使用\d+次$/.test(text) && rest.length) {
+          text += rest.shift();
+        }
+        // 奖励数字对合并为 xN 格式
+        var rewards = [];
+        for (var rp = 0; rp < rest.length; rp++) {
+          if (/^x?\d+$/.test(rest[rp])) {
+            if (rp + 1 < rest.length && !/^x?\d+$/.test(rest[rp + 1]) && rest[rp + 1].indexOf('x') < 0) {
+              rewards.push(rest[rp + 1] + ' ' + rest[rp].replace('x', 'x'));
+              rp++;
+            } else {
+              rewards.push(rest[rp]);
+            }
+          }
+        }
+        quests.push({ no: romans[ri], text: text, rewards: rewards.join(' ').slice(0, 60) });
+      }
+    }
+    // 截断到图鉴记录前
+    if (quests.length) {
+      var last = quests[quests.length - 1];
+      var cut = last.rewards.indexOf('图鉴记录');
+      if (cut > 0) last.rewards = last.rewards.slice(0, cut).trim();
+    }
+  }
+  if (quests.length) out.quests = quests;
+
   return out;
 }
 

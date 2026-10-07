@@ -44,6 +44,7 @@ Page({
     wikiKind: '',
     natures: [],
     talents: [],
+    quests: [],
     eggGroup: '',
     detailBody: {},
     detailTotal: 0,
@@ -105,7 +106,7 @@ Page({
         });
       }
 
-      // WIKI 详情（技能/简介/种类/性格推荐/特长/身高体重）
+      // WIKI 详情（技能/简介/种类/性格推荐/特长/身高体重/图鉴课题）
       wikidex.loadWikiDetails(function (details) {
         if (!details || !details[name]) return;
         var d = details[name];
@@ -117,6 +118,7 @@ Page({
           natures: d.natures || [],
           eggGroup: d.eggGroup || '',
           talents: d.talents || [],
+          quests: d.quests || [],
           detailBody: d.body || {},
           detailTotal: d.total || 0,
           statBars: that._statBars(spirit)

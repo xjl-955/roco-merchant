@@ -2,6 +2,64 @@
   padding: 0 0 60rpx;
 }
 
+/* 板块分隔条（基础信息/技能表/进化链/图鉴课题） */
+.sec-bar {
+  background: #3A2E20;
+  color: #F5C842;
+  font-size: 30rpx;
+  font-weight: bold;
+  padding: 16rpx 28rpx;
+  margin: 24rpx 24rpx 4rpx;
+  border-radius: 14rpx 14rpx 0 0;
+  letter-spacing: 2rpx;
+}
+
+.plain-text {
+  font-size: 26rpx;
+  color: #3A2E20;
+  line-height: 1.7;
+}
+
+/* 图鉴课题 */
+.quest-row {
+  display: flex;
+  align-items: flex-start;
+  background: #fff;
+  border: 2rpx solid #3A2E20;
+  border-radius: 12rpx;
+  padding: 14rpx 18rpx;
+  margin-bottom: 10rpx;
+}
+
+.quest-row:last-child { margin-bottom: 0; }
+
+.quest-no {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #B0413E;
+  width: 56rpx;
+  flex-shrink: 0;
+}
+
+.quest-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.quest-text {
+  font-size: 26rpx;
+  color: #3A2E20;
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+.quest-reward {
+  font-size: 22rpx;
+  color: #6B5D45;
+  margin-top: 4rpx;
+}
+
 .card {
   background: #FFF6E0;
   border: 2rpx solid #3A2E20;

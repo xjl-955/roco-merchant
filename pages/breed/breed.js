@@ -32,8 +32,16 @@ Page({
       that.breed = payload;
       // 蛋组按 WIKI 官方顺序排列（与孵蛋组别查询页一致），"无法孵蛋"对齐为"未发现"
       var WIKI_ORDER = ['未发现', '动物组', '拟人组', '巨灵组', '魔力组', '天空组', '两栖组', '植物组', '大地组', '妖精组', '昆虫组', '软体组', '机械组', '海洋组', '飞龙组'];
+      // 统计各蛋组精灵数（筛选器显示数量，如"妖精组 130"）
+      var counts = {};
+      Object.keys(payload.eggs).forEach(function (n) {
+        (payload.eggs[n].groups || []).forEach(function (g) { counts[g] = (counts[g] || 0) + 1; });
+      });
       var names = ['全部蛋组'];
-      WIKI_ORDER.forEach(function (n) { names.push(n); });
+      WIKI_ORDER.forEach(function (n) {
+        var orig = n === '未发现' ? '无法孵蛋' : (n === '飞龙组' ? '龙组' : n);
+        names.push(n + '  ' + (counts[orig] || 0));
+      });
       // 保存 ID 映射（groupNames 的 key 是 breeding 数据里的蛋组 ID）
       var orderIds = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'];
       var gnMap = payload.groupNames || {};
@@ -77,6 +85,8 @@ Page({
     if (!this.breed) return;
     var gi = this.data.groupIndex;
     var groupName = this.data.groupNames[gi];
+    // 剥离数量后缀（"妖精组  130" → "妖精组"）
+    groupName = groupName.replace(/\s+\d+$/, '');
     // 蛋组名→原数据名映射（"未发现"=原"无法孵蛋"，其他同名）
     var nameMap = { '未发现': '无法孵蛋', '飞龙组': '龙组' };
     var origName = nameMap[groupName] || groupName;

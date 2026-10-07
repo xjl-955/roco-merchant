@@ -7,7 +7,7 @@
   <block wx:if="{{!loading && !error && !mapMode}}">
     <view class="head">
       <view class="head-title">🗺️ 世界地图</view>
-      <view class="head-sub">7148 个点位 · 点击分类查看地图</view>
+      <view class="head-sub">{{total || 7148}} 个点位 · 点分类进入，可多选叠加</view>
     </view>
 
     <view class="cat-list">
@@ -28,7 +28,7 @@
 
     <view class="toolbar">
       <view class="tb-back" bindtap="onBackCats">‹ 分类</view>
-      <view class="tb-title">{{activeCatIcon}} {{activeCat}}</view>
+      <view class="tb-title">{{activeCatIcon}} {{activeCatLabel}}</view>
       <view class="zoom-btns">
         <view class="zoom-btn" bindtap="onZoomOut">−</view>
         <view class="zoom-num">{{zoom}}x</view>
@@ -54,10 +54,8 @@
       </view>
     </scroll-view>
 
-    <!-- 互动地图：canvas 尺寸随 zoom 缩放（标记百分比定位自动跟随） -->
     <movable-area class="map-area">
-      <movable-view class="map-mover" direction="all" inertia out-of-bounds="{{false}}"
-                    x="{{xPos}}" y="{{yPos}}">
+      <movable-view class="map-mover" direction="all" inertia out-of-bounds="{{false}}">
         <view class="map-canvas" style="{{canvasStyle}}">
           <view class="tile-grid">
             <image class="tile" wx:for="{{tiles}}" wx:key="key" src="{{item.url}}" mode="scaleToFill"></image>
@@ -78,7 +76,7 @@
       <view class="ib-desc" wx:if="{{selected.desc}}">{{selected.desc}}</view>
     </view>
     <view class="info-bar ib-tip" wx:else>
-      💡 拖动地图 · ±缩放 · 点标记看详情 · {{total}} 个点位
+      💡 拖动 · ±缩放 · 点标记看详情 · {{total}} 个点位
     </view>
 
   </block>

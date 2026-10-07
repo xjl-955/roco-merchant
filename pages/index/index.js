@@ -274,17 +274,20 @@ Page({
     var status = merchant.getStatus(now);
     var dayView = merchant.getDayView(now, status);
 
-    // 展示卡片：当前进行中的轮次；没有进行中则展示下一个未开始的轮次
+    // 展示卡片：营业时间(8点后)显示进行中/下一轮；凌晨不显示商品卡
     var displayItems = [];
     var target = null;
     var i;
     var rounds = dayView.rounds;
-    for (i = 0; i < rounds.length; i++) {
-      if (rounds[i].state === 'active') { target = rounds[i]; break; }
-    }
-    if (!target) {
+    var isBusinessHour = now.getHours() >= 8; // 08:00 前为非营业时间
+    if (isBusinessHour) {
       for (i = 0; i < rounds.length; i++) {
-        if (rounds[i].state === 'upcoming') { target = rounds[i]; break; }
+        if (rounds[i].state === 'active') { target = rounds[i]; break; }
+      }
+      if (!target) {
+        for (i = 0; i < rounds.length; i++) {
+          if (rounds[i].state === 'upcoming') { target = rounds[i]; break; }
+        }
       }
     }
     if (target) displayItems = target.items;

@@ -443,7 +443,7 @@ function getDayView(now, status) {
       window: win2,
       state: st,
       stateText: st === 'active' ? '进行中' : (st === 'upcoming' ? '未开始' : '已结束'),
-      items: items2
+      items: st === 'upcoming' ? [] : items2   // 未开始的轮次不显示商品
     });
     if (st === 'active' && !view.currentRound) view.currentRound = r + 1;
   }
@@ -513,7 +513,7 @@ function buildLiveView(view, nowSec, nowMin) {
       window: ROUND_WINDOWS[rr],
       state: st,
       stateText: st === 'active' ? '进行中' : (st === 'upcoming' ? '未开始' : '已结束'),
-      items: items
+      items: st === 'upcoming' ? [] : items   // 未开始的轮次不显示商品
     });
     if (st === 'active' && !view.currentRound) view.currentRound = rr;
   }

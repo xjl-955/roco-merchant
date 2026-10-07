@@ -54,7 +54,7 @@
     <view class="remind-btn" bindtap="onOpenSubscribe">选择物品订阅</view>
   </view>
 
-  <!-- 物品卡片（当前/下一轮） -->
+  <!-- 物品卡片（营业时间：当前/下一轮；凌晨不显示） -->
   <block wx:if="{{displayItems.length > 0}}">
     <view class="card item-card" wx:for="{{displayItems}}" wx:key="key">
       <image class="item-img" src="{{item.image}}" mode="aspectFill" wx:if="{{item.image}}"></image>
@@ -71,6 +71,13 @@
       <view class="chip chip-done" wx:else>已结束</view>
     </view>
   </block>
+
+  <!-- 凌晨提示（00:00-08:00 非营业时间） -->
+  <view class="card center-card" wx:if="{{displayItems.length === 0 && !dayView.hasSession}}">
+    <view class="empty-label">😴 商人休息中</view>
+    <view class="empty-count">今日 08:00 上新</view>
+    <view class="empty-sub">到点后这里会显示当轮商品</view>
+  </view>
 
   <!-- 轮次列表 -->
   <view class="card" wx:if="{{dayView.rounds.length > 0}}">

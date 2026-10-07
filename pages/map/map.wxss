@@ -124,38 +124,36 @@
 }
 
 .map-mover {
-  width: 2048rpx;
-  height: 2048rpx;
-  position: relative;
+  /* movable-view：由组件控制位置 */
 }
 
-.map-inner {
+.map-canvas {
   position: relative;
   transform-origin: 0 0;
 }
 
 .tile-grid {
   display: grid;
-  grid-template-columns: repeat(8, 256rpx);
-  grid-template-rows: repeat(8, 256rpx);
-  width: 2048rpx;
-  height: 2048rpx;
+  grid-template-columns: repeat(8, 12.5%);
+  grid-template-rows: repeat(8, 12.5%);
+  width: 100%;
+  height: 100%;
 }
 
-.tile { width: 256rpx; height: 256rpx; }
+.tile { width: 100%; height: 100%; }
 
 .marker {
   position: absolute;
-  width: 44rpx;
-  height: 44rpx;
-  margin-left: -22rpx;
-  margin-top: -44rpx;
+  width: 40rpx;
+  height: 40rpx;
+  margin-left: -20rpx;
+  margin-top: -40rpx;
   z-index: 5;
 }
 
 .mk-icon {
-  width: 44rpx;
-  height: 44rpx;
+  width: 40rpx;
+  height: 40rpx;
   filter: drop-shadow(0 2rpx 3rpx rgba(0, 0, 0, 0.7));
 }
 

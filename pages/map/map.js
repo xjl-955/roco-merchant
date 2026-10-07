@@ -24,9 +24,8 @@ Page({
     activeSub: '全部',
     selected: null,
     total: 0,
-    // 缩放（数据驱动，真机稳定）
     zoom: 1,
-    mapStyle: ''
+    canvasStyle: 'width: 2048rpx; height: 2048rpx;'
   },
 
   _markers: [],
@@ -97,98 +96,41 @@ Page({
         tiles.push({ key: x + '_' + y, url: base + 'tile-' + x + '_' + y + '.png' });
       });
     });
-    this.setData({ tiles: tiles, activeFloor: floor });
+    this.setData({ tiles: tiles, activeFloor: floor, canvasStyle: 'width: 2048rpx; height: 2048rpx;' });
   },
 
   _use: function (markers) {
-    // 标记数量控制：全量渲染真机吃力，超出时提示用筛选缩小
-    var list = markers.map(function (mk, i) {
+    // 标记：百分比定位（相对 canvas），xPct/yPct 已按 WIKI Leaflet 坐标系归一化
+    this._markers = markers.map(function (mk, i) {
       return {
         i: i, name: mk.name, sub: mk.sub, desc: mk.desc,
         layer: mk.layer, icon: mk.icon, xPct: mk.xPct, yPct: mk.yPct
       };
     });
-    this._allMarkers = list;
     var subs = {};
-    markers.forEach(function (m) { subs[m.sub] = (subs[m.sub] || 0) + 1; });
+    this._markers.forEach(function (m) { subs[m.sub] = (subs[m.sub] || 0) + 1; });
     var subList = Object.keys(subs).map(function (n) { return { name: n, count: subs[n] }; });
     subList.sort(function (a, b) { return b.count - a.count; });
-
-    // 初始只渲染前 80 个（真机性能），提示用筛选查看更多
-    var initial = list.slice(0, 80);
-    this._shown = initial;
-    this.setData({
-      loading: false,
-      mapMarkers: initial,
-      subs: subList,
-      total: markers.length
-    });
-    this._updateStyle();
-  },
-
-  _updateStyle: function () {
-    var z = this.data.zoom;
-    // 网格 2048rpx × zoom
-    var size = Math.round(2048 * z);
-    this.setData({
-      mapStyle: 'width: ' + size + 'rpx; height: ' + size + 'rpx; transform: scale(1);'
-    });
-    // 标记位置按 zoom 换算为 rpx
-    var mk = this.data.mapMarkers.map(function (m) {
-      return {
-        i: m.i, name: m.name, sub: m.sub, desc: m.desc, layer: m.layer,
-        icon: m.icon,
-        left: Math.round((parseFloat(m.xPct) / 100) * size),
-        top: Math.round((parseFloat(m.yPct) / 100) * size)
-      };
-    });
-    this.setData({ mapMarkers: mk });
-  },
-
-  onZoomIn: function () {
-    var z = Math.min(4, this.data.zoom + 0.5);
-    this.setData({ zoom: z });
-    this._updateStyle();
-  },
-
-  onZoomOut: function () {
-    var z = Math.max(0.5, this.data.zoom - 0.5);
-    this.setData({ zoom: z });
-    this._updateStyle();
+    this.setData({ loading: false, subs: subList });
+    this._filterMarkers();
   },
 
   _filterMarkers: function () {
     var floor = this.data.activeFloor;
     var sub = this.data.activeSub;
-    var list = this._allMarkers.filter(function (m) {
+    var list = this._markers.filter(function (m) {
       if (floor !== 'G' && m.layer !== floor) return false;
       if (floor === 'G' && m.layer && m.layer !== 'G') return false;
       if (sub !== '全部' && m.sub !== sub) return false;
       return true;
     });
-    // 渲染上限 120（真机性能）
-    var shown = list.slice(0, 120);
-    this._shown = shown;
-    this.setData({ mapMarkers: [], total: list.length });
-    this._updateStyle();
-    // _updateStyle 重建 mapMarkers 时需要保留 list 的截断逻辑
-    var mk = shown.map(function (m) { return m; });
-    // 直接构造
-    var size = Math.round(2048 * this.data.zoom);
-    var positioned = shown.map(function (m) {
-      return {
-        i: m.i, name: m.name, sub: m.sub, desc: m.desc, layer: m.layer,
-        icon: m.icon,
-        left: Math.round((parseFloat(m.xPct) / 100) * size),
-        top: Math.round((parseFloat(m.yPct) / 100) * size)
-      };
-    });
-    this.setData({ mapMarkers: positioned });
+    this.setData({ mapMarkers: list, total: list.length });
   },
 
   onFloorTap: function (e) {
-    this.setData({ activeFloor: e.currentTarget.dataset.floor, zoom: 1 });
-    this._buildTiles(this.data.activeFloor);
+    var floor = e.currentTarget.dataset.floor;
+    this.setData({ activeFloor: floor });
+    this._buildTiles(floor);
     this._filterMarkers();
   },
 
@@ -206,6 +148,23 @@ Page({
   onClose: function () { this.setData({ selected: null }); },
 
   onBackCats: function () {
-    this.setData({ mapMode: false, activeCat: '', selected: null });
+    this.setData({ mapMode: false, activeCat: '', selected: null, zoom: 1 });
+  },
+
+  /** 缩放：改 canvas 尺寸（rpx），标记用百分比定位自动跟随 */
+  applyZoom: function () {
+    var z = this.data.zoom;
+    var size = Math.round(2048 * z);
+    this.setData({ canvasStyle: 'width: ' + size + 'rpx; height: ' + size + 'rpx;' });
+  },
+
+  onZoomIn: function () {
+    this.setData({ zoom: Math.min(4, +(this.data.zoom + 0.5).toFixed(1)) });
+    this.applyZoom();
+  },
+
+  onZoomOut: function () {
+    this.setData({ zoom: Math.max(0.35, +(this.data.zoom - 0.5).toFixed(1)) });
+    this.applyZoom();
   }
 });

@@ -54,16 +54,16 @@
       </view>
     </scroll-view>
 
-    <!-- 互动地图（movable 只拖动；缩放用按钮数据驱动） -->
+    <!-- 互动地图：canvas 尺寸随 zoom 缩放（标记百分比定位自动跟随） -->
     <movable-area class="map-area">
       <movable-view class="map-mover" direction="all" inertia out-of-bounds="{{false}}"
                     x="{{xPos}}" y="{{yPos}}">
-        <view class="map-inner" style="{{mapStyle}}">
+        <view class="map-canvas" style="{{canvasStyle}}">
           <view class="tile-grid">
             <image class="tile" wx:for="{{tiles}}" wx:key="key" src="{{item.url}}" mode="scaleToFill"></image>
           </view>
           <view class="marker" wx:for="{{mapMarkers}}" wx:key="i"
-                style="left: {{item.left}}rpx; top: {{item.top}}rpx;"
+                style="left: {{item.xPct}}%; top: {{item.yPct}}%;"
                 data-i="{{index}}" catchtap="onMarkerTap">
             <image class="mk-icon" src="{{item.icon}}" mode="aspectFit"></image>
           </view>
@@ -78,7 +78,7 @@
       <view class="ib-desc" wx:if="{{selected.desc}}">{{selected.desc}}</view>
     </view>
     <view class="info-bar ib-tip" wx:else>
-      💡 拖动地图 · ±按钮缩放 · 点标记看详情 · {{total}} 个点位
+      💡 拖动地图 · ±缩放 · 点标记看详情 · {{total}} 个点位
     </view>
 
   </block>

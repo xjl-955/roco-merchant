@@ -125,17 +125,17 @@
 
 .marker {
   position: absolute;
-  width: 32rpx;
-  height: 32rpx;
-  margin-left: -16rpx;
-  margin-top: -32rpx;
+  width: 44rpx;
+  height: 44rpx;
+  margin-left: -22rpx;
+  margin-top: -44rpx;
   z-index: 5;
 }
 
 .mk-icon {
-  width: 32rpx;
-  height: 32rpx;
-  filter: drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.6));
+  width: 44rpx;
+  height: 44rpx;
+  filter: drop-shadow(0 2rpx 3rpx rgba(0, 0, 0, 0.7));
 }
 
 .info-bar {

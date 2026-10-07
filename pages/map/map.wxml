@@ -51,7 +51,7 @@
     </scroll-view>
 
     <movable-area class="map-area" scale-area>
-      <movable-view class="map-view" direction="all" scale scale-min="0.6" scale-max="4"
+      <movable-view class="map-view" direction="all" scale scale-min="0.15" scale-max="3" scale-value="0.15"
                     inertia out-of-bounds="{{false}}">
         <view class="tile-grid">
           <image class="tile" wx:for="{{tiles}}" wx:key="key" src="{{item.url}}" mode="scaleToFill"></image>

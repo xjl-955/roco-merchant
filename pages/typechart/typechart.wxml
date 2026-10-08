@@ -1,44 +1,79 @@
 <view class="page">
 
-  <view class="mode-row">
-    <view class="mode {{mode === 'defense' ? 'mode-on' : ''}}" data-mode="defense" bindtap="setMode">🛡 防守视角</view>
-    <view class="mode {{mode === 'attack' ? 'mode-on' : ''}}" data-mode="attack" bindtap="setMode">⚔️ 进攻视角</view>
-  </view>
-
-  <view class="hint" wx:if="{{mode === 'defense'}}">点选 1~2 个防守系（再点取消），查看弱点与抗性：</view>
-  <view class="hint" wx:if="{{mode === 'attack'}}">点选攻击系，查看克制/抵抗关系：</view>
-
-  <!-- 18 系选择器 -->
-  <view class="type-grid">
-    <view class="type" wx:for="{{types}}" wx:key="*this"
-          style="background: {{colors[item]}}22; border-color: {{colors[item]}}; {{(mode === 'defense' && (defSel[0] === item || defSel[1] === item)) || (mode === 'attack' && atkSel === item) ? 'box-shadow: 0 0 0 4rpx ' + colors[item] + '88;' : ''}}"
-          data-type="{{item}}" bindtap="onTypeTap">
-      {{item}}
+  <!-- 01 选择主系 -->
+  <view class="step-card">
+    <view class="step-head"><text class="step-num">01</text><text class="step-title">选择主系</text></view>
+    <view class="type-grid">
+      <view class="type-btn {{mainType === item.name ? 'type-on' : ''}} {{subType === item.name ? 'type-dis' : ''}}"
+            wx:for="{{types}}" wx:key="name"
+            style="--c: {{item.color}};"
+            data-name="{{item.name}}" bindtap="onMainTap">{{item.name}}</view>
     </view>
   </view>
 
-  <!-- 结果 -->
-  <block wx:if="{{result}}">
-    <view class="card" wx:if="{{result.x4.length}}">
-      <view class="g-title t-x4">×4 弱点</view>
-      <view class="chips"><text class="chip" wx:for="{{result.x4}}" wx:key="*this">{{item}}</text></view>
+  <!-- 02 选择副系 -->
+  <view class="step-card">
+    <view class="step-head"><text class="step-num">02</text><text class="step-title">选择副系</text></view>
+    <view class="step-hint">单系可直接跳过；主、副系不能重复。</view>
+    <view class="type-grid">
+      <view class="type-btn {{subType === item.name ? 'type-on' : ''}} {{mainType === item.name ? 'type-dis' : ''}}"
+            wx:for="{{types}}" wx:key="name"
+            style="--c: {{item.color}};"
+            data-name="{{item.name}}" bindtap="onSubTap">{{item.name}}</view>
     </view>
-    <view class="card" wx:if="{{result.x2.length}}">
-      <view class="g-title t-x2">×2 克制</view>
-      <view class="chips"><text class="chip" wx:for="{{result.x2}}" wx:key="*this">{{item}}</text></view>
+  </view>
+
+  <!-- 当前系别 -->
+  <view class="cur-bar" wx:if="{{mainType}}">
+    当前系别：<text class="cur-name">{{mainType}}{{subType ? ' / ' + subType : ''}}系</text>
+  </view>
+
+  <!-- ═══ 结果 ═══ -->
+  <block wx:if="{{hasResult}}">
+
+    <!-- 防守面 -->
+    <view class="sec-bar">🛡️ 防守面</view>
+    <view class="card">
+      <view class="def-hint">攻击系别对当前精灵造成的伤害倍率。</view>
+      <view class="g-block" wx:if="{{result.defense.x3.length}}">
+        <view class="g-title t-x3">双重弱点 ×3</view>
+        <view class="chips"><text class="chip" wx:for="{{result.defense.x3}}" wx:key="*this" style="background: #B0413E">{{item}}</text></view>
+      </view>
+      <view class="g-block" wx:if="{{result.defense.x2.length}}">
+        <view class="g-title t-x2">弱点 ×2</view>
+        <view class="chips"><text class="chip" wx:for="{{result.defense.x2}}" wx:key="*this" style="background: #C0392B">{{item}}</text></view>
+      </view>
+      <view class="g-block" wx:if="{{result.defense.x05.length}}">
+        <view class="g-title t-x05">抗性 ×0.5</view>
+        <view class="chips"><text class="chip" wx:for="{{result.defense.x05}}" wx:key="*this" style="background: #2E7D5B">{{item}}</text></view>
+      </view>
+      <view class="g-block" wx:if="{{result.defense.x025.length}}">
+        <view class="g-title t-x025">双重抗性 ×0.25</view>
+        <view class="chips"><text class="chip" wx:for="{{result.defense.x025}}" wx:key="*this" style="background: #1B6E4A">{{item}}</text></view>
+      </view>
+      <view class="g-block" wx:if="{{result.defense.x0.length}}">
+        <view class="g-title t-x0">免疫 ×0</view>
+        <view class="chips"><text class="chip" wx:for="{{result.defense.x0}}" wx:key="*this" style="background: #555">{{item}}</text></view>
+      </view>
     </view>
-    <view class="card" wx:if="{{result.x05.length}}">
-      <view class="g-title t-x05">×0.5 抵抗</view>
-      <view class="chips"><text class="chip" wx:for="{{result.x05}}" wx:key="*this">{{item}}</text></view>
+
+    <!-- 进攻面 -->
+    <view class="sec-bar">⚔️ 进攻面</view>
+    <view class="card">
+      <view class="atk-row" wx:for="{{result.offense}}" wx:key="def">
+        <view class="atk-def" style="background: {{item.color}}">{{item.def}}</view>
+        <view class="atk-vals">
+          <text class="av {{v.cls}}" wx:for="{{item.values}}" wx:for-item="v" wx:key="atk">{{v.atk}} {{v.mult === 1 ? '' : '×' + v.mult}}</text>
+        </view>
+      </view>
+      <view class="legend">
+        <text class="lg lg-x2">×2 克制</text>
+        <text class="lg lg-x1">×1 普通</text>
+        <text class="lg lg-x05">×0.5 抵抗</text>
+        <text class="lg lg-x0">×0 免疫</text>
+      </view>
     </view>
-    <view class="card" wx:if="{{result.x0.length}}">
-      <view class="g-title t-x0">×0 免疫</view>
-      <view class="chips"><text class="chip" wx:for="{{result.x0}}" wx:key="*this">{{item}}</text></view>
-    </view>
-    <view class="card" wx:if="{{result.x1.length && mode === 'attack'}}">
-      <view class="g-title t-x1">×1 普通</view>
-      <view class="chips"><text class="chip chip-gray" wx:for="{{result.x1}}" wx:key="*this">{{item}}</text></view>
-    </view>
+
   </block>
 
 </view>

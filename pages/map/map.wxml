@@ -56,7 +56,7 @@
 
     <!-- 互动地图：canvas 尺寸 = 710×zoom rpx（zoom=1 全图适配屏宽） -->
     <movable-area class="map-area">
-      <movable-view class="map-mover" direction="all" inertia out-of-bounds="{{false}}"
+      <movable-view class="map-mover" style="{{moverStyle}}" direction="all" inertia out-of-bounds="{{false}}"
                     x="{{x}}" y="{{y}}">
         <view class="map-canvas" style="{{canvasStyle}}">
           <view class="tile-grid">

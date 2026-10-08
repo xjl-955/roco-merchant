@@ -70,7 +70,7 @@ Page({
     var name = e.currentTarget.dataset.name;
     var cat = this._cats.filter(function (c) { return c.name === name; })[0];
     if (!cat) return;
-    this.setData({ mapMode: true, activeCat: name, activeCatIcon: cat.icon, loading: true, activeFloor: 'G', zoom: 1, zoomText: '1x' });
+    this.setData({ mapMode: true, activeCat: name, activeCatIcon: cat.icon, loading: true, activeFloor: 'G', zoom: 1, zoomText: '1x', x: 0, y: 0 });
     this._buildTiles('G');
 
     var KEY = 'roco_maps_cat_' + name;
@@ -102,6 +102,7 @@ Page({
     });
     this.setData({ tiles: tiles, activeFloor: floor });
   },
+
 
   _use: function (markers) {
     this._markers = markers.map(function (mk, i) {
@@ -143,7 +144,7 @@ Page({
 
   onFloorTap: function (e) {
     var floor = e.currentTarget.dataset.floor;
-    this.setData({ activeFloor: floor, zoom: 1, zoomText: '1x' });
+    this.setData({ activeFloor: floor, zoom: 1, zoomText: '1x', x: 0, y: 0 });
     this._buildTiles(floor);
     this._applyZoom();
     this._filterMarkers();
@@ -182,7 +183,10 @@ Page({
   _applyZoom: function () {
     var z = this.data.zoom;
     var size = Math.round(710 * z);
-    this.setData({ canvasStyle: 'width: ' + size + 'rpx; height: ' + size + 'rpx;' });
+    this.setData({
+      canvasStyle: 'width: ' + size + 'rpx; height: ' + size + 'rpx;',
+      moverStyle: 'width: ' + size + 'rpx; height: ' + size + 'rpx;'
+    });
     // movable-view 居中：x/y = -(content - area)/2（负值向左上偏移）
     var off = Math.round((710 * z - 710) / 2);
     this.setData({ x: -off, y: -off });

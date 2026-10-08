@@ -1,40 +1,95 @@
 <view class="page">
 
-  <view class="card">
-    <view class="tip">点选你想要提升的能力（再点一次选择想降低的），下方列出匹配的性格：</view>
-    <view class="stat-grid">
-      <view class="stat {{selected[item.key] ? 'stat-on-up' : ''}} {{wantDown === item.key ? 'stat-on-down' : ''}}"
-            wx:for="{{stats}}" wx:key="*this"
-            data-stat="{{item.key}}" bindtap="onStatTap">
-        {{item.name}}
-        <text wx:if="{{wantUp === item.key}}" class="mark up">▲想升</text>
-        <text wx:if="{{wantDown === item.key}}" class="mark down">▼想降</text>
+  <view class="state" wx:if="{{loading}}">⏳ 性格数据加载中…</view>
+
+  <block wx:if="{{!loading}}">
+
+    <!-- 视图切换 -->
+    <view class="mode-row">
+      <view class="mode-tab {{viewMode === 'matrix' ? 'mode-on' : ''}}"
+            data-mode="matrix" bindtap="onViewMode">📋 性格对照表</view>
+      <view class="mode-tab {{viewMode === 'list' ? 'mode-on' : ''}}"
+            data-mode="list" bindtap="onViewMode">🔍 性格推荐</view>
+    </view>
+
+    <!-- ═══ 视图1：WIKI 对照表（宫格）═══ -->
+    <block wx:if="{{viewMode === 'matrix'}}">
+
+      <view class="tip-card">
+        <view class="tip-title">性格能力对照表</view>
+        <view class="tip-desc">行 = 提升的能力 · 列 = 降低的能力 · 点性格名看子性格行为</view>
       </view>
-    </view>
-    <view class="reset" bindtap="onReset">↺ 重置</view>
-  </view>
 
-  <!-- 详情 -->
-  <view class="card" wx:if="{{detail}}">
-    <view class="d-name">{{detail.name}}</view>
-    <view class="d-line">
-      <text class="d-up">▲ {{detail.upText}}</text>
-      <text class="d-down">▼ {{detail.downText}}</text>
-      <text class="d-neutral" wx:if="{{detail.neutral}}">无能力修正</text>
-    </view>
-  </view>
+      <scroll-view scroll-x class="matrix-scroll">
+        <view class="matrix">
+          <view class="m-row {{row.isHeader ? 'm-header' : ''}}" wx:for="{{matrix}}" wx:for-item="row" wx:for-index="ri" wx:key="ri">
+            <view class="m-cell {{cell.isAxis ? 'm-axis' : ''}} {{cell.isNA ? 'm-na' : ''}}"
+                  wx:for="{{row.cells}}" wx:for-item="cell" wx:for-index="ci" wx:key="ci"
+                  data-name="{{cell.text}}" bindtap="{{cell.id ? 'onCellTap' : ''}}">
+              {{cell.text}}
+            </view>
+          </view>
+        </view>
+      </scroll-view>
 
-  <!-- 结果列表 -->
-  <view class="card">
-    <view class="sec">匹配的性格（{{results.length}}）</view>
-    <view class="n-row {{item.perfect ? 'perfect' : ''}}" wx:for="{{results}}" wx:key="name"
-          data-name="{{item.name}}" bindtap="onNatureTap">
-      <text class="n-name">{{item.name}}</text>
-      <text class="n-up">+{{item.upText}}</text>
-      <text class="n-down">-{{item.downText}}</text>
-      <text class="n-badge" wx:if="{{item.perfect}}">完美</text>
-    </view>
-    <view class="empty" wx:if="{{results.length === 0}}">该组合不存在，试试只选一项</view>
-  </view>
+      <!-- 性格详情（点击宫格后） -->
+      <view class="card" wx:if="{{detail}}">
+        <view class="d-name">{{detail.name}}</view>
+        <view class="d-line">
+          <text class="d-up">▲ {{detail.upText}}</text>
+          <text class="d-down">▼ {{detail.downText}}</text>
+        </view>
+        <view class="d-tags-title" wx:if="{{detail.tags.length}}">子性格行为</view>
+        <view class="d-tags">
+          <text class="d-tag" wx:for="{{detail.tags}}" wx:key="*this">{{item}}</text>
+        </view>
+      </view>
+
+    </block>
+
+    <!-- ═══ 视图2：性格推荐（原功能）═══ -->
+    <block wx:if="{{viewMode === 'list'}}">
+
+      <view class="card">
+        <view class="tip">点选你想要提升的能力（再点一次选择想降低的），下方列出匹配的性格：</view>
+        <view class="stat-grid">
+          <view class="stat {{selected[item.key] ? 'stat-on-up' : ''}} {{wantDown === item.key ? 'stat-on-down' : ''}}"
+                wx:for="{{stats}}" wx:key="*this"
+                data-stat="{{item.key}}" bindtap="onStatTap">
+            {{item.name}}
+            <text wx:if="{{wantUp === item.key}}" class="mark up">▲想升</text>
+            <text wx:if="{{wantDown === item.key}}" class="mark down">▼想降</text>
+          </view>
+        </view>
+        <view class="reset" bindtap="onReset">↺ 重置</view>
+      </view>
+
+      <view class="card" wx:if="{{detail}}">
+        <view class="d-name">{{detail.name}}</view>
+        <view class="d-line">
+          <text class="d-up">▲ {{detail.upText}}</text>
+          <text class="d-down">▼ {{detail.downText}}</text>
+        </view>
+        <view class="d-tags-title" wx:if="{{detail.tags.length}}">子性格行为</view>
+        <view class="d-tags">
+          <text class="d-tag" wx:for="{{detail.tags}}" wx:key="*this">{{item}}</text>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="sec">匹配的性格（{{results.length}}）</view>
+        <view class="n-row {{item.perfect ? 'perfect' : ''}}" wx:for="{{results}}" wx:key="name"
+              data-name="{{item.name}}" bindtap="onNatureTap">
+          <text class="n-name">{{item.name}}</text>
+          <text class="n-up">+{{item.upText}}</text>
+          <text class="n-down">-{{item.downText}}</text>
+          <text class="n-badge" wx:if="{{item.perfect}}">完美</text>
+        </view>
+        <view class="empty" wx:if="{{results.length === 0}}">该组合不存在，试试只选一项</view>
+      </view>
+
+    </block>
+
+  </block>
 
 </view>

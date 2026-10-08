@@ -69,7 +69,14 @@ function parsePage(html) {
       price: ''
     };
   }
-  if (Object.keys(items).length === 0) throw new Error('未解析到任何商品，页面结构可能已变化');
+  if (Object.keys(items).length === 0) {
+    var bjHour = beijingNow().getHours();
+    if (bjHour >= 0 && bjHour < 8) {
+      console.log('      凌晨时段（0-8点）页面无商品——商人休息，属正常');
+    } else {
+      throw new Error('营业时段解析到 0 商品，页面结构可能已变化');
+    }
+  }
 
   // 二次扫描：补价格与限购
   // 注意：限购 <em> 在 shop_name 之前（图块里），价格在其后。
@@ -115,11 +122,25 @@ function beijingString(d) {
     ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
 }
 
+async function fetchPage() {
+  for (var attempt = 1; attempt <= 3; attempt++) {
+    try {
+      var res = await fetch(SRC, { headers: UA });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var text = await res.text();
+      if (text.length < 2000) throw new Error('页面异常（过短）');
+      return text;
+    } catch (e) {
+      console.log('      抓取失败(' + attempt + '/3):', e.message);
+      if (attempt < 3) await new Promise(function (r) { setTimeout(r, attempt * 8000); });
+      else throw e;
+    }
+  }
+}
+
 async function main() {
   console.log('[1/3] 抓取快爆源页面 ...');
-  var res = await fetch(SRC, { headers: UA });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  var html = await res.text();
+  var html = await fetchPage();
 
   console.log('[2/3] 解析商品与轮次 ...');
   var items = parsePage(html);

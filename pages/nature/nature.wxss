@@ -57,6 +57,14 @@
   text-align: center;
 }
 
+.m-header .m-axis {
+  color: #F0C94A;
+}
+
+.m-row:not(.m-header) .m-axis.is-up {
+  color: #E0765A;
+}
+
 .m-axis {
   background: #223042;
   font-weight: bold;

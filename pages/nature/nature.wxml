@@ -14,7 +14,7 @@
         <view class="m-row {{row.isHeader ? 'm-header' : ''}}" wx:for="{{matrix}}" wx:for-item="row" wx:for-index="ri" wx:key="ri">
           <view class="m-cell {{cell.isAxis ? 'm-axis' : ''}} {{cell.isNA ? 'm-na' : ''}} {{cell.text !== '—' && !cell.isAxis ? 'm-link' : ''}}"
                 wx:for="{{row.cells}}" wx:for-item="cell" wx:for-index="ci" wx:key="ci"
-                data-name="{{cell.text}}" bindtap="onCellTap">
+                data-name="{{cell.text}}" bindtap="onCellTap">{{cell.isUp ? '↑' : ''}}
             {{cell.text}}
           </view>
         </view>

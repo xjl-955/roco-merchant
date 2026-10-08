@@ -40,9 +40,13 @@ Page({
     });
 
     var matrix = [];
-    matrix.push({ isHeader: true, cells: downCols.map(function (d) { return { text: d, isAxis: true }; }) });
+    // 表头行（能力变化 + 下降属性列）
+    var headerCells = [{ text: '能力变化', isAxis: true }];
+    downCols.forEach(function (d) { headerCells.push({ text: d, isAxis: true }); });
+    matrix.push({ isHeader: true, cells: headerCells });
     upRows.forEach(function (u) {
-      var row = { isHeader: false, label: u, cells: [{ text: u, isAxis: true }] };
+      // 行首格 = "XX↑"（能力变化列）
+      var row = { isHeader: false, cells: [{ text: u, isAxis: true, isUp: true }] };
       downCols.forEach(function (d) {
         var n = lookup[u + '|' + d];
         if (n) row.cells.push({ text: n.name, id: n.id, isNA: false });

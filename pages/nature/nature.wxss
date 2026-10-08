@@ -2,14 +2,6 @@
   padding: 24rpx 24rpx 60rpx;
 }
 
-.card {
-  background: #2C3A4D;
-  border: 1rpx solid #3A4A5F;
-  border-radius: 20rpx;
-  padding: 28rpx;
-  margin-bottom: 22rpx;
-}
-
 .state {
   text-align: center;
   padding: 120rpx 40rpx;
@@ -17,33 +9,6 @@
   font-size: 28rpx;
 }
 
-.mode-row {
-  display: flex;
-  margin-bottom: 20rpx;
-}
-
-.mode-tab {
-  flex: 1;
-  text-align: center;
-  background: #2C3A4D;
-  border: 1rpx solid #3A4A5F;
-  border-radius: 12rpx;
-  padding: 18rpx 0;
-  margin-right: 14rpx;
-  font-size: 28rpx;
-  color: #C6D2E0;
-}
-
-.mode-tab:last-child { margin-right: 0; }
-
-.mode-on {
-  background: #F0C94A;
-  color: #3A2E20;
-  font-weight: bold;
-  border-color: #F0C94A;
-}
-
-/* ─── 对照表（WIKI 宫格）─── */
 .tip-card {
   background: #2C3A4D;
   border: 1rpx solid #3A4A5F;
@@ -103,10 +68,19 @@
   background: #22303E;
 }
 
-/* 性格名可点击 */
-.m-cell[data-name] { color: #F0C94A; }
+.m-link {
+  color: #F0C94A;
+  font-weight: bold;
+}
 
-/* ─── 详情 ─── */
+.card {
+  background: #2C3A4D;
+  border: 1rpx solid #3A4A5F;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 22rpx;
+}
+
 .d-name {
   font-size: 34rpx;
   font-weight: bold;
@@ -142,65 +116,3 @@
   padding: 6rpx 14rpx;
   margin: 0 10rpx 10rpx 0;
 }
-
-/* ─── 推荐列表 ─── */
-.tip { font-size: 24rpx; color: #8FA0B5; margin-bottom: 16rpx; }
-
-.stat-grid {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.stat {
-  width: 200rpx;
-  text-align: center;
-  background: #223042;
-  border: 1rpx solid #3A4A5F;
-  border-radius: 12rpx;
-  padding: 16rpx 0;
-  margin: 0 10rpx 10rpx 0;
-  font-size: 26rpx;
-  color: #C6D2E0;
-  position: relative;
-}
-
-.stat-on-up { border-color: #E0765A; color: #E0765A; }
-.stat-on-down { border-color: #5A9BD4; color: #5A9BD4; }
-
-.mark { display: block; font-size: 18rpx; margin-top: 4rpx; }
-.mark.up { color: #E0765A; }
-.mark.down { color: #5A9BD4; }
-
-.reset {
-  text-align: center;
-  color: #F0C94A;
-  font-size: 26rpx;
-  padding: 12rpx 0 0;
-}
-
-.sec { font-size: 28rpx; font-weight: bold; color: #F5F8FC; margin-bottom: 14rpx; }
-
-.n-row {
-  display: flex;
-  align-items: center;
-  padding: 18rpx 0;
-  border-bottom: 1rpx solid #3A4A5F;
-}
-
-.n-row:last-child { border-bottom: none; }
-
-.n-row.perfect { background: rgba(240, 201, 74, 0.08); }
-
-.n-name { flex: 1; font-size: 28rpx; font-weight: bold; color: #F5F8FC; }
-.n-up { color: #E0765A; font-size: 24rpx; margin-right: 16rpx; }
-.n-down { color: #5A9BD4; font-size: 24rpx; margin-right: 16rpx; }
-
-.n-badge {
-  font-size: 20rpx;
-  color: #3A2E20;
-  background: #F0C94A;
-  border-radius: 8rpx;
-  padding: 2rpx 12rpx;
-}
-
-.empty { text-align: center; color: #6E7F94; font-size: 26rpx; padding: 30rpx 0; }

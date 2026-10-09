@@ -51,16 +51,18 @@ Page({
     this._notified = {}; // 今日已提醒过的物品 key
     // 加载全量物品池（远行商人物品档案）
     try {
-      var poolCache = wx.getStorageSync('roco_merchant_pool');
-      if (poolCache && poolCache.items) that.setData({ itemPool: poolCache.items });
+      var poolCache = wx.getStorageSync('roco_merchant_pool_v2');
+      if (poolCache && poolCache.items && poolCache.items.length > 10) {
+        that.setData({ itemPool: poolCache.items });
+      }
     } catch (e) { }
     wx.request({
       url: 'https://xjl-955.github.io/roco-data/merchant-pool.json',
       timeout: 15000,
       success: function (res) {
-        if (res.statusCode === 200 && res.data && res.data.items) {
+        if (res.statusCode === 200 && res.data && res.data.items && res.data.items.length > 10) {
           that.setData({ itemPool: res.data.items });
-          try { wx.setStorageSync('roco_merchant_pool', res.data.items); } catch (e) { }
+          try { wx.setStorageSync('roco_merchant_pool_v2', res.data); } catch (e) { }
         }
       },
       fail: function () { }

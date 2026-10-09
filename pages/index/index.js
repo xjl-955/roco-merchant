@@ -40,13 +40,31 @@ Page({
     subscribed: {},
     showSubscribe: false,
     subscribeOptions: [],
+    itemPool: [],
     meta: merchant.getMeta(),
     sourceText: '内置数据',
     refreshing: false
   },
 
   onLoad: function () {
+    var that = this;
     this._notified = {}; // 今日已提醒过的物品 key
+    // 加载全量物品池（远行商人物品档案）
+    try {
+      var poolCache = wx.getStorageSync('roco_merchant_pool');
+      if (poolCache && poolCache.items) that.setData({ itemPool: poolCache.items });
+    } catch (e) { }
+    wx.request({
+      url: 'https://xjl-955.github.io/roco-data/merchant-pool.json',
+      timeout: 15000,
+      success: function (res) {
+        if (res.statusCode === 200 && res.data && res.data.items) {
+          that.setData({ itemPool: res.data.items });
+          try { wx.setStorageSync('roco_merchant_pool', res.data.items); } catch (e) { }
+        }
+      },
+      fail: function () { }
+    });
     this._subArr = [];
     this.loadSubscribed();
     // 先用缓存秒开，再视情况后台拉取
@@ -170,9 +188,19 @@ Page({
     }
   },
 
-  /** 打开订阅弹窗 */
+  /** 打开订阅弹窗（物品池 = 全量档案 + 当日轮次合并） */
   onOpenSubscribe: function () {
-    var items = this.data.dayView.items || [];
+    var pool = this.data.itemPool || [];
+    var dayItems = this.data.dayView.items || [];
+    var seen = {};
+    var merged = [];
+    pool.forEach(function (it) {
+      if (!seen[it.name]) { seen[it.name] = true; merged.push(it); }
+    });
+    dayItems.forEach(function (it) {
+      if (!seen[it.name]) { seen[it.name] = true; merged.push(it); }
+    });
+    var items = merged;
     if (!items.length) {
       wx.showToast({ title: '当前没有可订阅的物品', icon: 'none' });
       return;
@@ -180,10 +208,11 @@ Page({
     var sub = this.data.subscribed;
     var opts = [];
     for (var i = 0; i < items.length; i++) {
+      var w = items[i].windowText || (items[i].rounds ? '第' + items[i].rounds.join('、第') + '轮' : '') || '';
       opts.push({
         name: items[i].name,
         icon: items[i].icon,
-        windowText: items[i].windowText,
+        windowText: items[i].windowText || items[i].roundText || w,
         category: items[i].category || '',
         price: items[i].price || '',
         checked: true

@@ -184,6 +184,8 @@ Page({
         name: items[i].name,
         icon: items[i].icon,
         windowText: items[i].windowText,
+        category: items[i].category || '',
+        price: items[i].price || '',
         checked: !!sub[items[i].name]
       });
     }
@@ -205,12 +207,19 @@ Page({
     var opts = this.data.subscribeOptions;
     var arr = [];
     var map = {};
+    var detailArr = [];  // 云推送用的完整信息（名称/分类/价格）
     for (var i = 0; i < opts.length; i++) {
       if (opts[i].checked) {
         arr.push(opts[i].name);
         map[opts[i].name] = true;
+        detailArr.push({
+          name: opts[i].name,
+          category: opts[i].category || '',
+          price: opts[i].price || ''
+        });
       }
     }
+    this._subDetailArr = detailArr;
     this._subArr = arr;
     try {
       wx.setStorageSync(SUB_KEY, arr);

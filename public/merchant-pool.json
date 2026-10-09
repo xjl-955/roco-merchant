@@ -7,137 +7,73 @@
    "name": "棱镜球",
    "price": "3,200,000",
    "limit": 1,
-   "category": "咕噜球",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "咕噜球"
   },
   {
    "name": "国王球",
    "price": "160,000",
    "limit": 3,
-   "category": "咕噜球",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "咕噜球"
   },
   {
    "name": "暗星球",
    "price": "3,000",
    "limit": 200,
-   "category": "咕噜球",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "咕噜球"
   },
   {
    "name": "变幻球",
    "price": "3,000",
    "limit": 100,
-   "category": "咕噜球",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "咕噜球"
   },
   {
    "name": "光合球",
    "price": "3,000",
    "limit": 100,
-   "category": "咕噜球",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "咕噜球"
   },
   {
    "name": "绝缘球",
    "price": "3,000",
    "limit": 200,
-   "category": "咕噜球",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "咕噜球"
   },
   {
    "name": "调温球",
    "price": "3,000",
    "limit": 200,
-   "category": "咕噜球",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "咕噜球"
   },
   {
    "name": "美妙球",
    "price": "3,000",
    "limit": 100,
-   "category": "咕噜球",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "咕噜球"
   },
   {
    "name": "炫彩精灵蛋",
    "price": "1,600,000",
    "limit": 1,
-   "category": "精灵蛋",
-   "rounds": [
-    2,
-    4
-   ]
+   "category": "精灵蛋"
   },
   {
    "name": "神奇的蛋",
    "price": "36,000",
    "limit": 5,
-   "category": "精灵蛋",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "精灵蛋"
   },
   {
    "name": "首领血脉秘药",
    "price": "320,000",
    "limit": 1,
-   "category": "秘药",
-   "rounds": [
-    1
-   ]
+   "category": "秘药"
   },
   {
    "name": "奇异血脉秘药",
    "price": "160,000",
    "limit": 3,
-   "category": "秘药",
-   "rounds": [
-    2
-   ]
+   "category": "秘药"
   },
   {
    "name": "冰系血脉秘药",
@@ -149,10 +85,7 @@
    "name": "普通血脉秘药",
    "price": "160,000",
    "limit": 3,
-   "category": "秘药",
-   "rounds": [
-    4
-   ]
+   "category": "秘药"
   },
   {
    "name": "水系血脉秘药",
@@ -194,94 +127,56 @@
    "name": "黄石榴石",
    "price": "1,000",
    "limit": 100,
-   "category": "矿石",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "矿石"
   },
   {
    "name": "蓝晶碧玺",
    "price": "1,000",
    "limit": 100,
-   "category": "矿石",
-   "rounds": [
-    2,
-    3,
-    4
-   ]
+   "category": "矿石"
   },
   {
    "name": "紫莲刚玉",
    "price": "1,000",
    "limit": 100,
-   "category": "矿石",
-   "rounds": [
-    3,
-    4
-   ]
+   "category": "矿石"
   },
   {
    "name": "冰晶堆矿",
    "price": "1,000",
    "limit": 100,
-   "category": "矿石",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "矿石"
   },
   {
    "name": "黑晶琉璃",
    "price": "1,000",
    "limit": 100,
-   "category": "矿石",
-   "rounds": [
-    1,
-    2,
-    3,
-    4
-   ]
+   "category": "矿石"
   },
   {
    "name": "祝福项坠",
    "price": "800,000",
    "limit": 1,
-   "category": "装饰",
-   "rounds": [
-    3
-   ]
+   "category": "装饰"
   },
   {
    "name": "残缺魔镜",
    "price": "480,000",
    "limit": 1,
-   "category": "道具",
-   "rounds": [
-    2
-   ]
+   "category": "道具"
   },
   {
    "name": "适格钥匙",
    "price": "320,000",
    "limit": 1,
-   "category": "钥匙",
-   "rounds": [
-    1
-   ]
+   "category": "钥匙"
   },
   {
    "name": "能力钥匙",
    "price": "160,000",
    "limit": 6,
-   "category": "钥匙",
-   "rounds": [
-    3
-   ]
+   "category": "钥匙"
   }
- ]
+ ],
+ "coordNote": "轮次以当日 live.json 实况为准"
 }

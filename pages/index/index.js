@@ -211,9 +211,9 @@ Page({
     var opts = [];
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
-      // 轮次文本：rounds 数组 → "第1、2、3、4轮"
+      // 轮次文本：仅当日实况（live.json 的 rounds）
       var rounds = Array.isArray(it.rounds) ? it.rounds : [];
-      var w = rounds.length ? '第' + rounds.join('、第') + '轮' : (it.windowText || '');
+      var w = rounds.length ? '第' + rounds.join('、第') + '轮' : '';
       opts.push({
         name: it.name,
         windowText: w,

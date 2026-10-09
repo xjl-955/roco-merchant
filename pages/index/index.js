@@ -186,7 +186,7 @@ Page({
         windowText: items[i].windowText,
         category: items[i].category || '',
         price: items[i].price || '',
-        checked: !!sub[items[i].name]
+        checked: true
       });
     }
     this.setData({ showSubscribe: true, subscribeOptions: opts });

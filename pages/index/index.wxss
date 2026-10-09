@@ -406,6 +406,24 @@
   text-align: center;
 }
 
+.dialog-title-row {
+  display: flex;
+  align-items: center;
+}
+
+.dialog-title-row .dialog-title {
+  flex: 1;
+  text-align: left;
+}
+
+.dlg-toggle {
+  font-size: 24rpx;
+  color: #F0C94A;
+  padding: 6rpx 16rpx;
+  border: 1rpx solid #F0C94A;
+  border-radius: 999rpx;
+}
+
 .dialog-list {
   margin-top: 24rpx;
   max-height: 480rpx;

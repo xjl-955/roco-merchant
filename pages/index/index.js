@@ -189,7 +189,19 @@ Page({
         checked: true
       });
     }
-    this.setData({ showSubscribe: true, subscribeOptions: opts });
+    this.setData({ showSubscribe: true, subscribeOptions: opts, allChecked: true });
+  },
+
+  /** 全选 / 取消全选 */
+  onToggleAll: function () {
+    var opts = this.data.subscribeOptions;
+    var target = !this.data.allChecked;
+    for (var i = 0; i < opts.length; i++) {
+      var patch = {};
+      patch['subscribeOptions[' + i + '].checked'] = target;
+      this.setData(patch);
+    }
+    this.setData({ allChecked: target });
   },
 
   onToggleOption: function (e) {

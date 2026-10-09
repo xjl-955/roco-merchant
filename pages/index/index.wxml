@@ -122,7 +122,10 @@
   <!-- 订阅弹窗 -->
   <view class="mask" wx:if="{{showSubscribe}}" bindtap="onCancelSubscribe">
     <view class="dialog" catchtap="noop">
-      <view class="dialog-title">选择提醒物品</view>
+      <view class="dialog-title-row">
+        <view class="dialog-title">选择提醒物品</view>
+        <view class="dlg-toggle" bindtap="onToggleAll">{{allChecked ? '取消全选' : '全选'}}</view>
+      </view>
       <scroll-view scroll-y class="dialog-list">
         <view class="dialog-item" wx:for="{{subscribeOptions}}" wx:key="name"
               data-index="{{index}}" bindtap="onToggleOption">

@@ -310,7 +310,8 @@ Page({
         console.log('订阅上报成功', r.result);
       },
       fail: function (e) {
-        console.log('订阅上报失败（云开发未开通不影响本地提醒）', e);
+        console.error('订阅上报失败:', e);
+        wx.showToast({ title: '云端订阅失败(不影响本地提醒)', icon: 'none' });
       }
     });
   },

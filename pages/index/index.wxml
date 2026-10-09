@@ -130,7 +130,7 @@
         <view class="dialog-item" wx:for="{{subscribeOptions}}" wx:key="name"
               data-index="{{index}}" bindtap="onToggleOption">
           <view class="check {{item.checked ? 'checked' : ''}}">{{item.checked ? '✓' : ''}}</view>
-          <view class="dialog-name">{{item.icon}} {{item.name}}（{{item.windowText}}）</view>
+          <view class="dialog-name">{{item.name}}<text class="dlg-rounds" wx:if="{{item.windowText}}">（{{item.windowText}}）</text></view>
         </view>
       </scroll-view>
       <view class="dialog-btns">

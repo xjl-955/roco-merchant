@@ -429,6 +429,11 @@
   max-height: 480rpx;
 }
 
+.dlg-rounds {
+  color: #8FA0B5;
+  font-size: 22rpx;
+}
+
 .dialog-item {
   display: flex;
   align-items: center;

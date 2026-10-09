@@ -208,13 +208,15 @@ Page({
     var sub = this.data.subscribed;
     var opts = [];
     for (var i = 0; i < items.length; i++) {
-      var w = items[i].windowText || (items[i].rounds ? '第' + items[i].rounds.join('、第') + '轮' : '') || '';
+      var it = items[i];
+      // 轮次文本：rounds 数组 → "第1、2、3、4轮"
+      var rounds = Array.isArray(it.rounds) ? it.rounds : [];
+      var w = rounds.length ? '第' + rounds.join('、第') + '轮' : (it.windowText || '');
       opts.push({
-        name: items[i].name,
-        icon: items[i].icon,
-        windowText: items[i].windowText || items[i].roundText || w,
-        category: items[i].category || '',
-        price: items[i].price || '',
+        name: it.name,
+        windowText: w,
+        category: it.category || '',
+        price: it.price || '',
         checked: true
       });
     }

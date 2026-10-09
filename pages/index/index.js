@@ -309,6 +309,7 @@ Page({
       },
       success: function (r) {
         console.log('订阅上报成功', r.result);
+        wx.showToast({ title: '已同步云端', icon: 'success', duration: 1500 });
       },
       fail: function (e) {
         console.error('订阅上报失败:', e);

@@ -7,7 +7,7 @@ var live = require('../../utils/live.js');
 // 订阅消息模板 ID：mp.weixin.qq.com → 功能 → 订阅消息 → 公共模板库
 // 选用"上架提醒"类模板（字段：商品名称/上架时间/备注），把模板 ID 填到下面
 // 留空 = 只做小程序内提醒；填了 = 确认订阅时弹授权，到点推送到微信服务通知
-var SUBSCRIBE_TMPL_ID = '';
+var SUBSCRIBE_TMPL_ID = '9_MTzMwOr1LLAOA91VCi-p1oMdeFngRMMkwDW4NEA7k';
 
 var SUB_KEY = 'roco_subscribed_items';
 

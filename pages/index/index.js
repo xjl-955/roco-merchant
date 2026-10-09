@@ -251,6 +251,7 @@ Page({
   },
 
   onConfirmSubscribe: function () {
+    var that = this;
     var opts = this.data.subscribeOptions;
     var arr = [];
     var map = {};
@@ -279,18 +280,38 @@ Page({
         tmplIds: [SUBSCRIBE_TMPL_ID],
         success: function (res) {
           if (res[SUBSCRIBE_TMPL_ID] === 'accept') {
-            // 授权成功：记录授权时间（云函数推送时校验配额）
-            try {
-              wx.setStorageSync('roco_push_auth_' + arr.join('|'), Date.now());
-            } catch (e) { }
+            // 授权成功：上报订阅到云数据库（云函数推送时读取）
+            that._reportSubscription(detailArr);
           }
         },
         fail: function () { /* 用户拒绝或环境不支持，静默 */ }
       });
+    } else {
+      // 未配置模板 ID 时也上报（小程序内提醒 + 云数据库留档）
+      that._reportSubscription(detailArr);
     }
     wx.showToast({
       title: arr.length ? '已订阅 ' + arr.length + ' 件物品' : '已清空订阅',
       icon: 'none'
+    });
+  },
+
+  /** 上报订阅到云数据库（云函数 pushReminder 推送时读取） */
+  _reportSubscription: function (detailArr) {
+    if (!wx.cloud || !detailArr.length) return;
+    wx.cloud.callFunction({
+      name: 'pushReminder',
+      data: {
+        action: 'sub',
+        items: detailArr,
+        tmplId: SUBSCRIBE_TMPL_ID
+      },
+      success: function (r) {
+        console.log('订阅上报成功', r.result);
+      },
+      fail: function (e) {
+        console.log('订阅上报失败（云开发未开通不影响本地提醒）', e);
+      }
     });
   },
 

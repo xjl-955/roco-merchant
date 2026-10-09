@@ -279,12 +279,13 @@ Page({
       wx.requestSubscribeMessage({
         tmplIds: [SUBSCRIBE_TMPL_ID],
         success: function (res) {
-          if (res[SUBSCRIBE_TMPL_ID] === 'accept') {
-            // 授权成功：上报订阅到云数据库（云函数推送时读取）
-            that._reportSubscription(detailArr);
-          }
+          // 无论 accept/reject 都上报（订阅本身入库；授权决定推送配额）
+          that._reportSubscription(detailArr);
         },
-        fail: function () { /* 用户拒绝或环境不支持，静默 */ }
+        fail: function () {
+          // 授权弹窗失败（环境限制/用户此前拒绝）也要上报
+          that._reportSubscription(detailArr);
+        }
       });
     } else {
       // 未配置模板 ID 时也上报（小程序内提醒 + 云数据库留档）

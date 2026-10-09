@@ -4,6 +4,9 @@ var live = require('../../utils/live.js');
 
 // 如已在小程序后台申请「一次性订阅消息」模板，把模板 ID 填到这里；
 // 用户确认订阅后会顺带请求微信推送授权。留空时仅做小程序内本地提醒。
+// 订阅消息模板 ID：mp.weixin.qq.com → 功能 → 订阅消息 → 公共模板库
+// 选用"上架提醒"类模板（字段：商品名称/上架时间/备注），把模板 ID 填到下面
+// 留空 = 只做小程序内提醒；填了 = 确认订阅时弹授权，到点推送到微信服务通知
 var SUBSCRIBE_TMPL_ID = '';
 
 var SUB_KEY = 'roco_subscribed_items';
@@ -214,11 +217,19 @@ Page({
     } catch (e) { /* 存储失败不影响使用 */ }
     this.setData({ showSubscribe: false, subscribed: map });
 
-    // 若配置了订阅消息模板，顺带请求微信推送授权
+    // 请求微信订阅消息授权（推送到服务通知）
     if (SUBSCRIBE_TMPL_ID && wx.requestSubscribeMessage) {
       wx.requestSubscribeMessage({
         tmplIds: [SUBSCRIBE_TMPL_ID],
-        complete: function () { /* 授权结果不影响本地提醒 */ }
+        success: function (res) {
+          if (res[SUBSCRIBE_TMPL_ID] === 'accept') {
+            // 授权成功：记录授权时间（云函数推送时校验配额）
+            try {
+              wx.setStorageSync('roco_push_auth_' + arr.join('|'), Date.now());
+            } catch (e) { }
+          }
+        },
+        fail: function () { /* 用户拒绝或环境不支持，静默 */ }
       });
     }
     wx.showToast({

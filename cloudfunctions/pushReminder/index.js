@@ -27,9 +27,11 @@ exports.main = async (event, context) => {
           templateId: doc.tmplId,
           page: 'pages/index/index',
           data: {
-            thing1: { value: name },
-            time2: { value: roundStarts[hour] || '' },
-            thing3: { value: '已上架，快去看看吧' }
+            // 模板"产品上新通知"关键词：产品名称/分类/金额/温馨提示
+            thing1: { value: String(name).slice(0, 20) },
+            thing2: { value: String(mk.category || '道具').slice(0, 20) },
+            amount3: { value: String(mk.price || '').slice(0, 20) },
+            thing4: { value: '已上架，快去看看吧' }
           }
         });
         pushed++;

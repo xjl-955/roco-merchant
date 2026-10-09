@@ -196,10 +196,12 @@ Page({
     var dayItems = this.data.dayView.items || [];
     var seen = {};
     var merged = [];
-    pool.forEach(function (it) {
+    // 当日实况优先（带真实轮次数据）
+    dayItems.forEach(function (it) {
       if (!seen[it.name]) { seen[it.name] = true; merged.push(it); }
     });
-    dayItems.forEach(function (it) {
+    // 物品池补充当日没有的
+    pool.forEach(function (it) {
       if (!seen[it.name]) { seen[it.name] = true; merged.push(it); }
     });
     var items = merged;

@@ -52,6 +52,7 @@ exports.main = async (event, context) => {
 
   const subs = await db.collection('subscriptions').limit(1000).get();
   let pushed = 0;
+  const errors = [];
 
   for (const doc of subs.data) {
     const items = doc.items || [];
@@ -76,8 +77,12 @@ exports.main = async (event, context) => {
         await db.collection('subscriptions').doc(doc._id).update({
           data: { ['notified.' + notifiedKey]: true }
         });
-      } catch (e) { /* 43101 未授权 */ }
+      } catch (e) {
+        // 推送失败：记录错误码（43101=用户未授权/无配额）
+        console.error('推送失败:', name, 'errCode:', e.errCode || e.message);
+        errors.push({ name: name, errCode: e.errCode || -1, msg: String(e.errMsg || e.message).slice(0, 100) });
+      }
     }
   }
-  return { pushed: pushed };
+  return { pushed: pushed, errors: errors };
 };

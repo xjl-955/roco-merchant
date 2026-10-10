@@ -23,10 +23,30 @@
     "backgroundColor": "#1C2634",
     "borderStyle": "black",
     "list": [
-      { "pagePath": "pages/index/index", "text": "商人", "iconPath": "assets/tab-merchant.png", "selectedIconPath": "assets/tab-merchant-on.png" },
-      { "pagePath": "pages/dex/dex", "text": "图鉴", "iconPath": "assets/tab-dex.png", "selectedIconPath": "assets/tab-dex-on.png" },
-      { "pagePath": "pages/breed/breed", "text": "孵蛋", "iconPath": "assets/tab-breed.png", "selectedIconPath": "assets/tab-breed-on.png" },
-      { "pagePath": "pages/map/map", "text": "地图", "iconPath": "assets/tab-tools.png", "selectedIconPath": "assets/tab-tools-on.png" }
+      {
+        "pagePath": "pages/index/index",
+        "text": "商人",
+        "iconPath": "assets/tab-merchant.png",
+        "selectedIconPath": "assets/tab-merchant-on.png"
+      },
+      {
+        "pagePath": "pages/dex/dex",
+        "text": "图鉴",
+        "iconPath": "assets/tab-dex.png",
+        "selectedIconPath": "assets/tab-dex-on.png"
+      },
+      {
+        "pagePath": "pages/breed/breed",
+        "text": "孵蛋",
+        "iconPath": "assets/tab-breed.png",
+        "selectedIconPath": "assets/tab-breed-on.png"
+      },
+      {
+        "pagePath": "pages/map/map",
+        "text": "地图",
+        "iconPath": "assets/tab-map.png",
+        "selectedIconPath": "assets/tab-map-on.png"
+      }
     ]
   },
   "style": "v2",

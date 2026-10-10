@@ -276,15 +276,35 @@ Page({
 
     // 请求微信订阅消息授权（推送到服务通知）
     if (SUBSCRIBE_TMPL_ID && wx.requestSubscribeMessage) {
+      // 先查询当前订阅状态（ban = 用户勾过"总是拒绝"，弹窗不会再出现）
+      wx.getSetting({
+        withSubscriptions: true,
+        success: function (s) {
+          var ss = s.subscriptionsSetting || {};
+          var item = ss.itemSettings && ss.itemSettings[SUBSCRIBE_TMPL_ID];
+          if (ss.mainSwitch === false) {
+            wx.showToast({ title: '订阅消息总开关已关闭', icon: 'none', duration: 2500 });
+          } else if (item === 'ban') {
+            wx.showToast({ title: '此前勾选了总是拒绝，需删除小程序重进', icon: 'none', duration: 3000 });
+          }
+        }
+      });
       wx.requestSubscribeMessage({
         tmplIds: [SUBSCRIBE_TMPL_ID],
         success: function (res) {
           // 无论 accept/reject 都上报（订阅本身入库；授权决定推送配额）
+          var st = res[SUBSCRIBE_TMPL_ID];
           that._reportSubscription(detailArr);
+          if (st === 'accept') {
+            wx.showToast({ title: '推送已开启', icon: 'success', duration: 1500 });
+          } else if (st === 'reject') {
+            wx.showToast({ title: '已订阅(未开推送)', icon: 'none' });
+          }
         },
-        fail: function () {
+        fail: function (e) {
           // 授权弹窗失败（环境限制/用户此前拒绝）也要上报
           that._reportSubscription(detailArr);
+          console.error('requestSubscribeMessage fail:', e);
         }
       });
     } else {

@@ -57,7 +57,9 @@
     <!-- 互动地图：canvas 尺寸 = 710×zoom rpx（zoom=1 全图适配屏宽） -->
     <movable-area class="map-area">
       <movable-view class="map-mover" style="{{moverStyle}}" direction="all" inertia out-of-bounds="{{false}}"
-                    x="{{x}}" y="{{y}}">
+                    x="{{x}}" y="{{y}}"
+                    scale scale-min="0.5" scale-max="3" scale-value="{{scaleValue}}"
+                    bindchange="onMoveChange" bindscale="onScale">
         <view class="map-canvas" style="{{canvasStyle}}">
           <view class="tile-grid">
             <image class="tile" wx:for="{{tiles}}" wx:key="key" src="{{item.url}}" mode="scaleToFill"></image>

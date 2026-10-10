@@ -27,6 +27,7 @@ Page({
     total: 0,
     zoom: 1,
     zoomText: '1x',
+    scaleValue: 1,
     canvasStyle: 'width: 710rpx; height: 710rpx;',
     x: 0,
     y: 0
@@ -165,6 +166,13 @@ Page({
 
   onBackCats: function () {
     this.setData({ mapMode: false, activeCat: '', selected: null, zoom: 1, zoomText: '1x' });
+  },
+
+  /** 手势缩放回调（双指） */
+  onScale: function (e) {
+    if (e.detail && e.detail.scale) {
+      this.setData({ zoomText: e.detail.scale.toFixed(1) + 'x' });
+    }
   },
 
   onZoomIn: function () {

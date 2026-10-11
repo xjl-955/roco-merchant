@@ -5,7 +5,7 @@ var TILE_FLOORS = {
   'B1': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-B1/6/',
   'B2': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-B2/6/'
 };
-var CAT_ICONS = { '地点': '📍', '宝箱': '🎁', '互动': '🤝', '采矿': '⛏️', '采集': '🌿', '果树': '🌳', '收集': '🏅' };
+var CAT_ICONS = { '传送与功能': '🧭', '商店': '🏪', '特殊玩法': '🎮', '奖励资源': '🎁', '对战NPC': '⚔️', '采集物': '🌿', '地点': '📍', '宝箱': '🎁', '互动': '🤝', '采矿': '⛏️', '采集': '🌿', '果树': '🌳', '收集': '🏅' };
 var TILE_RANGE = [-4, -3, -2, -1, 0, 1, 2, 3];
 // 屏幕可用宽度（rpx）：750 - 左右 padding 40
 var AREA_W = 710;
@@ -74,7 +74,7 @@ Page({
     this.setData({ mapMode: true, activeCat: name, activeCatIcon: cat.icon, loading: true, activeFloor: 'G', zoom: 1, zoomText: '1x', x: 0, y: 0 });
     this._buildTiles('G');
 
-    var KEY = 'roco_maps_cat_' + name;
+    var KEY = 'roco_maps_cat_v6_' + name;
     try {
       var c = wx.getStorageSync(KEY);
       if (c && c.data) { that._use(c.data); return; }

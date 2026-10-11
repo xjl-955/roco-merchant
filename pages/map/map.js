@@ -48,7 +48,9 @@ Page({
       timeout: 20000,
       success: function (res) {
         if (res.statusCode === 200 && res.data && res.data.categories && res.data.categories.length) {
-          try { wx.setStorageSync(KEY, { data: res.data, at: Date.now() }); } catch (e) { }
+          if (res.data.categories && res.data.categories.length) {
+            try { wx.setStorageSync(KEY, { data: res.data, at: Date.now() }); } catch (e) { }
+          }
           that._apply(res.data);
         } else if (!that.data.cats.length) {
           that.setData({ loading: false, error: true });

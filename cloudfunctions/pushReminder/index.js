@@ -54,35 +54,48 @@ exports.main = async (event, context) => {
   let pushed = 0;
   const errors = [];
 
+  // 收集所有待推送任务（并行执行，避免 3 秒超时）
+  const tasks = [];
   for (const doc of subs.data) {
     const items = doc.items || [];
     for (const it of items) {
       const name = it.name || it;
       const notifiedKey = dateKey + '|' + name;
       if (doc.notified && doc.notified[notifiedKey]) continue;
+      tasks.push({ doc: doc, it: it, name: name, notifiedKey: notifiedKey });
+    }
+  }
+
+  // 并行推送（最多同时 10 个，防请求风暴）
+  const BATCH = 10;
+  for (let i = 0; i < tasks.length; i += BATCH) {
+    const batch = tasks.slice(i, i + BATCH);
+    const results = await Promise.all(batch.map(async function (task) {
       try {
         await cloud.openapi.subscribeMessage.send({
-          touser: doc.openid,
-          templateId: doc.tmplId,
+          touser: task.doc.openid,
+          templateId: task.doc.tmplId,
           page: 'pages/index/index',
           data: {
             // 模板"产品上新通知"：产品名称/分类/金额/温馨提示
-            thing1: { value: String(name).slice(0, 20) },
-            thing2: { value: String(it.category || '道具').slice(0, 20) },
-            amount3: { value: String(it.price || '').slice(0, 20) },
+            thing1: { value: String(task.name).slice(0, 20) },
+            thing2: { value: String(task.it.category || '道具').slice(0, 20) },
+            amount3: { value: String(task.it.price || '').slice(0, 20) },
             thing4: { value: '已上架，快去看看吧' }
           }
         });
-        pushed++;
-        await db.collection('subscriptions').doc(doc._id).update({
-          data: { ['notified.' + notifiedKey]: true }
+        await db.collection('subscriptions').doc(task.doc._id).update({
+          data: { ['notified.' + task.notifiedKey]: true }
         });
+        return { ok: true };
       } catch (e) {
         // 推送失败：记录错误码（43101=用户未授权/无配额）
-        console.error('推送失败:', name, 'errCode:', e.errCode || e.message);
-        errors.push({ name: name, errCode: e.errCode || -1, msg: String(e.errMsg || e.message).slice(0, 100) });
+        console.error('推送失败:', task.name, 'errCode:', e.errCode || e.message);
+        errors.push({ name: task.name, errCode: e.errCode || -1, msg: String(e.errMsg || e.message).slice(0, 100) });
+        return { ok: false };
       }
-    }
+    }));
+    pushed += results.filter(function (r) { return r.ok; }).length;
   }
-  return { pushed: pushed, errors: errors };
+  return { pushed: pushed, total: tasks.length, errors: errors };
 };

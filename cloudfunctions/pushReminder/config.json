@@ -4,6 +4,7 @@
       "subscribeMessage.send"
     ]
   },
+  "timeout": 20,
   "triggers": [
     {
       "name": "heartbeat",

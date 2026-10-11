@@ -78,9 +78,10 @@ exports.main = async (event, context) => {
           page: 'pages/index/index',
           data: {
             // 模板"产品上新通知"：产品名称/分类/金额/温馨提示
+            // amount3 是 number 类型字段：去逗号转纯数字
             thing1: { value: String(task.name).slice(0, 20) },
             thing2: { value: String(task.it.category || '道具').slice(0, 20) },
-            amount3: { value: String(task.it.price || '').slice(0, 20) },
+            amount3: { value: parseInt(String(task.it.price || '0').replace(/[^0-9]/g, ''), 10) || 0 },
             thing4: { value: '已上架，快去看看吧' }
           }
         });

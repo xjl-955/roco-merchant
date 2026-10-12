@@ -15,6 +15,8 @@ var merchant = require('./merchant.js');
 
 // 档期数据地址：你自己的 GitHub Pages（xjl-955/roco-data 仓库，已验证）
 var DATA_URL = 'https://xjl-955.github.io/roco-data/schedule.json';
+// 实时轮次数据（快爆源实况，优先生效）
+var LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json';
 
 var STORAGE_KEY = 'roco_merchant_cache_v1';
 var CACHE_TTL = 30 * 60 * 1000; // 30 分钟
@@ -44,11 +46,34 @@ function shouldRefresh() {
 
 /**
  * 拉取远程数据。
+ * 流程：先拉 live.json（实时轮次实况，优先），再拉 schedule.json（档期回退）
  * callback(err, result)：成功时 result = { updated: bool, updatedAt: 'YYYY-MM-DD' }
- * updated 表示数据比拉取前更新了。
  */
 function fetchRemote(callback) {
   var before = merchant.getMeta() && merchant.getMeta().updatedAt;
+  // 第 1 步：拉实时轮次数据
+  wx.request({
+    url: LIVE_URL,
+    timeout: 10000,
+    success: function (res) {
+      if (res.statusCode === 200 && res.data) {
+        merchant.applyLiveToday(res.data);
+        try {
+          wx.setStorageSync('roco_live_cache', { payload: res.data, cachedAt: Date.now() });
+        } catch (e) { }
+      }
+      // 第 2 步：拉档期表（回退数据源）
+      fetchSchedule(callback, before);
+    },
+    fail: function () {
+      // live 拉取失败也继续拉档期
+      fetchSchedule(callback, before);
+    }
+  });
+}
+
+/** 拉取档期表（回退数据源） */
+function fetchSchedule(callback, before) {
   wx.request({
     url: DATA_URL,
     timeout: 10000,

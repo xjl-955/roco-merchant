@@ -1,7 +1,26 @@
 // 云函数：处理 action=sub（订阅上报写入数据库）+ 定时推送
+// 推送过滤：只推【本轮在售】的订阅物品（live.json 实况）
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
+
+// 快爆源实时数据（与小程序同源）
+const LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json';
+
+/** 拉取当前在售物品名单（name -> {category, price}） */
+async function getLiveItems() {
+  try {
+    const r = await fetch(LIVE_URL, { headers: { 'User-Agent': 'pushReminder' } });
+    const j = await r.json();
+    const map = {};
+    (j.items || []).forEach(function (it) {
+      map[it.name] = { category: it.category || '', price: it.price || '' };
+    });
+    return map;
+  } catch (e) {
+    return null; // 拉取失败 → 调用方回退为推全部订阅
+  }
+}
 
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
@@ -12,7 +31,6 @@ exports.main = async (event, context) => {
     const items = event.items || [];
     const tmplId = event.tmplId || '';
     if (!items.length || !tmplId) return { ok: false, reason: 'empty' };
-    // 查已有记录（同一用户一条文档，重复订阅则更新）
     const exist = await db.collection('subscriptions').where({ openid: openid }).get();
     if (exist.data.length) {
       await db.collection('subscriptions').doc(exist.data[0]._id).update({
@@ -20,7 +38,7 @@ exports.main = async (event, context) => {
           items: items,
           tmplId: tmplId,
           updatedAt: Date.now(),
-          notified: {}  // 重置通知标记（新一轮订阅）
+          notified: {}
         }
       });
       return { ok: true, action: 'updated' };
@@ -50,11 +68,13 @@ exports.main = async (event, context) => {
     return { pushed: 0, skip: 'not in push window' };
   }
 
+  // 拉本轮在售物品名单（实况）
+  const liveMap = await getLiveItems();
+
   const subs = await db.collection('subscriptions').limit(1000).get();
   let pushed = 0;
   const errors = [];
 
-  // 收集所有待推送任务（并行执行，避免 3 秒超时）
   const tasks = [];
   for (const doc of subs.data) {
     const items = doc.items || [];
@@ -62,11 +82,19 @@ exports.main = async (event, context) => {
       const name = it.name || it;
       const notifiedKey = dateKey + '|' + name;
       if (doc.notified && doc.notified[notifiedKey]) continue;
-      tasks.push({ doc: doc, it: it, name: name, notifiedKey: notifiedKey });
+      // 【关键过滤】只推本轮在售的物品；live 拉取失败时回退为推全部订阅
+      if (liveMap && !liveMap[name]) continue;
+      const info = liveMap ? (liveMap[name] || it) : it;
+      tasks.push({
+        doc: doc, name: name,
+        category: info.category || it.category || '',
+        price: info.price || it.price || '',
+        notifiedKey: notifiedKey
+      });
     }
   }
 
-  // 并行推送（最多同时 10 个，防请求风暴）
+  // 并行推送（每批 10 个）
   const BATCH = 10;
   for (let i = 0; i < tasks.length; i += BATCH) {
     const batch = tasks.slice(i, i + BATCH);
@@ -77,11 +105,9 @@ exports.main = async (event, context) => {
           templateId: task.doc.tmplId,
           page: 'pages/index/index',
           data: {
-            // 模板"产品上新通知"：产品名称/分类/金额/温馨提示
-            // amount3 是 number 类型字段：去逗号转纯数字
             thing1: { value: String(task.name).slice(0, 20) },
-            thing2: { value: String(task.it.category || '道具').slice(0, 20) },
-            amount3: { value: parseInt(String(task.it.price || '0').replace(/[^0-9]/g, ''), 10) || 0 },
+            thing2: { value: String(task.category || '道具').slice(0, 20) },
+            amount3: { value: parseInt(String(task.price || '0').replace(/[^0-9]/g, ''), 10) || 0 },
             thing4: { value: '已上架，快去看看吧' }
           }
         });
@@ -90,7 +116,6 @@ exports.main = async (event, context) => {
         });
         return { ok: true };
       } catch (e) {
-        // 推送失败：记录错误码（43101=用户未授权/无配额）
         console.error('推送失败:', task.name, 'errCode:', e.errCode || e.message);
         errors.push({ name: task.name, errCode: e.errCode || -1, msg: String(e.errMsg || e.message).slice(0, 100) });
         return { ok: false };

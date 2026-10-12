@@ -36,8 +36,19 @@ jobs:
         run: node server/fetch-live.mjs
 
       - name: Fetch daily schedule from wiki
-        if: github.event.schedule == '5 1 * * *'
-        run: node server/fetch-schedule.mjs
+        # 条件修正：多 cron 触发时 event.schedule 恒为 '*/5 * * * *'，
+        # 原判断 == '5 1 * * *' 永不成立 → 档期表从不更新。
+        # 改为：run 内用 UTC 时间判断——每天 01 点（北京 09 点）执行一次
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '5 1 * * *'
+        run: |
+          UTC_HOUR=$(date -u +%H)
+          echo "当前 UTC 小时: $UTC_HOUR"
+          if [ "$UTC_HOUR" = "01" ]; then
+            echo "档期抓取窗口 ✓"
+            node server/fetch-schedule.mjs
+          else
+            echo "非档期抓取时间（每天 UTC 01 点执行一次），跳过"
+          fi
 
       - name: Commit to self repo
         run: |

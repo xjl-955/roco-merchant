@@ -362,15 +362,15 @@ function getDayView(now, status) {
     liveActive: false, // 是否使用了实时轮次数据
     priceVisible: false
   };
+  // live 数据优先：即使档期表判定"无档期"，
+  // 只要快爆源实况显示今天有商人（date 匹配且有商品）就以实况为准
+  if (liveToday && liveToday.date === view.dateText && liveToday.items.length > 0) {
+    return buildLiveView(view, nowSec, nowMin);
+  }
   if (!status.current) return view;
 
   var nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
   var nowMin = Math.floor(nowSec / 60);
-
-  // —— 优先：实时轮次数据（日期匹配当天且有商品）——
-  if (liveToday && liveToday.date === view.dateText && liveToday.items.length > 0) {
-    return buildLiveView(view, nowSec, nowMin);
-  }
 
   // —— 回退：档期表按时段分组 ——
   var todayKey = pad(now.getMonth() + 1) + '-' + pad(now.getDate());

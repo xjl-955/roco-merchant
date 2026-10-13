@@ -7,7 +7,7 @@ const db = cloud.database();
 // 快爆源实时数据（与小程序同源）
 const LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json';
 
-/** 拉取当前在售物品名单（name -> {category, price}） */
+/** 拉取当前在售物品（返回 {date, items Map}） */
 async function getLiveItems() {
   try {
     const r = await fetch(LIVE_URL, { headers: { 'User-Agent': 'pushReminder' } });
@@ -16,7 +16,7 @@ async function getLiveItems() {
     (j.items || []).forEach(function (it) {
       map[it.name] = { category: it.category || '', price: it.price || '' };
     });
-    return map;
+    return { date: j.date || '', items: map };
   } catch (e) {
     return null; // 拉取失败 → 调用方回退为推全部订阅
   }
@@ -69,7 +69,16 @@ exports.main = async (event, context) => {
   }
 
   // 拉本轮在售物品名单（实况）
-  const liveMap = await getLiveItems();
+  const liveData = await getLiveItems();
+
+  // 【校验】live 数据必须是今天的——过期数据（跨天竞态）不推送
+  // 例：昨晚 23:55 最后一次更新 date=昨天；今早 08:00 云函数先于 Actions 触发
+  //     拉到的还是昨天的 live → 若不校验会把昨天的物品当今天在售推送
+  if (!liveData || !liveData.date || liveData.date !== dateKey) {
+    console.error('live 数据过期或不匹配:', liveData ? liveData.date : 'null', '期望', dateKey, '— 本轮跳过推送');
+    return { pushed: 0, skip: 'live data stale', liveDate: liveData ? liveData.date : null };
+  }
+  const liveMap = liveData.items;
 
   const subs = await db.collection('subscriptions').limit(1000).get();
   let pushed = 0;

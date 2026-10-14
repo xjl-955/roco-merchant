@@ -78,10 +78,11 @@ exports.main = async (event, context) => {
   // 拉本轮在售物品名单（实况）
   const liveData = await getLiveItems();
 
-  // 【校验】live 数据日期：
-  // - 拉取成功且 date=今天 → 只推本轮在售的
-  // - 拉取成功但 date≠今天（跨天过期）→ 跳过（不推过期数据）
-  // - 拉取失败（null，重试3次仍失败）→ 回退推全部订阅（聊胜于无）
+  // 【校验】live 数据日期——【必须拉取成功且为今天才推送】
+  // - date=今天 → 只推本轮在售的订阅物品
+  // - date≠今天（跨天过期）→ 跳过（不推过期数据）
+  // - 拉取失败（null）→ 跳过（用户要求：不做"推全部"的回退，
+  //   只推正确的订阅物品，不确定在售就宁可不推）
   let liveMap = null;
   if (liveData && liveData.date) {
     if (liveData.date !== dateKey) {
@@ -91,7 +92,8 @@ exports.main = async (event, context) => {
     liveMap = liveData.items;
     console.log('live 数据校验通过: date=' + liveData.date, '在售', Object.keys(liveMap).length, '件');
   } else {
-    console.error('live 拉取 3 次全失败 — 回退推全部订阅');
+    console.error('live 拉取 3 次全失败 — 本轮跳过推送（要求只推确认在售的物品）');
+    return { pushed: 0, skip: 'live fetch failed', pushed_note: '只推确认在售的物品，拉取失败不推送' };
   }
 
   const subs = await db.collection('subscriptions').limit(1000).get();
@@ -105,9 +107,9 @@ exports.main = async (event, context) => {
       const name = it.name || it;
       const notifiedKey = dateKey + '|' + name;
       if (doc.notified && doc.notified[notifiedKey]) continue;
-      // 【关键过滤】只推本轮在售的物品；live 拉取失败时回退为推全部订阅
-      if (liveMap && !liveMap[name]) continue;
-      const info = liveMap ? (liveMap[name] || it) : it;
+      // 【关键过滤】只推本轮在售的物品（liveMap 必定有效）
+      if (!liveMap[name]) continue;
+      const info = liveMap[name];
       tasks.push({
         doc: doc, name: name,
         category: info.category || it.category || '',

@@ -7,9 +7,9 @@ const db = cloud.database();
 // 快爆源实时数据（与小程序同源）
 const LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json';
 
-/** 拉取当前在售物品（重试 3 次；返回 {date, items Map} 或 null=拉取失败） */
+/** 拉取当前在售物品（重试 10 次、间隔 6s；返回 {date, items Map} 或 null=拉取失败） */
 async function getLiveItems() {
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 10; attempt++) {
     try {
       const r = await fetch(LIVE_URL, {
         headers: { 'User-Agent': 'pushReminder' },
@@ -22,11 +22,11 @@ async function getLiveItems() {
       });
       return { date: j.date || '', items: map };
     } catch (e) {
-      console.error('live 拉取失败(' + attempt + '/3):', String(e.message || e).slice(0, 80));
-      if (attempt < 3) await new Promise((r2) => setTimeout(r2, attempt * 2000));
+      console.error('live 拉取失败(' + attempt + '/10):', String(e.message || e).slice(0, 80));
+      if (attempt < 10) await new Promise((r2) => setTimeout(r2, 6000));
     }
   }
-  return null; // 3 次全失败
+  return null; // 10 次全失败
 }
 
 exports.main = async (event, context) => {

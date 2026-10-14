@@ -1,39 +1,52 @@
-// 云函数：处理 action=sub（订阅上报写入数据库）+ 定时推送
-// 推送过滤：只推【本轮在售】的订阅物品（live.json 实况）
+// 云函数最终版：跨触发器重试（每分钟 1 次 × 10 分钟）+ 只推确认在售物品
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
-// 快爆源实时数据（与小程序同源）
 const LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json';
+const ROUND_HOURS = { 8: '08:00', 12: '12:00', 16: '16:00', 20: '20:00' };
+const RETRY_MAX = 10; // 推送窗口内最多重试 10 次（每分钟 1 次 = 覆盖 10 分钟）
 
-/** 拉取当前在售物品（重试 10 次、间隔 6s；返回 {date, items Map} 或 null=拉取失败） */
-async function getLiveItems() {
-  for (let attempt = 1; attempt <= 10; attempt++) {
-    try {
-      const r = await fetch(LIVE_URL, {
-        headers: { 'User-Agent': 'pushReminder' },
-        signal: AbortSignal.timeout(5000)
-      });
-      const j = await r.json();
-      const map = {};
-      (j.items || []).forEach(function (it) {
-        map[it.name] = { category: it.category || '', price: it.price || '' };
-      });
-      return { date: j.date || '', items: map };
-    } catch (e) {
-      console.error('live 拉取失败(' + attempt + '/10):', String(e.message || e).slice(0, 80));
-      if (attempt < 10) await new Promise((r2) => setTimeout(r2, 6000));
-    }
+/** 拉取 live（单次，无内部重试）——失败返回 null */
+async function fetchLiveOnce() {
+  try {
+    const r = await fetch(LIVE_URL, {
+      headers: { 'User-Agent': 'pushReminder' },
+      signal: AbortSignal.timeout(8000)
+    });
+    const j = await r.json();
+    if (!j.date || !Array.isArray(j.items)) return null;
+    const map = {};
+    j.items.forEach(function (it) {
+      map[it.name] = { category: it.category || '', price: it.price || '' };
+    });
+    return { date: j.date, items: map };
+  } catch (e) {
+    return null;
   }
-  return null; // 10 次全失败
+}
+
+/** 读取/写入重试状态（retryState 集合，单文档 fixed id） */
+const STATE_ID = 'global_retry';
+async function getRetryState() {
+  try {
+    const r = await db.collection('retryState').doc(STATE_ID).get();
+    return r.data || {};
+  } catch (e) {
+    return {}; // 不存在
+  }
+}
+async function setRetryState(state) {
+  try {
+    await db.collection('retryState').doc(STATE_ID).set({ data: state });
+  } catch (e) { /* 忽略 */ }
 }
 
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
 
-  // ── 订阅上报：前端确认订阅后调用 ──
+  // ── 订阅上报 ──
   if (event.action === 'sub') {
     const items = event.items || [];
     const tmplId = event.tmplId || '';
@@ -41,112 +54,111 @@ exports.main = async (event, context) => {
     const exist = await db.collection('subscriptions').where({ openid: openid }).get();
     if (exist.data.length) {
       await db.collection('subscriptions').doc(exist.data[0]._id).update({
-        data: {
-          items: items,
-          tmplId: tmplId,
-          updatedAt: Date.now(),
-          notified: {}
-        }
+        data: { items: items, tmplId: tmplId, updatedAt: Date.now(), notified: {} }
       });
       return { ok: true, action: 'updated' };
     }
     await db.collection('subscriptions').add({
-      data: {
-        openid: openid,
-        items: items,
-        tmplId: tmplId,
-        notified: {},
-        createdAt: Date.now()
-      }
+      data: { openid: openid, items: items, tmplId: tmplId, notified: {}, createdAt: Date.now() }
     });
     return { ok: true, action: 'created' };
   }
 
-  // ── 定时推送（触发器每分钟）──
+  // ── 定时推送（触发器每分钟，营业时段）──
   const now = new Date();
   const bj = new Date(now.getTime() + 8 * 3600 * 1000);
   const hour = bj.getUTCHours();
   const minute = bj.getUTCMinutes();
   const dateKey = bj.toISOString().slice(0, 10);
 
-  // 只在轮次开售时间点的 0~2 分钟内推送
-  const ROUND_HOURS = { 8: '08:00', 12: '12:00', 16: '16:00', 20: '20:00' };
-  if (ROUND_HOURS[hour] === undefined || minute > 2) {
-    return { pushed: 0, skip: 'not in push window' };
+  if (ROUND_HOURS[hour] === undefined) {
+    return { pushed: 0, skip: 'not a round hour' };
+  }
+  // 窗口：轮次开售后 0~10 分钟（跨触发器重试期）
+  if (minute > 10) {
+    return { pushed: 0, skip: 'window closed' };
   }
 
-  // 拉本轮在售物品名单（实况）
-  const liveData = await getLiveItems();
-
-  // 【校验】live 数据日期——【必须拉取成功且为今天才推送】
-  // - date=今天 → 只推本轮在售的订阅物品
-  // - date≠今天（跨天过期）→ 跳过（不推过期数据）
-  // - 拉取失败（null）→ 跳过（用户要求：不做"推全部"的回退，
-  //   只推正确的订阅物品，不确定在售就宁可不推）
-  let liveMap = null;
-  if (liveData && liveData.date) {
-    if (liveData.date !== dateKey) {
-      console.error('live 数据过期: live.date=' + liveData.date, '期望', dateKey, '— 本轮跳过推送');
-      return { pushed: 0, skip: 'live data stale', liveDate: liveData.date };
+  // ── 拉 live（每次触发拉 1 次）──
+  const live = await fetchLiveOnce();
+  if (live) {
+    // 【日期校验】必须是今天
+    if (live.date !== dateKey) {
+      console.error('live 数据过期: live.date=' + live.date, '期望', dateKey);
+      await setRetryState({ date: dateKey, count: 0, stale: true, updatedAt: Date.now() });
+      return { pushed: 0, skip: 'live data stale', liveDate: live.date };
     }
-    liveMap = liveData.items;
-    console.log('live 数据校验通过: date=' + liveData.date, '在售', Object.keys(liveMap).length, '件');
-  } else {
-    console.error('live 拉取 3 次全失败 — 本轮跳过推送（要求只推确认在售的物品）');
-    return { pushed: 0, skip: 'live fetch failed', pushed_note: '只推确认在售的物品，拉取失败不推送' };
+    // 成功 → 清除重试状态 → 推送在售交集
+    await setRetryState({ date: dateKey, count: 0, ok: true, updatedAt: Date.now() });
+    return await pushRound(live.items, dateKey);
   }
 
-  const subs = await db.collection('subscriptions').limit(1000).get();
-  let pushed = 0;
-  const errors = [];
-
-  const tasks = [];
-  for (const doc of subs.data) {
-    const items = doc.items || [];
-    for (const it of items) {
-      const name = it.name || it;
-      const notifiedKey = dateKey + '|' + name;
-      if (doc.notified && doc.notified[notifiedKey]) continue;
-      // 【关键过滤】只推本轮在售的物品（liveMap 必定有效）
-      if (!liveMap[name]) continue;
-      const info = liveMap[name];
-      tasks.push({
-        doc: doc, name: name,
-        category: info.category || it.category || '',
-        price: info.price || it.price || '',
-        notifiedKey: notifiedKey
-      });
-    }
+  // live 拉取失败 → 重试状态管理
+  const state = await getRetryState();
+  if (state.date !== dateKey || state.stale) {
+    // 新的一天或过期状态 → 初始化
+    await setRetryState({ date: dateKey, count: 1, updatedAt: Date.now() });
+    return { pushed: 0, retry: 1, msg: 'live 失败，下分钟重试（1/10）' };
   }
+  const count = (state.count || 0) + 1;
+  if (count >= RETRY_MAX) {
+    await setRetryState({ date: dateKey, count: count, exhausted: true, updatedAt: Date.now() });
+    console.error('live 拉取重试 ' + RETRY_MAX + ' 次全失败 — 本轮放弃');
+    return { pushed: 0, retry: count, msg: '重试 ' + RETRY_MAX + ' 次全失败，放弃本轮' };
+  }
+  await setRetryState({ date: dateKey, count: count, updatedAt: Date.now() });
+  return { pushed: 0, retry: count, msg: 'live 失败，下分钟重试（' + count + '/10）' };
 
-  // 并行推送（每批 10 个）
-  const BATCH = 10;
-  for (let i = 0; i < tasks.length; i += BATCH) {
-    const batch = tasks.slice(i, i + BATCH);
-    const results = await Promise.all(batch.map(async function (task) {
-      try {
-        await cloud.openapi.subscribeMessage.send({
-          touser: task.doc.openid,
-          templateId: task.doc.tmplId,
-          page: 'pages/index/index',
-          data: {
-            thing1: { value: String(task.name).slice(0, 20) },
-            thing2: { value: String(task.category || '道具').slice(0, 20) },
-            amount3: { value: parseInt(String(task.price || '0').replace(/[^0-9]/g, ''), 10) || 0 },
-            thing4: { value: '已上架，快去看看吧' }
-          }
+  // ── 推送本轮在售 ∩ 订阅 ──
+  async function pushRound(liveMap, dk) {
+    const subs = await db.collection('subscriptions').limit(1000).get();
+    let pushed = 0;
+    const errors = [];
+    const tasks = [];
+    for (const doc of subs.data) {
+      const items = doc.items || [];
+      for (const it of items) {
+        const name = it.name || it;
+        const notifiedKey = dk + '|' + name;
+        if (doc.notified && doc.notified[notifiedKey]) continue;
+        if (!liveMap[name]) continue; // 只推本轮在售
+        const info = liveMap[name];
+        tasks.push({
+          doc: doc, name: name,
+          category: info.category || it.category || '',
+          price: info.price || it.price || '',
+          notifiedKey: notifiedKey
         });
-        await db.collection('subscriptions').doc(task.doc._id).update({
-          data: { ['notified.' + task.notifiedKey]: true }
-        });
-        return { ok: true };
-      } catch (e) {
-        console.error('推送失败:', task.name, 'errCode:', e.errCode || e.message);
-        errors.push({ name: task.name, errCode: e.errCode || -1, msg: String(e.errMsg || e.message).slice(0, 100) });
-        return { ok: false };
       }
-    }));
-    pushed += results.filter(function (r) { return r.ok; }).length;
+    }
+    const BATCH = 10;
+    for (let i = 0; i < tasks.length; i += BATCH) {
+      const batch = tasks.slice(i, i + BATCH);
+      const results = await Promise.all(batch.map(async function (task) {
+        try {
+          await cloud.openapi.subscribeMessage.send({
+            touser: task.doc.openid,
+            templateId: task.doc.tmplId,
+            page: 'pages/index/index',
+            data: {
+              thing1: { value: String(task.name).slice(0, 20) },
+              thing2: { value: String(task.category || '道具').slice(0, 20) },
+              amount3: { value: parseInt(String(task.price || '0').replace(/[^0-9]/g, ''), 10) || 0 },
+              thing4: { value: '已上架，快去看看吧' }
+            }
+          });
+          await db.collection('subscriptions').doc(task.doc._id).update({
+            data: { ['notified.' + task.notifiedKey]: true }
+          });
+          return { ok: true };
+        } catch (e) {
+          console.error('推送失败:', task.name, 'errCode:', e.errCode || e.message);
+          errors.push({ name: task.name, errCode: e.errCode || -1, msg: String(e.errMsg || e.message).slice(0, 100) });
+          return { ok: false };
+        }
+      }));
+      pushed += results.filter(function (r) { return r.ok; }).length;
+    }
+    return { pushed: pushed, total: tasks.length, errors: errors };
   }
-  return { pushed: pushed, total: tasks.length, errors: errors };
 };

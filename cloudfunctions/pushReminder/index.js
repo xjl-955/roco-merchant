@@ -7,19 +7,26 @@ const db = cloud.database();
 // 快爆源实时数据（与小程序同源）
 const LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json';
 
-/** 拉取当前在售物品（返回 {date, items Map}） */
+/** 拉取当前在售物品（重试 3 次；返回 {date, items Map} 或 null=拉取失败） */
 async function getLiveItems() {
-  try {
-    const r = await fetch(LIVE_URL, { headers: { 'User-Agent': 'pushReminder' } });
-    const j = await r.json();
-    const map = {};
-    (j.items || []).forEach(function (it) {
-      map[it.name] = { category: it.category || '', price: it.price || '' };
-    });
-    return { date: j.date || '', items: map };
-  } catch (e) {
-    return null; // 拉取失败 → 调用方回退为推全部订阅
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const r = await fetch(LIVE_URL, {
+        headers: { 'User-Agent': 'pushReminder' },
+        signal: AbortSignal.timeout(5000)
+      });
+      const j = await r.json();
+      const map = {};
+      (j.items || []).forEach(function (it) {
+        map[it.name] = { category: it.category || '', price: it.price || '' };
+      });
+      return { date: j.date || '', items: map };
+    } catch (e) {
+      console.error('live 拉取失败(' + attempt + '/3):', String(e.message || e).slice(0, 80));
+      if (attempt < 3) await new Promise((r2) => setTimeout(r2, attempt * 2000));
+    }
   }
+  return null; // 3 次全失败
 }
 
 exports.main = async (event, context) => {
@@ -71,14 +78,21 @@ exports.main = async (event, context) => {
   // 拉本轮在售物品名单（实况）
   const liveData = await getLiveItems();
 
-  // 【校验】live 数据必须是今天的——过期数据（跨天竞态）不推送
-  // 例：昨晚 23:55 最后一次更新 date=昨天；今早 08:00 云函数先于 Actions 触发
-  //     拉到的还是昨天的 live → 若不校验会把昨天的物品当今天在售推送
-  if (!liveData || !liveData.date || liveData.date !== dateKey) {
-    console.error('live 数据过期或不匹配:', liveData ? liveData.date : 'null', '期望', dateKey, '— 本轮跳过推送');
-    return { pushed: 0, skip: 'live data stale', liveDate: liveData ? liveData.date : null };
+  // 【校验】live 数据日期：
+  // - 拉取成功且 date=今天 → 只推本轮在售的
+  // - 拉取成功但 date≠今天（跨天过期）→ 跳过（不推过期数据）
+  // - 拉取失败（null，重试3次仍失败）→ 回退推全部订阅（聊胜于无）
+  let liveMap = null;
+  if (liveData && liveData.date) {
+    if (liveData.date !== dateKey) {
+      console.error('live 数据过期: live.date=' + liveData.date, '期望', dateKey, '— 本轮跳过推送');
+      return { pushed: 0, skip: 'live data stale', liveDate: liveData.date };
+    }
+    liveMap = liveData.items;
+    console.log('live 数据校验通过: date=' + liveData.date, '在售', Object.keys(liveMap).length, '件');
+  } else {
+    console.error('live 拉取 3 次全失败 — 回退推全部订阅');
   }
-  const liveMap = liveData.items;
 
   const subs = await db.collection('subscriptions').limit(1000).get();
   let pushed = 0;

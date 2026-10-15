@@ -1,5 +1,6 @@
 // 云函数最终版：跨触发器重试（每轮 30 次 × 每分钟 1 次）+ 只推确认在售物品
 const cloud = require('wx-server-sdk');
+const https = require('https'); // Node 16 无内置 fetch，用 https 模块
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
@@ -7,16 +8,31 @@ const LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json';
 const ROUND_HOURS = { 8: '08:00', 12: '12:00', 16: '16:00', 20: '20:00' };
 const RETRY_MAX = 30; // 每轮最多重试 30 次（每分钟 1 次 = 覆盖 30 分钟）
 
+/** https GET（Node 16 兼容，替代 fetch） */
+function httpsGet(url) {
+  return new Promise(function (resolve, reject) {
+    const req = https.get(url, { timeout: 8000 }, function (res) {
+      let body = '';
+      res.on('data', function (c) { body += c; });
+      res.on('end', function () {
+        if (res.statusCode !== 200) {
+          reject(new Error('HTTP ' + res.statusCode));
+          return;
+        }
+        resolve(body);
+      });
+    });
+    req.on('timeout', function () { req.destroy(new Error('timeout')); });
+    req.on('error', reject);
+  });
+}
+
 /** 拉取 live（单次，无内部重试）——失败返回 null */
 async function fetchLiveOnce() {
   try {
-    const r = await fetch(LIVE_URL, {
-      headers: { 'User-Agent': 'pushReminder' },
-      signal: AbortSignal.timeout(8000)
-    });
-    console.log('live fetch HTTP:', r.status);
-    if (!r.ok) return null;
-    const j = await r.json();
+    const body = await httpsGet(LIVE_URL);
+    console.log('live fetch HTTP: 200, 大小', body.length);
+    const j = JSON.parse(body);
     if (!j.date || !Array.isArray(j.items)) {
       console.error('live 数据结构异常: date=' + j.date, 'items=' + Array.isArray(j.items));
       return null;

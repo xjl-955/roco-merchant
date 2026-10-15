@@ -1,11 +1,11 @@
-// 云函数最终版：跨触发器重试（每分钟 1 次 × 10 分钟）+ 只推确认在售物品
+// 云函数最终版：跨触发器重试（每轮 30 次 × 每分钟 1 次）+ 只推确认在售物品
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
 const LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json';
 const ROUND_HOURS = { 8: '08:00', 12: '12:00', 16: '16:00', 20: '20:00' };
-const RETRY_MAX = 10; // 推送窗口内最多重试 10 次（每分钟 1 次 = 覆盖 10 分钟）
+const RETRY_MAX = 30; // 每轮最多重试 30 次（每分钟 1 次 = 覆盖 30 分钟）
 
 /** 拉取 live（单次，无内部重试）——失败返回 null */
 async function fetchLiveOnce() {
@@ -74,8 +74,8 @@ exports.main = async (event, context) => {
   if (ROUND_HOURS[hour] === undefined) {
     return { pushed: 0, skip: 'not a round hour' };
   }
-  // 窗口：轮次开售后 0~10 分钟（跨触发器重试期）
-  if (minute > 10) {
+  // 窗口：轮次开售后 0~35 分钟（30 次重试空间 + 缓冲）
+  if (minute > 35) {
     return { pushed: 0, skip: 'window closed' };
   }
 
@@ -85,29 +85,29 @@ exports.main = async (event, context) => {
     // 【日期校验】必须是今天
     if (live.date !== dateKey) {
       console.error('live 数据过期: live.date=' + live.date, '期望', dateKey);
-      await setRetryState({ date: dateKey, count: 0, stale: true, updatedAt: Date.now() });
+      await setRetryState({ date: dateKey, hour: hour, count: 0, stale: true, updatedAt: Date.now() });
       return { pushed: 0, skip: 'live data stale', liveDate: live.date };
     }
     // 成功 → 清除重试状态 → 推送在售交集
-    await setRetryState({ date: dateKey, count: 0, ok: true, updatedAt: Date.now() });
+    await setRetryState({ date: dateKey, hour: hour, count: 0, ok: true, updatedAt: Date.now() });
     return await pushRound(live.items, dateKey);
   }
 
-  // live 拉取失败 → 重试状态管理
+  // live 拉取失败 → 重试状态管理（每轮独立计数：date + hour）
   const state = await getRetryState();
-  if (state.date !== dateKey || state.stale) {
-    // 新的一天或过期状态 → 初始化
-    await setRetryState({ date: dateKey, count: 1, updatedAt: Date.now() });
-    return { pushed: 0, retry: 1, msg: 'live 失败，下分钟重试（1/10）' };
+  if (state.date !== dateKey || state.hour !== hour || state.stale) {
+    // 新的一天 / 新一轮 → 初始化（count=1 表示本次是第 1 次尝试）
+    await setRetryState({ date: dateKey, hour: hour, count: 1, updatedAt: Date.now() });
+    return { pushed: 0, retry: 1, msg: 'live 失败，下分钟重试（1/30）' };
   }
   const count = (state.count || 0) + 1;
   if (count >= RETRY_MAX) {
-    await setRetryState({ date: dateKey, count: count, exhausted: true, updatedAt: Date.now() });
-    console.error('live 拉取重试 ' + RETRY_MAX + ' 次全失败 — 本轮放弃');
+    await setRetryState({ date: dateKey, hour: hour, count: count, exhausted: true, updatedAt: Date.now() });
+    console.error('live 拉取重试 ' + RETRY_MAX + ' 次全失败 — 本轮放弃（' + ROUND_HOURS[hour] + '）');
     return { pushed: 0, retry: count, msg: '重试 ' + RETRY_MAX + ' 次全失败，放弃本轮' };
   }
-  await setRetryState({ date: dateKey, count: count, updatedAt: Date.now() });
-  return { pushed: 0, retry: count, msg: 'live 失败，下分钟重试（' + count + '/10）' };
+  await setRetryState({ date: dateKey, hour: hour, count: count, updatedAt: Date.now() });
+  return { pushed: 0, retry: count, msg: 'live 失败，下分钟重试（' + count + '/30）' };
 
   // ── 推送本轮在售 ∩ 订阅 ──
   async function pushRound(liveMap, dk) {

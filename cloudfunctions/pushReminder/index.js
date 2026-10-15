@@ -14,14 +14,20 @@ async function fetchLiveOnce() {
       headers: { 'User-Agent': 'pushReminder' },
       signal: AbortSignal.timeout(8000)
     });
+    console.log('live fetch HTTP:', r.status);
+    if (!r.ok) return null;
     const j = await r.json();
-    if (!j.date || !Array.isArray(j.items)) return null;
+    if (!j.date || !Array.isArray(j.items)) {
+      console.error('live 数据结构异常: date=' + j.date, 'items=' + Array.isArray(j.items));
+      return null;
+    }
     const map = {};
     j.items.forEach(function (it) {
       map[it.name] = { category: it.category || '', price: it.price || '' };
     });
     return { date: j.date, items: map };
   } catch (e) {
+    console.error('live fetch 异常:', String(e.message || e).slice(0, 120));
     return null;
   }
 }
@@ -94,11 +100,17 @@ exports.main = async (event, context) => {
   }
 
   // live 拉取失败 → 重试状态管理（每轮独立计数：date + hour）
+  // exhausted 后只累加计数（无害），不再尝试推送
   const state = await getRetryState();
   if (state.date !== dateKey || state.hour !== hour || state.stale) {
     // 新的一天 / 新一轮 → 初始化（count=1 表示本次是第 1 次尝试）
     await setRetryState({ date: dateKey, hour: hour, count: 1, updatedAt: Date.now() });
     return { pushed: 0, retry: 1, msg: 'live 失败，下分钟重试（1/30）' };
+  }
+  if (state.exhausted) {
+    // 已放弃本轮——继续累加计数便于观察，但不推送
+    await setRetryState({ date: dateKey, hour: hour, count: (state.count || 0) + 1, exhausted: true, updatedAt: Date.now() });
+    return { pushed: 0, retry: (state.count || 0) + 1, msg: '本轮已放弃（exhausted）' };
   }
   const count = (state.count || 0) + 1;
   if (count >= RETRY_MAX) {

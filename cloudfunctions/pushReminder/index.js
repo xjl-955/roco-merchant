@@ -39,7 +39,7 @@ async function fetchLiveOnce() {
     }
     const map = {};
     j.items.forEach(function (it) {
-      map[it.name] = { category: it.category || '', price: it.price || '' };
+      map[it.name] = { category: it.category || '', price: it.price || '', rounds: Array.isArray(it.rounds) ? it.rounds : [] };
     });
     return { date: j.date, items: map };
   } catch (e) {
@@ -110,9 +110,10 @@ exports.main = async (event, context) => {
       await setRetryState({ date: dateKey, hour: hour, count: 0, stale: true, updatedAt: Date.now() });
       return { pushed: 0, skip: 'live data stale', liveDate: live.date };
     }
-    // 成功 → 清除重试状态 → 推送在售交集
+    // 成功 → 清除重试状态 → 推送在售交集（按当前轮次号过滤）
+    const roundNo = hour === 8 ? 1 : hour === 12 ? 2 : hour === 16 ? 3 : 4;
     await setRetryState({ date: dateKey, hour: hour, count: 0, ok: true, updatedAt: Date.now() });
-    return await pushRound(live.items, dateKey);
+    return await pushRound(live.items, dateKey, roundNo);
   }
 
   // live 拉取失败 → 重试状态管理（每轮独立计数：date + hour）
@@ -138,7 +139,7 @@ exports.main = async (event, context) => {
   return { pushed: 0, retry: count, msg: 'live 失败，下分钟重试（' + count + '/30）' };
 
   // ── 推送本轮在售 ∩ 订阅 ──
-  async function pushRound(liveMap, dk) {
+  async function pushRound(liveMap, dk, roundNo) {
     const subs = await db.collection('subscriptions').limit(1000).get();
     let pushed = 0;
     const errors = [];
@@ -149,8 +150,10 @@ exports.main = async (event, context) => {
         const name = it.name || it;
         const notifiedKey = dk + '|' + name;
         if (doc.notified && doc.notified[notifiedKey]) continue;
-        if (!liveMap[name]) continue; // 只推本轮在售
         const info = liveMap[name];
+        if (!info) continue;
+        // 【关键过滤】只推「当前轮次」在售的物品（rounds 含本轮号）
+        if (roundNo && (info.rounds || []).indexOf(roundNo) < 0) continue;
         tasks.push({
           doc: doc, name: name,
           category: info.category || it.category || '',

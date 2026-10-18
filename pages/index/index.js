@@ -296,6 +296,23 @@ Page({
           var st = res[SUBSCRIBE_TMPL_ID];
           that._reportSubscription(detailArr);
           if (st === 'accept') {
+            // 已勾「总是保持以上选择」的用户：连调 2 次静默再攒 2 条配额
+            // （未勾的用户第二次调用会 fail，静默忽略）
+            setTimeout(function () {
+              wx.requestSubscribeMessage({
+                tmplIds: [SUBSCRIBE_TMPL_ID],
+                success: function (r2) {
+                  if (r2[SUBSCRIBE_TMPL_ID] === 'accept') {
+                    setTimeout(function () {
+                      wx.requestSubscribeMessage({
+                        tmplIds: [SUBSCRIBE_TMPL_ID]
+                      });
+                    }, 300);
+                  }
+                },
+                fail: function () { }
+              });
+            }, 300);
             wx.showToast({ title: '推送已开启', icon: 'success', duration: 1500 });
           } else if (st === 'reject') {
             wx.showToast({ title: '已订阅(未开推送)', icon: 'none' });

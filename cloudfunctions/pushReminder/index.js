@@ -149,7 +149,8 @@ exports.main = async (event, context) => {
       for (const it of items) {
         const name = it.name || it;
         const notifiedKey = dk + '|' + name;
-        if (doc.notified && doc.notified[notifiedKey]) continue;
+        // 【用户要求】每轮窗口都推送（不做当天去重）
+        // notified 仅作记录，不再拦截
         const info = liveMap[name];
         if (!info) continue;
         // 【关键过滤】只推「当前轮次」在售的物品（rounds 含本轮号）

@@ -77,8 +77,37 @@ Page({
       this.syncRemote(false);
     }
     if (live.isStale()) {
-      this.syncLive(false);
+      this.syncLive(false, function () { that._autoSyncSubscription(); });
+    } else {
+      // live 数据新鲜也自动同步订阅列表（静默）
+      setTimeout(function () { that._autoSyncSubscription(); }, 2000);
     }
+  },
+
+  /** 自动同步订阅列表：把最新物品并入已订阅清单（静默上报，无弹窗） */
+  _autoSyncSubscription: function () {
+    if (!wx.cloud) return;
+    var sub = this.data.subscribed;
+    var subArr = this._subArr || [];
+    if (!subArr.length) return; // 用户从未订阅过则不自动扩展
+    // 合并：已订阅的（保留）+ 最新物品的 category/price 更新
+    var liveItems = (merchant.getLiveToday() || {}).items || [];
+    var merged = [];
+    var seen = {};
+    subArr.forEach(function (name) {
+      seen[name] = true;
+      // 从 live 数据里取最新 category/price
+      var info = null;
+      for (var i = 0; i < liveItems.length; i++) {
+        if (liveItems[i].name === name) { info = liveItems[i]; break; }
+      }
+      merged.push({
+        name: name,
+        category: info ? (info.category || '') : '',
+        price: info ? (info.price || '') : ''
+      });
+    });
+    this._reportSubscription(merged);
   },
 
   onShow: function () {

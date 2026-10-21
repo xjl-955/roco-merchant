@@ -1,14 +1,15 @@
-// 云函数最终版：跨触发器重试（每轮 30 次 × 每分钟 1 次）+ 只推确认在售物品
+// 云函数三重修复版：数据新鲜度校验 + 同轮去重 + 订阅去重
 const cloud = require('wx-server-sdk');
-const https = require('https'); // Node 16 无内置 fetch，用 https 模块
+const https = require('https');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
 const LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json';
 const ROUND_HOURS = { 8: '08:00', 12: '12:00', 16: '16:00', 20: '20:00' };
-const RETRY_MAX = 30; // 每轮最多重试 30 次（每分钟 1 次 = 覆盖 30 分钟）
+const RETRY_MAX = 30;      // 每轮最多重试 30 次（每分钟 1 次）
+const LIVE_MAX_AGE = 30 * 60 * 1000; // live 数据新鲜度：30 分钟
 
-/** https GET（Node 16 兼容，替代 fetch） */
+/** https GET（Node 16 兼容） */
 function httpsGet(url) {
   return new Promise(function (resolve, reject) {
     const req = https.get(url, { timeout: 8000 }, function (res) {
@@ -27,50 +28,65 @@ function httpsGet(url) {
   });
 }
 
-/** 拉取 live（单次，无内部重试）——失败返回 null */
+/** 拉取 live（重试 10 次/间隔 6s）——失败返回 null */
 async function fetchLiveOnce() {
-  try {
-    const body = await httpsGet(LIVE_URL);
-    console.log('live fetch HTTP: 200, 大小', body.length);
-    const j = JSON.parse(body);
-    if (!j.date || !Array.isArray(j.items)) {
-      console.error('live 数据结构异常: date=' + j.date, 'items=' + Array.isArray(j.items));
-      return null;
+  for (let attempt = 1; attempt <= 10; attempt++) {
+    try {
+      const body = await httpsGet(LIVE_URL);
+      console.log('live fetch HTTP: 200, 大小', body.length);
+      const j = JSON.parse(body);
+      if (!j.date || !Array.isArray(j.items)) {
+        console.error('live 数据结构异常');
+        return null;
+      }
+      const map = {};
+      j.items.forEach(function (it) {
+        map[it.name] = {
+          category: it.category || '',
+          price: it.price || '',
+          rounds: Array.isArray(it.rounds) ? it.rounds : []
+        };
+      });
+      return { date: j.date, fetchedAt: j.fetchedAt || '', items: map };
+    } catch (e) {
+      console.error('live 拉取失败(' + attempt + '/10):', String(e.message || e).slice(0, 80));
+      if (attempt < 10) await new Promise((r2) => setTimeout(r2, 6000));
     }
-    const map = {};
-    j.items.forEach(function (it) {
-      map[it.name] = { category: it.category || '', price: it.price || '', rounds: Array.isArray(it.rounds) ? it.rounds : [] };
-    });
-    return { date: j.date, items: map };
-  } catch (e) {
-    console.error('live fetch 异常:', String(e.message || e).slice(0, 120));
-    return null;
   }
+  return null;
 }
 
-/** 读取/写入重试状态（retryState 集合，单文档 fixed id） */
+/** 重试状态 */
 const STATE_ID = 'global_retry';
 async function getRetryState() {
   try {
     const r = await db.collection('retryState').doc(STATE_ID).get();
     return r.data || {};
-  } catch (e) {
-    return {}; // 不存在
-  }
+  } catch (e) { return {}; }
 }
 async function setRetryState(state) {
-  try {
-    await db.collection('retryState').doc(STATE_ID).set({ data: state });
-  } catch (e) { /* 忽略 */ }
+  try { await db.collection('retryState').doc(STATE_ID).set({ data: state }); } catch (e) { }
 }
 
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
 
-  // ── 订阅上报 ──
+  // ── 订阅上报（items 按 name 去重）──
   if (event.action === 'sub') {
-    const items = event.items || [];
+    const raw = event.items || [];
+    const seen = {};
+    const items = [];
+    raw.forEach(function (it) {
+      const name = it.name || it;
+      if (!name || seen[name]) return;
+      seen[name] = true;
+      items.push({
+        name: name,
+        category: it.category || '',
+        price: it.price || ''
+      });
+    });
     const tmplId = event.tmplId || '';
     if (!items.length || !tmplId) return { ok: false, reason: 'empty' };
     const exist = await db.collection('subscriptions').where({ openid: openid }).get();
@@ -96,49 +112,54 @@ exports.main = async (event, context) => {
   if (ROUND_HOURS[hour] === undefined) {
     return { pushed: 0, skip: 'not a round hour' };
   }
-  // 窗口：轮次开售后 0~35 分钟（30 次重试空间 + 缓冲）
+  // 窗口：轮次开售后 0~35 分钟
   if (minute > 35) {
     return { pushed: 0, skip: 'window closed' };
   }
+  const roundNo = hour === 8 ? 1 : hour === 12 ? 2 : hour === 16 ? 3 : 4;
 
-  // ── 拉 live（每次触发拉 1 次）──
+  // ── 拉 live（重试 10 次/6s）──
   const live = await fetchLiveOnce();
-  if (live) {
-    // 【日期校验】必须是今天
-    if (live.date !== dateKey) {
-      console.error('live 数据过期: live.date=' + live.date, '期望', dateKey);
-      await setRetryState({ date: dateKey, hour: hour, count: 0, stale: true, updatedAt: Date.now() });
-      return { pushed: 0, skip: 'live data stale', liveDate: live.date };
+  if (!live) {
+    // 拉取失败 → 本轮跳过（不推不确定的物品）
+    const state = await getRetryState();
+    if (state.date !== dateKey || state.hour !== hour || state.stale) {
+      await setRetryState({ date: dateKey, hour: hour, count: 1, updatedAt: Date.now() });
+      return { pushed: 0, retry: 1, msg: 'live 失败，下分钟重试（1/30）' };
     }
-    // 成功 → 清除重试状态 → 推送在售交集（按当前轮次号过滤）
-    const roundNo = hour === 8 ? 1 : hour === 12 ? 2 : hour === 16 ? 3 : 4;
-    await setRetryState({ date: dateKey, hour: hour, count: 0, ok: true, updatedAt: Date.now() });
-    return await pushRound(live.items, dateKey, roundNo);
+    const count = (state.count || 0) + 1;
+    if (count >= RETRY_MAX) {
+      await setRetryState({ date: dateKey, hour: hour, count: count, exhausted: true, updatedAt: Date.now() });
+      return { pushed: 0, retry: count, msg: '重试 30 次全失败，放弃本轮' };
+    }
+    await setRetryState({ date: dateKey, hour: hour, count: count, updatedAt: Date.now() });
+    return { pushed: 0, retry: count, msg: 'live 失败，下分钟重试（' + count + '/30）' };
   }
 
-  // live 拉取失败 → 重试状态管理（每轮独立计数：date + hour）
-  // exhausted 后只累加计数（无害），不再尝试推送
-  const state = await getRetryState();
-  if (state.date !== dateKey || state.hour !== hour || state.stale) {
-    // 新的一天 / 新一轮 → 初始化（count=1 表示本次是第 1 次尝试）
-    await setRetryState({ date: dateKey, hour: hour, count: 1, updatedAt: Date.now() });
-    return { pushed: 0, retry: 1, msg: 'live 失败，下分钟重试（1/30）' };
+  // 【校验1】live 日期必须是今天
+  if (live.date !== dateKey) {
+    console.error('live 数据过期: live.date=' + live.date, '期望', dateKey);
+    await setRetryState({ date: dateKey, hour: hour, count: 0, stale: true, updatedAt: Date.now() });
+    return { pushed: 0, skip: 'live data stale', liveDate: live.date };
   }
-  if (state.exhausted) {
-    // 已放弃本轮——继续累加计数便于观察，但不推送
-    await setRetryState({ date: dateKey, hour: hour, count: (state.count || 0) + 1, exhausted: true, updatedAt: Date.now() });
-    return { pushed: 0, retry: (state.count || 0) + 1, msg: '本轮已放弃（exhausted）' };
-  }
-  const count = (state.count || 0) + 1;
-  if (count >= RETRY_MAX) {
-    await setRetryState({ date: dateKey, hour: hour, count: count, exhausted: true, updatedAt: Date.now() });
-    console.error('live 拉取重试 ' + RETRY_MAX + ' 次全失败 — 本轮放弃（' + ROUND_HOURS[hour] + '）');
-    return { pushed: 0, retry: count, msg: '重试 ' + RETRY_MAX + ' 次全失败，放弃本轮' };
-  }
-  await setRetryState({ date: dateKey, hour: hour, count: count, updatedAt: Date.now() });
-  return { pushed: 0, retry: count, msg: 'live 失败，下分钟重试（' + count + '/30）' };
 
-  // ── 推送本轮在售 ∩ 订阅 ──
+  // 【校验2】live 数据新鲜度：fetchedAt 距今 < 30 分钟
+  // （跨天竞态：凌晨 date 已更新但 items 是旧的 → fetchedAt 停在昨晚 → 拦截）
+  if (live.fetchedAt) {
+    const ft = new Date(live.fetchedAt).getTime();
+    const age = Date.now() - ft;
+    if (age > LIVE_MAX_AGE) {
+      console.error('live 数据不新鲜: fetchedAt=' + live.fetchedAt, '距今', Math.round(age / 60000), '分钟');
+      await setRetryState({ date: dateKey, hour: hour, count: 0, stale: true, updatedAt: Date.now() });
+      return { pushed: 0, skip: 'live data not fresh', liveAgeMin: Math.round(age / 60000) };
+    }
+  }
+
+  // 校验通过 → 清除重试状态 → 推送
+  await setRetryState({ date: dateKey, hour: hour, count: 0, ok: true, updatedAt: Date.now() });
+  return await pushRound(live.items, dateKey, roundNo);
+
+  // ── 推送本轮在售 ∩ 订阅（同轮内去重：notified 含轮次号）──
   async function pushRound(liveMap, dk, roundNo) {
     const subs = await db.collection('subscriptions').limit(1000).get();
     let pushed = 0;
@@ -148,12 +169,12 @@ exports.main = async (event, context) => {
       const items = doc.items || [];
       for (const it of items) {
         const name = it.name || it;
-        const notifiedKey = dk + '|' + name;
-        // 【用户要求】每轮窗口都推送（不做当天去重）
-        // notified 仅作记录，不再拦截
+        const notifiedKey = dk + '|r' + roundNo + '|' + name;
+        // 【同轮去重】本轮已推过的不重复推（不同轮次 key 不同，互不影响）
+        if (doc.notified && doc.notified[notifiedKey]) continue;
         const info = liveMap[name];
         if (!info) continue;
-        // 【关键过滤】只推「当前轮次」在售的物品（rounds 含本轮号）
+        // 【轮次过滤】rounds 含当前轮次号才推
         if (roundNo && (info.rounds || []).indexOf(roundNo) < 0) continue;
         tasks.push({
           doc: doc, name: name,
@@ -191,6 +212,6 @@ exports.main = async (event, context) => {
       }));
       pushed += results.filter(function (r) { return r.ok; }).length;
     }
-    return { pushed: pushed, total: tasks.length, errors: errors };
+    return { pushed: pushed, total: tasks.length, round: roundNo, errors: errors };
   }
 };

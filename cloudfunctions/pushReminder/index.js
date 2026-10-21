@@ -136,6 +136,13 @@ exports.main = async (event, context) => {
     return { pushed: 0, retry: count, msg: 'live 失败，下分钟重试（' + count + '/30）' };
   }
 
+  // 【校验0】每轮只推送一次——本轮已完成则直接跳过
+  const state0 = await getRetryState();
+  if (state0.date === dateKey && state0.hour === hour && state0.roundDone) {
+    return { pushed: 0, skip: 'round already pushed', round: roundNo };
+  }
+  // 窗口内若上一分钟还在重试拉取（count>0 未完成），继续走重试逻辑而非跳过
+
   // 【校验1】live 日期必须是今天
   if (live.date !== dateKey) {
     console.error('live 数据过期: live.date=' + live.date, '期望', dateKey);
@@ -212,6 +219,8 @@ exports.main = async (event, context) => {
       }));
       pushed += results.filter(function (r) { return r.ok; }).length;
     }
+    // 【每轮只推一次】推送执行后标记本轮完成（后续触发直接 skip）
+    await setRetryState({ date: dk, hour: roundNo === 1 ? 8 : roundNo === 2 ? 12 : roundNo === 3 ? 16 : 20, roundDone: true, updatedAt: Date.now() });
     return { pushed: pushed, total: tasks.length, round: roundNo, errors: errors };
   }
 };

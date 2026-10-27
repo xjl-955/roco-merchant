@@ -223,6 +223,35 @@ Page({
 
   /** 打开订阅弹窗（物品池 = 全量档案 + 当日轮次合并） */
   onOpenSubscribe: function () {
+    var that = this;
+    // 物品池为空（首次打开/缓存丢失）→ 先拉取再弹窗
+    if (!(this.data.itemPool || []).length) {
+      wx.showLoading({ title: '加载物品…' });
+      wx.request({
+        url: 'https://xjl-955.github.io/roco-data/merchant-pool.json',
+        timeout: 15000,
+        success: function (res) {
+          wx.hideLoading();
+          if (res.statusCode === 200 && res.data && res.data.items && res.data.items.length) {
+            that.setData({ itemPool: res.data.items });
+            try { wx.setStorageSync('roco_merchant_pool_v2', res.data); } catch (e) { }
+            that._openSubscribeDialog();
+          } else {
+            wx.showToast({ title: '物品列表加载失败，请稍后重试', icon: 'none' });
+          }
+        },
+        fail: function () {
+          wx.hideLoading();
+          wx.showToast({ title: '物品列表加载失败，请检查网络', icon: 'none' });
+        }
+      });
+      return;
+    }
+    this._openSubscribeDialog();
+  },
+
+  /** 实际弹出订阅选择框 */
+  _openSubscribeDialog: function () {
     var pool = this.data.itemPool || [];
     var dayItems = this.data.dayView.items || [];
     var seen = {};
@@ -240,7 +269,6 @@ Page({
       wx.showToast({ title: '当前没有可订阅的物品', icon: 'none' });
       return;
     }
-    var sub = this.data.subscribed;
     var opts = [];
     for (var i = 0; i < items.length; i++) {
       var it = items[i];

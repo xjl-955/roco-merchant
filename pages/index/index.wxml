@@ -45,11 +45,11 @@
     </view>
   </view>
 
-  <!-- 物品提醒 -->
-  <view class="card remind-card" wx:if="{{dayView.items.length > 0}}">
+  <!-- 物品提醒（常驻入口：非营业时段也可先订阅，开市后到点上架即提醒） -->
+  <view class="card remind-card">
     <view class="remind-left">
       <view class="remind-title">物品提醒</view>
-      <view class="remind-desc">选择物品，到点上架即提醒（小程序内弹窗）</view>
+      <view class="remind-desc">{{dayView.items.length > 0 ? '选择物品，到点上架即提醒（小程序内弹窗）' : '暂未开市，可先订阅物品，上架即提醒'}}</view>
     </view>
     <view class="remind-btn" bindtap="onOpenSubscribe">选择物品订阅</view>
   </view>

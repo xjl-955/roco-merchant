@@ -81,12 +81,17 @@ async function fetchKbLive() {
   return null;
 }
 
-/** 备用：live.json（GitHub Pages，可能 30 分钟内新鲜） */
+/** 备用：live.json（GitHub Pages）——仅接受“营业中”的快照（round 1~4） */
 async function fetchLiveFallback() {
   try {
     const body = await httpsGet(LIVE_URL);
     const j = JSON.parse(body);
     if (!j.date || !Array.isArray(j.items)) return null;
+    // 【防污染】凌晨抓取的快照 round=0/closed，商品其实是昨天的 → 一律不用
+    if (!(Number(j.round) >= 1 && Number(j.round) <= 4) || j.status === 'closed') {
+      console.error('live.json 备用数据非营业快照（round=' + j.round + ', status=' + j.status + '），弃用');
+      return null;
+    }
     const map = {};
     j.items.forEach(function (it) {
       map[it.name] = { category: it.category || '', price: it.price || '', rounds: Array.isArray(it.rounds) ? it.rounds : [] };

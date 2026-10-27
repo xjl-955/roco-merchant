@@ -152,6 +152,14 @@ async function main() {
   var hour = bj.getHours();
   var round = hour >= 8 && hour < 12 ? 1 : hour >= 12 && hour < 16 ? 2 : hour >= 16 && hour < 20 ? 3 : hour >= 20 ? 4 : 0;
 
+  // 【防污染】非营业时段（北京 00:00-07:59）不写入 live.json：
+  // 此时快爆源页面仍是昨天的商品，若以今天日期写入，小程序会把昨天的轮次
+  // 当成今天的商品显示（订阅弹窗出现昨日轮次）。宁可保留昨日文件不动。
+  if (hour < 8) {
+    console.log('      ⏸ 非营业时段（北京 ' + hour + ' 点），跳过写入 live.json，保留原文件');
+    return;
+  }
+
   // 下次刷新时间
   var nextHours = [8, 12, 16, 20];
   var nextH = nextHours.find(function (h) { return h > hour; });

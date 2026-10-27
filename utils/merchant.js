@@ -365,8 +365,12 @@ function getDayView(now, status) {
   var nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
   var nowMin = Math.floor(nowSec / 60);
   // live 数据优先：即使档期表判定"无档期"，
-  // 只要快爆源实况显示今天有商人（date 匹配且有商品）就以实况为准
-  if (liveToday && liveToday.date === view.dateText && liveToday.items.length > 0) {
+  // 只要快爆源实况显示今天有商人（date 匹配且有商品）就以实况为准。
+  // 【防污染】必须处于营业轮次（round 1~4）：
+  // 凌晨 00:00-07:59 的抓取日期虽是今天，但页面仍是昨天的商品（round=0/closed），
+  // 若直接采用会把昨天的轮次显示成今天 → 订阅弹窗出现昨天的轮次。
+  if (liveToday && liveToday.date === view.dateText && liveToday.items.length > 0 &&
+      liveToday.round >= 1 && liveToday.round <= 4) {
     return buildLiveView(view, nowSec, nowMin);
   }
   if (!status.current) return view;

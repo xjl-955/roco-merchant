@@ -91,7 +91,9 @@ Page({
     var subArr = this._subArr || [];
     if (!subArr.length) return; // 用户从未订阅过则不自动扩展
     // 合并：已订阅的（保留）+ 最新物品的 category/price 更新
-    var liveItems = (merchant.getLiveToday() || {}).items || [];
+    // 只用「今天且在营业轮次」的实况（getDayView 已做日期+轮次校验），
+    // 避免凌晨把昨天的商品价格/轮次同步进来
+    var liveItems = (merchant.getDayView() || {}).items || [];
     var merged = [];
     var seen = {};
     subArr.forEach(function (name) {

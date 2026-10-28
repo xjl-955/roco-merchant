@@ -155,8 +155,9 @@ exports.main = async (event, context) => {
     if (!items.length || !tmplId) return { ok: false, reason: 'empty' };
     const exist = await db.collection('subscriptions').where({ openid: openid }).get();
     if (exist.data.length) {
+      // 【保留 notified】重复订阅不清空已推送标记，避免同一轮内重复推送
       await db.collection('subscriptions').doc(exist.data[0]._id).update({
-        data: { items: items, tmplId: tmplId, updatedAt: Date.now(), notified: {} }
+        data: { items: items, tmplId: tmplId, updatedAt: Date.now() }
       });
       return { ok: true, action: 'updated' };
     }
@@ -164,6 +165,54 @@ exports.main = async (event, context) => {
       data: { openid: openid, items: items, tmplId: tmplId, notified: {}, createdAt: Date.now() }
     });
     return { ok: true, action: 'created' };
+  }
+
+  // ── 手动测试：立即按页面「在售商品」清单推送一次（忽略通知标记，用于验证）──
+  if (event.action === 'test') {
+    const liveTest = await fetchKbLive();
+    if (!liveTest || !liveTest.current) {
+      return { ok: false, reason: '当前没有可用的在售清单（快爆源页面无分享清单）' };
+    }
+    const list = liveTest.current;
+    const subs = await db.collection('subscriptions').limit(1000).get();
+    const tasks = [];
+    for (const doc of subs.data) {
+      const names = {};
+      (doc.items || []).forEach(function (it) { const n = it.name || it; if (n) names[n] = true; });
+      list.items.forEach(function (it) {
+        if (!names[it.name]) return;
+        const base = liveTest.items[it.name] || {};
+        tasks.push({ doc: doc, name: it.name, category: base.category || '', price: it.price || base.price || '' });
+      });
+    }
+    let pushed = 0;
+    const errors = [];
+    for (const t of tasks) {
+      try {
+        await cloud.openapi.subscribeMessage.send({
+          touser: t.doc.openid,
+          templateId: t.doc.tmplId,
+          page: 'pages/index/index',
+          data: {
+            thing1: { value: String(t.name).slice(0, 20) },
+            thing2: { value: String(t.category || '道具').slice(0, 20) },
+            amount3: { value: parseInt(String(t.price || '0').replace(/[^0-9]/g, ''), 10) || 0 },
+            thing4: { value: '已上架，快去看看吧' }
+          }
+        });
+        pushed++;
+      } catch (e) {
+        errors.push({ name: t.name, errCode: e.errCode || -1, msg: String(e.errMsg || e.message).slice(0, 100) });
+      }
+    }
+    return {
+      ok: true,
+      range: list.startH + '-' + list.endH + '点',
+      onSale: list.items.map(function (i) { return i.name; }),
+      pushed: pushed,
+      total: tasks.length,
+      errors: errors
+    };
   }
 
   // ── 定时推送 ──
@@ -181,11 +230,9 @@ exports.main = async (event, context) => {
   }
   const roundNo = hour === 8 ? 1 : hour === 12 ? 2 : hour === 16 ? 3 : 4;
 
-  // 【每轮只推一次】本轮已成功推送过 → 直接跳过
-  const state0 = await getRetryState();
-  if (state0.date === dateKey && state0.hour === hour && state0.roundDone) {
-    return { pushed: 0, skip: 'round already pushed', round: roundNo };
-  }
+  // 说明：不做「本轮已推过就整轮跳过」的全局锁——
+  // 否则本轮开始后才订阅的用户永远收不到当轮推送。
+  // 由每个物品的 notifiedKey（日期+轮次+物品）保证同一物品同一轮只推一次。
 
   // ── 拉实况：优先快爆源页面实时解析（show_N 实时准确），失败回退 live.json ──
   let live = await fetchKbLive();
@@ -312,10 +359,6 @@ exports.main = async (event, context) => {
         }
       }));
       pushed += results.filter(function (r) { return r.ok; }).length;
-    }
-    // 【每轮只推一次】有成功推送 → 标记本轮完成，后续触发不再重复
-    if (pushed > 0) {
-      await setRetryState({ date: dk, hour: roundNo === 1 ? 8 : roundNo === 2 ? 12 : roundNo === 3 ? 16 : 20, roundDone: true, updatedAt: Date.now() });
     }
     return { pushed: pushed, total: tasks.length, round: roundNo, source: source, errors: errors };
   }

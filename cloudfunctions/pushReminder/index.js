@@ -229,6 +229,7 @@ exports.main = async (event, context) => {
     }
     // 用页面自带的本轮在售清单（权威）替换物品表，避免 show_N 预告误推
     const curMap = {};
+    const names = [];
     live.current.items.forEach(function (it) {
       const base = live.items[it.name] || {};
       curMap[it.name] = {
@@ -236,9 +237,21 @@ exports.main = async (event, context) => {
         price: it.price || base.price || '',
         rounds: [roundNo]
       };
+      names.push(it.name);
     });
     live.items = curMap;
-    console.log('本轮在售清单（页面分享文案）:', Object.keys(curMap).join('、'));
+    console.log('本轮在售清单（页面分享文案）:', names.join('、'));
+
+    // 【稳定性校验】清单需与上一分钟一致才推送：
+    // 页面切换瞬间可能先换轮次标签、后换商品（或反之），避免推到过渡快照
+    const sig = live.current.startH + '-' + live.current.endH + '|' + names.join(',');
+    const st2 = await getRetryState();
+    const sameRound = st2.date === dateKey && st2.hour === hour && !st2.stale;
+    if (!(sameRound && st2.shareSig === sig)) {
+      await setRetryState({ date: dateKey, hour: hour, count: 0, shareSig: sig, updatedAt: Date.now() });
+      console.log('在售清单首次确认，等待下一分钟复核:', sig);
+      return { pushed: 0, retry: 0, msg: '在售清单待复核，下分钟确认后推送' };
+    }
   }
 
   await setRetryState({ date: dateKey, hour: hour, count: 0, ok: true, updatedAt: Date.now() });

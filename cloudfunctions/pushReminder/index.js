@@ -65,7 +65,8 @@ function parseKbPage(html) {
 
 /** 解析页面分享文案里的「❤️ X-Y点在售商品」清单（页面自带的当前轮次权威清单） */
 function parseShareCurrent(html) {
-  const m = html.match(/❤️\s*(\d{1,2})\s*-\s*(\d{1,2})\s*点在售商品([\s\S]*?)🌟/);
+  // 兼容 ❤ / ❤️ 两种写法；结尾用 🌟 或「地图内定位」截断
+  const m = html.match(/❤[\uFE0F]?\s*(\d{1,2})\s*-\s*(\d{1,2})\s*点在售商品([\s\S]*?)(?:🌟|地图内定位)/);
   if (!m) return null;
   const startH = +m[1];
   const endH = +m[2];

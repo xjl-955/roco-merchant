@@ -94,9 +94,20 @@ Page({
     // 只用「今天且在营业轮次」的实况（getDayView 已做日期+轮次校验），
     // 避免凌晨把昨天的商品价格/轮次同步进来
     var liveItems = (merchant.getDayView() || {}).items || [];
+    // 【自动订阅新物品】用户上次是「全选」确认的 → 之后才出现的新物品自动并入
+    var autoAll = false;
+    try { autoAll = wx.getStorageSync('roco_sub_all_v1') === true; } catch (e0) { }
+    var names = subArr.slice();
+    if (autoAll) {
+      var pool = this.data.itemPool || [];
+      pool.concat(liveItems).forEach(function (it) {
+        var n = it.name || it;
+        if (n && names.indexOf(n) < 0) names.push(n);
+      });
+    }
     var merged = [];
     var seen = {};
-    subArr.forEach(function (name) {
+    names.forEach(function (name) {
       if (!name || seen[name]) return; // 【去重】订阅列表里的重复项只保留一条
       seen[name] = true;
       // 从 live 数据里取最新 category/price
@@ -110,6 +121,12 @@ Page({
         price: info ? (info.price || '') : ''
       });
     });
+    // 同步本地订阅数组（新增物品也写入 storage）
+    this._subArr = names;
+    try { wx.setStorageSync(SUB_KEY, names); } catch (e1) { }
+    var map = {};
+    names.forEach(function (n) { map[n] = true; });
+    this.setData({ subscribed: map });
     this._reportSubscription(merged);
   },
 
@@ -328,6 +345,7 @@ Page({
     var arr = [];
     var map = {};
     var detailArr = [];  // 云推送用的完整信息（名称/分类/价格）
+    var allChecked = true;
     for (var i = 0; i < opts.length; i++) {
       if (opts[i].checked) {
         arr.push(opts[i].name);
@@ -337,8 +355,12 @@ Page({
           category: opts[i].category || '',
           price: opts[i].price || ''
         });
+      } else {
+        allChecked = false;
       }
     }
+    // 记录「全选」意图：之后出现的新物品自动加入订阅（无需再手动全选）
+    try { wx.setStorageSync('roco_sub_all_v1', allChecked); } catch (e) { }
     this._subDetailArr = detailArr;
     this._subArr = arr;
     try {

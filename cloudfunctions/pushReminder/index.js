@@ -275,9 +275,11 @@ exports.main = async (event, context) => {
       console.error('页面仍显示 ' + live.current.startH + '-' + live.current.endH + '点，未切换到本轮(' + expect[0] + '-' + expect[1] + '点)，等待重试（' + cnt + '/30）');
       return { pushed: 0, retry: cnt, msg: '页面未切换到本轮，下分钟重试（' + cnt + '/30）' };
     }
-    // 用页面自带的本轮在售清单（权威）替换物品表，避免 show_N 预告误推
+    // 本轮在售 = 分享清单 ∪ 页面 show_N 标注本轮的物品
+    // （分享文案偶尔漏项，如 10-28 第4轮漏了「炫彩蛋」；用 show_N 补齐）
     const curMap = {};
     const names = [];
+    // ① 分享清单（价格权威）
     live.current.items.forEach(function (it) {
       const base = live.items[it.name] || {};
       curMap[it.name] = {
@@ -287,8 +289,16 @@ exports.main = async (event, context) => {
       };
       names.push(it.name);
     });
+    // ② show_N 标注含本轮的物品（补齐分享清单漏项）
+    Object.keys(live.items).forEach(function (n) {
+      const info = live.items[n];
+      if ((info.rounds || []).indexOf(roundNo) < 0) return;
+      if (curMap[n]) return;
+      curMap[n] = { category: info.category || '', price: info.price || '', rounds: [roundNo] };
+      names.push(n);
+    });
     live.items = curMap;
-    console.log('本轮在售清单（页面分享文案）:', names.join('、'));
+    console.log('本轮在售清单（分享清单+show_N 补全）:', names.join('、'));
 
     // 【稳定性校验】清单需与上一分钟一致才推送：
     // 页面切换瞬间可能先换轮次标签、后换商品（或反之），避免推到过渡快照

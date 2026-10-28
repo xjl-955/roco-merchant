@@ -1,7 +1,7 @@
 {
- "formatVersion": 2,
- "source": "远行商人物品池（用户校对版）",
- "count": 29,
+ "formatVersion": 1,
+ "source": "远行商人物品档案（历次实况汇总）",
+ "updatedAt": "2026-10-28",
  "items": [
   {
    "name": "棱镜球",
@@ -176,7 +176,198 @@
    "price": "160,000",
    "limit": 6,
    "category": "钥匙"
+  },
+  {
+   "name": "魔力果",
+   "price": "6000",
+   "limit": "20",
+   "category": "精灵喂养材料"
+  },
+  {
+   "name": "冰系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "翼系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "毒系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "地系血脉秘药",
+   "price": "16w",
+   "limit": "3",
+   "category": "血脉修改道具"
+  },
+  {
+   "name": "幽系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "网兜球",
+   "price": "3000",
+   "limit": "100",
+   "category": "特制咕噜球"
+  },
+  {
+   "name": "普通粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "龙系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "幽系血脉秘药",
+   "price": "16w",
+   "limit": "3",
+   "category": "血脉修改道具"
+  },
+  {
+   "name": "火系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "幻系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "草系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "水系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "武系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "炫彩蛋",
+   "price": "160w",
+   "limit": "1",
+   "category": "精灵蛋"
+  },
+  {
+   "name": "地系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "幻系血脉秘药",
+   "price": "16w",
+   "limit": "3",
+   "category": "血脉修改道具"
+  },
+  {
+   "name": "火系血脉秘药",
+   "price": "16w",
+   "limit": "3",
+   "category": "血脉修改道具"
+  },
+  {
+   "name": "恶系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "光系血脉秘药",
+   "price": "16w",
+   "limit": "3",
+   "category": "血脉修改道具"
+  },
+  {
+   "name": "电系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "淘沙球",
+   "price": "3000",
+   "limit": "100",
+   "category": "特制咕噜球"
+  },
+  {
+   "name": "萌系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "光系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "龙系血脉秘药",
+   "price": "16w",
+   "limit": "3",
+   "category": "血脉修改道具"
+  },
+  {
+   "name": "虫系粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "可可果球",
+   "price": "50",
+   "limit": "30",
+   "category": "特制咕噜球"
+  },
+  {
+   "name": "草系血脉秘药",
+   "price": "16w",
+   "limit": "3",
+   "category": "血脉修改道具"
+  },
+  {
+   "name": "机械粉尘",
+   "price": "500",
+   "limit": "100",
+   "category": "炼金材料"
+  },
+  {
+   "name": "武系血脉秘药",
+   "price": "16w",
+   "limit": "3",
+   "category": "血脉修改道具"
+  },
+  {
+   "name": "虫系血脉秘药",
+   "price": "16w",
+   "limit": "3",
+   "category": "血脉修改道具"
   }
- ],
- "coordNote": "轮次以当日 live.json 实况为准"
+ ]
 }

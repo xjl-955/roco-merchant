@@ -97,6 +97,7 @@ Page({
     var merged = [];
     var seen = {};
     subArr.forEach(function (name) {
+      if (!name || seen[name]) return; // 【去重】订阅列表里的重复项只保留一条
       seen[name] = true;
       // 从 live 数据里取最新 category/price
       var info = null;
@@ -212,9 +213,21 @@ Page({
     try {
       var arr = wx.getStorageSync(SUB_KEY) || [];
       if (!Array.isArray(arr)) arr = [];
-      this._subArr = arr;
+      // 【去重】历史版本可能存了重复项
+      var uniq = [];
+      var seen = {};
+      for (var i = 0; i < arr.length; i++) {
+        var n = arr[i];
+        if (!n || seen[n]) continue;
+        seen[n] = true;
+        uniq.push(n);
+      }
+      if (uniq.length !== arr.length) {
+        try { wx.setStorageSync(SUB_KEY, uniq); } catch (e2) { }
+      }
+      this._subArr = uniq;
       var map = {};
-      for (var i = 0; i < arr.length; i++) map[arr[i]] = true;
+      for (var j = 0; j < uniq.length; j++) map[uniq[j]] = true;
       this.setData({ subscribed: map });
     } catch (e) {
       this._subArr = [];

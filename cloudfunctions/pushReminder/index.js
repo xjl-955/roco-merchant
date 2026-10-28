@@ -9,6 +9,8 @@ const db = cloud.database();
 const KB_SRC = 'https://www.onebiji.com/hykb_tools/comm/lkwgmerchant/preview.php?id=1&immgj=0';
 const LIVE_URL = 'https://xjl-955.github.io/roco-data/live.json'; // 备用
 const ROUND_HOURS = { 8: '08:00', 12: '12:00', 16: '16:00', 20: '20:00' };
+// 各轮在售时间区间（小时）：1→08-12、2→12-16、3→16-20、4→20-24
+const ROUND_RANGE = { 1: [8, 12], 2: [12, 16], 3: [16, 20], 4: [20, 24] };
 const RETRY_MAX = 30;
 
 function httpsGet(url, timeout) {
@@ -61,6 +63,25 @@ function parseKbPage(html) {
   return map;
 }
 
+/** 解析页面分享文案里的「❤️ X-Y点在售商品」清单（页面自带的当前轮次权威清单） */
+function parseShareCurrent(html) {
+  const m = html.match(/❤️\s*(\d{1,2})\s*-\s*(\d{1,2})\s*点在售商品([\s\S]*?)🌟/);
+  if (!m) return null;
+  const startH = +m[1];
+  const endH = +m[2];
+  const block = m[3];
+  const items = [];
+  const re = /·\s*([^\s·]+)\s*([0-9][0-9.,]*\s*万?)\s*洛克贝/g;
+  let x;
+  while ((x = re.exec(block)) !== null) {
+    const name = x[1].trim();
+    if (!name) continue;
+    items.push({ name: name, price: x[2].replace(/[,\s]/g, '') });
+  }
+  if (!items.length) return null;
+  return { startH: startH, endH: endH, items: items };
+}
+
 /** 快爆源实时抓取（重试 3 次） */
 async function fetchKbLive() {
   for (let attempt = 1; attempt <= 3; attempt++) {
@@ -70,9 +91,10 @@ async function fetchKbLive() {
       const map = parseKbPage(html);
       const names = Object.keys(map);
       if (names.length < 2) throw new Error('解析到 0 商品');
-      console.log('快爆源实时解析:', names.length, '件物品');
+      const current = parseShareCurrent(html);
+      console.log('快爆源实时解析:', names.length, '件物品', current ? ('| 当前在售清单 ' + current.startH + '-' + current.endH + '点 ' + current.items.length + ' 件') : '| 无分享清单');
       const bj = new Date(Date.now() + 8 * 3600 * 1000);
-      return { date: bj.toISOString().slice(0, 10), items: map, source: 'kb' };
+      return { date: bj.toISOString().slice(0, 10), items: map, current: current, source: 'kb' };
     } catch (e) {
       console.error('快爆源抓取失败(' + attempt + '/3):', String(e.message || e).slice(0, 80));
       if (attempt < 3) await new Promise((r2) => setTimeout(r2, 3000));
@@ -159,6 +181,12 @@ exports.main = async (event, context) => {
   }
   const roundNo = hour === 8 ? 1 : hour === 12 ? 2 : hour === 16 ? 3 : 4;
 
+  // 【每轮只推一次】本轮已成功推送过 → 直接跳过
+  const state0 = await getRetryState();
+  if (state0.date === dateKey && state0.hour === hour && state0.roundDone) {
+    return { pushed: 0, skip: 'round already pushed', round: roundNo };
+  }
+
   // ── 拉实况：优先快爆源页面实时解析（show_N 实时准确），失败回退 live.json ──
   let live = await fetchKbLive();
   let source = 'kb实时页面';
@@ -188,6 +216,31 @@ exports.main = async (event, context) => {
     return { pushed: 0, skip: 'data stale', liveDate: live.date };
   }
 
+  // ── 校验：页面「X-Y点在售商品」必须是本轮（8:00 整页面可能还没切换，不能推）──
+  if (live.current) {
+    const expect = ROUND_RANGE[roundNo];
+    if (live.current.startH !== expect[0] || live.current.endH !== expect[1]) {
+      const st = await getRetryState();
+      let cnt = (st.date === dateKey && st.hour === hour && !st.stale) ? (st.count || 0) : 0;
+      cnt = cnt + 1;
+      await setRetryState({ date: dateKey, hour: hour, count: cnt, updatedAt: Date.now() });
+      console.error('页面仍显示 ' + live.current.startH + '-' + live.current.endH + '点，未切换到本轮(' + expect[0] + '-' + expect[1] + '点)，等待重试（' + cnt + '/30）');
+      return { pushed: 0, retry: cnt, msg: '页面未切换到本轮，下分钟重试（' + cnt + '/30）' };
+    }
+    // 用页面自带的本轮在售清单（权威）替换物品表，避免 show_N 预告误推
+    const curMap = {};
+    live.current.items.forEach(function (it) {
+      const base = live.items[it.name] || {};
+      curMap[it.name] = {
+        category: base.category || '',
+        price: it.price || base.price || '',
+        rounds: [roundNo]
+      };
+    });
+    live.items = curMap;
+    console.log('本轮在售清单（页面分享文案）:', Object.keys(curMap).join('、'));
+  }
+
   await setRetryState({ date: dateKey, hour: hour, count: 0, ok: true, updatedAt: Date.now() });
   return await pushRound(live.items, dateKey, roundNo);
 
@@ -199,9 +252,14 @@ exports.main = async (event, context) => {
     const tasks = [];
     for (const doc of subs.data) {
       const items = doc.items || [];
+      const seenNames = {}; // 【推送去重】同一用户同一物品只推一条
       for (const it of items) {
         const name = it.name || it;
+        if (!name || seenNames[name]) continue;
+        seenNames[name] = true;
         const notifiedKey = dk + '|r' + roundNo + '|' + name;
+        // 【同轮去重】本轮已推过的物品不再重复（不同轮次 key 不同，互不影响）
+        if (doc.notified && doc.notified[notifiedKey]) continue;
         const info = liveMap[name];
         if (!info) continue;
         // 【轮次过滤】当前轮次号在物品的实时 rounds 里（快爆源 show_N 实时）
@@ -241,6 +299,10 @@ exports.main = async (event, context) => {
         }
       }));
       pushed += results.filter(function (r) { return r.ok; }).length;
+    }
+    // 【每轮只推一次】有成功推送 → 标记本轮完成，后续触发不再重复
+    if (pushed > 0) {
+      await setRetryState({ date: dk, hour: roundNo === 1 ? 8 : roundNo === 2 ? 12 : roundNo === 3 ? 16 : 20, roundDone: true, updatedAt: Date.now() });
     }
     return { pushed: pushed, total: tasks.length, round: roundNo, source: source, errors: errors };
   }

@@ -378,9 +378,12 @@ exports.main = async (event, context) => {
     subs.data.forEach(function (d) { subItemCount += (d.items || []).length; });
     const roundItems = Object.keys(liveMap);
     console.log('诊断: 订阅用户', subs.data.length, '人 | 订阅物品', subItemCount, '条 | 本轮在售', roundItems.join('、') || '(空)');
+    const allQuotaFail = tasks.length > 0 && pushed === 0 && errors.length > 0 &&
+      errors.every(function (e) { return e.errCode === 43101; });
     return {
       pushed: pushed, total: tasks.length, round: roundNo, source: source,
       subs: subs.data.length, subItems: subItemCount, roundItems: roundItems,
+      hint: allQuotaFail ? '订阅配额不足：请在小程序内重新点「选择物品订阅→确定→允许」，每次允许+1条配额' : undefined,
       errors: errors
     };
   }

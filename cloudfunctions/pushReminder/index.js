@@ -299,6 +299,19 @@ exports.main = async (event, context) => {
       console.log('在售清单首次确认，等待下一分钟复核:', sig);
       return { pushed: 0, retry: 0, msg: '在售清单待复核，下分钟确认后推送' };
     }
+  } else {
+    // 页面暂无「X-Y点在售商品」清单（常见于轮次切换瞬间）：
+    // 不用 show_N 标签猜（会推错），先等待；连续 10 分钟仍无 → 兜底
+    const st = await getRetryState();
+    let cnt = (st.date === dateKey && st.hour === hour && !st.stale) ? (st.count || 0) : 0;
+    cnt = cnt + 1;
+    if (cnt <= 10) {
+      await setRetryState({ date: dateKey, hour: hour, count: cnt, updatedAt: Date.now() });
+      console.error('页面暂无「在售商品」清单，等待重试（' + cnt + '/10）');
+      return { pushed: 0, retry: cnt, msg: '页面暂无在售清单，下分钟重试（' + cnt + '/10）' };
+    }
+    console.error('页面持续无分享清单，改用 show_N 兜底（第 ' + cnt + ' 次）');
+  }
   }
 
   await setRetryState({ date: dateKey, hour: hour, count: 0, ok: true, updatedAt: Date.now() });
@@ -360,6 +373,15 @@ exports.main = async (event, context) => {
       }));
       pushed += results.filter(function (r) { return r.ok; }).length;
     }
-    return { pushed: pushed, total: tasks.length, round: roundNo, source: source, errors: errors };
+    // 诊断信息：订阅人数/订阅物品数/本轮在售物品，便于排查 total=0 的原因
+    let subItemCount = 0;
+    subs.data.forEach(function (d) { subItemCount += (d.items || []).length; });
+    const roundItems = Object.keys(liveMap);
+    console.log('诊断: 订阅用户', subs.data.length, '人 | 订阅物品', subItemCount, '条 | 本轮在售', roundItems.join('、') || '(空)');
+    return {
+      pushed: pushed, total: tasks.length, round: roundNo, source: source,
+      subs: subs.data.length, subItems: subItemCount, roundItems: roundItems,
+      errors: errors
+    };
   }
 };

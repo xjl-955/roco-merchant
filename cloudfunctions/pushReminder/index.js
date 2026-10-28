@@ -312,7 +312,6 @@ exports.main = async (event, context) => {
     }
     console.error('页面持续无分享清单，改用 show_N 兜底（第 ' + cnt + ' 次）');
   }
-  }
 
   await setRetryState({ date: dateKey, hour: hour, count: 0, ok: true, updatedAt: Date.now() });
   return await pushRound(live.items, dateKey, roundNo);

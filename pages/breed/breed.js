@@ -150,6 +150,6 @@ Page({
     this.setData({ list: list, total: list.length });
   }
 
-  // 说明：原 copyNestImage 使用 wx.setClipboardData（隐私接口），
-  // 页面中并未绑定该入口，已移除，保持“不采集用户隐私”声明。
+  // 说明：原「复制巢穴图片链接」入口未在页面中使用，已移除，
+  // 避免调用隐私接口，保持“不采集用户隐私”声明。
 });

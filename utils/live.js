@@ -19,35 +19,81 @@ var LIVE_URLS = [
 ];
 var LIVE_URL = LIVE_URLS[0]; // 兼容旧引用
 var STORAGE_KEY = 'roco_live_cache_v1';
-var CACHE_TTL = 5 * 60 * 1000; // 5 分钟
+var CACHE_TTL = 2 * 60 * 1000; // 2 分钟（云函数实时接口很轻，缩短缓存避免显示滞后）
 
-/** 从本地缓存恢复（TTL 内有效） */
+/** 当前应有的轮次（北京时间为设备本地时间） */
+function expectedRound() {
+  var h = new Date().getHours();
+  return h >= 8 && h < 12 ? 1 : h >= 12 && h < 16 ? 2 : h >= 16 && h < 20 ? 3 : h >= 20 ? 4 : 0;
+}
+
+/** 从本地缓存恢复（TTL 内且轮次匹配才有效） */
 function loadCached() {
   try {
     var cache = wx.getStorageSync(STORAGE_KEY);
     if (cache && cache.payload && Date.now() - cache.cachedAt < CACHE_TTL) {
+      var er = expectedRound();
+      // 营业时段内，缓存轮次与当前轮次不一致 → 当作过期，强制重新拉取
+      if (er > 0 && cache.payload.round !== er) return false;
       if (merchant.applyLiveToday(cache.payload)) return true;
     }
   } catch (e) { /* 忽略 */ }
   return false;
 }
 
-/** 缓存是否过期（无缓存视为过期） */
+/** 缓存是否过期（无缓存/超时/轮次变化都视为过期） */
 function isStale() {
   try {
     var cache = wx.getStorageSync(STORAGE_KEY);
     if (!cache || !cache.cachedAt) return true;
-    return Date.now() - cache.cachedAt > CACHE_TTL;
+    if (Date.now() - cache.cachedAt > CACHE_TTL) return true;
+    var er = expectedRound();
+    if (er > 0 && cache.payload && cache.payload.round !== er) return true;
+    return false;
   } catch (e) {
     return true;
   }
 }
 
 /**
- * 拉取实时数据（多源依次尝试）。callback(err, result)
+ * 拉取实时数据。callback(err, result)
  * 成功：result = { round, source }；失败：err = 原因字符串（静默回退，不影响既有视图）
+ *
+ * 顺序：① 云函数实时接口（与推送同源，无 CDN/部署延迟）
+ *       ② live.json 静态文件（多源兜底）
  */
 function fetchLive(callback) {
+  tryCloud(function (cloudRes) {
+    if (cloudRes) {
+      callback(null, cloudRes);
+      return;
+    }
+    fetchStatic(callback);
+  });
+}
+
+/** ① 云函数实时接口（action=live，内部直连快爆源解析） */
+function tryCloud(done) {
+  if (!wx.cloud || !wx.cloud.callFunction) { done(null); return; }
+  wx.cloud.callFunction({
+    name: 'pushReminder',
+    data: { action: 'live' },
+    success: function (res) {
+      var d = res && res.result;
+      if (d && d.ok && Array.isArray(d.items) && d.items.length >= 2 && merchant.applyLiveToday(d)) {
+        try { wx.setStorageSync(STORAGE_KEY, { payload: d, cachedAt: Date.now() }); } catch (e) { }
+        var live = merchant.getLiveToday();
+        done({ round: live ? live.round : 0, source: 'cloud' });
+      } else {
+        done(null);
+      }
+    },
+    fail: function () { done(null); }
+  });
+}
+
+/** ② 静态 live.json 多源兜底 */
+function fetchStatic(callback) {
   var idx = 0;
 
   function tryNext(lastErr) {

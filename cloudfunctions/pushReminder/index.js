@@ -168,6 +168,43 @@ exports.main = async (event, context) => {
     return { ok: true, action: 'created' };
   }
 
+  // ── 实时数据接口：小程序直接调用（与推送同源，避免 live.json 延迟）──
+  if (event.action === 'live') {
+    const live = await fetchKbLive();
+    if (!live) return { ok: false, reason: '快爆源抓取失败' };
+    const bj = new Date(Date.now() + 8 * 3600 * 1000);
+    const hh = bj.getUTCHours();
+    const rn = hh >= 8 && hh < 12 ? 1 : hh >= 12 && hh < 16 ? 2 : hh >= 16 && hh < 20 ? 3 : hh >= 20 ? 4 : 0;
+    const items = Object.keys(live.items).map(function (n) {
+      const it = live.items[n];
+      return {
+        name: n,
+        price: it.price || '',
+        limit: it.limit || '',
+        category: it.category || '',
+        image: it.image || '',
+        rounds: it.rounds || []
+      };
+    });
+    return {
+      ok: true,
+      formatVersion: 1,
+      date: live.date,
+      status: rn > 0 ? 'open' : 'closed',
+      round: rn,
+      fetchedAt: new Date().toISOString(),
+      startedAtBeijing: live.date + ' ' +
+        (rn === 1 ? '08' : rn === 2 ? '12' : rn === 3 ? '16' : rn === 4 ? '20' : '00') + ':00:00',
+      current: live.current ? {
+        startH: live.current.startH,
+        endH: live.current.endH,
+        items: live.current.items.map(function (i) { return i.name; })
+      } : null,
+      rounds: {},
+      items: items
+    };
+  }
+
   // ── 手动测试：立即按页面「在售商品」清单推送一次（忽略通知标记，用于验证）──
   if (event.action === 'test') {
     const liveTest = await fetchKbLive();

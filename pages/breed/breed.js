@@ -148,11 +148,8 @@ Page({
       return String(a.no).localeCompare(String(b.no)) || a.name.localeCompare(b.name);
     });
     this.setData({ list: list, total: list.length });
-  },
-
-  copyNestImage: function (e) {
-    var url = e.currentTarget.dataset.img;
-    if (!url) return;
-    wx.setClipboardData({ data: url });
   }
+
+  // 说明：原 copyNestImage 使用 wx.setClipboardData（隐私接口），
+  // 页面中并未绑定该入口，已移除，保持“不采集用户隐私”声明。
 });

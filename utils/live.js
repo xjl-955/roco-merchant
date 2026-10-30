@@ -56,6 +56,28 @@ function isStale() {
 }
 
 /**
+ * 同一轮次内合并新旧快照：以新数据为准，旧数据只用于补缺。
+ * 目的：快爆源页面在轮次刚开始时可能先少后多，避免刷新一下商品“消失”。
+ */
+function mergeSameRound(next) {
+  try {
+    var cache = wx.getStorageSync(STORAGE_KEY);
+    var prev = cache && cache.payload;
+    if (!prev || !next) return next;
+    if (prev.date !== next.date || Number(prev.round) !== Number(next.round)) return next;
+    var byName = {};
+    (next.items || []).forEach(function (it) { if (it && it.name) byName[it.name] = it; });
+    (prev.items || []).forEach(function (it) { if (it && it.name && !byName[it.name]) byName[it.name] = it; });
+    var out = {};
+    for (var k in next) { if (Object.prototype.hasOwnProperty.call(next, k)) out[k] = next[k]; }
+    out.items = Object.keys(byName).map(function (n) { return byName[n]; });
+    return out;
+  } catch (e) {
+    return next;
+  }
+}
+
+/**
  * 拉取实时数据。callback(err, result)
  * 成功：result = { round, source }；失败：err = 原因字符串（静默回退，不影响既有视图）
  *
@@ -79,7 +101,7 @@ function tryCloud(done) {
     name: 'pushReminder',
     data: { action: 'live' },
     success: function (res) {
-      var d = res && res.result;
+      var d = mergeSameRound(res && res.result);
       if (d && d.ok && Array.isArray(d.items) && d.items.length >= 2 && merchant.applyLiveToday(d)) {
         try { wx.setStorageSync(STORAGE_KEY, { payload: d, cachedAt: Date.now() }); } catch (e) { }
         var live = merchant.getLiveToday();
@@ -112,12 +134,13 @@ function fetchStatic(callback) {
           tryNext('HTTP ' + res.statusCode + ' @ ' + url);
           return;
         }
-        if (!merchant.applyLiveToday(res.data)) {
+        var payload = mergeSameRound(res.data);
+        if (!merchant.applyLiveToday(payload)) {
           tryNext('数据校验未通过 @ ' + url);
           return;
         }
         try {
-          wx.setStorageSync(STORAGE_KEY, { payload: res.data, cachedAt: Date.now() });
+          wx.setStorageSync(STORAGE_KEY, { payload: payload, cachedAt: Date.now() });
         } catch (e) { /* 缓存失败不影响使用 */ }
         var live = merchant.getLiveToday();
         callback(null, { round: live ? live.round : 0, source: url });

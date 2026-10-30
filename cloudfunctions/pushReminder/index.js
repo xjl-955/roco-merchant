@@ -38,13 +38,20 @@ function normalizeImg(s) {
   return v;
 }
 
-/** 解析快爆源页面 → 实时物品列表（含当前 show_N 轮次） */
+/** 解析快爆源页面 → 实时物品列表（含全部 show_N 轮次） */
 function parseKbPage(html) {
   const map = {};
-  const liRe = /<li[^>]*class="[^"]*show_([1-4])[^"]*"[^>]*onclick="showShopinfo\('([^']*)','([^']*)','([^']*)','([^']*)'\)"[^>]*>([\s\S]*?)<\/li>/g;
+  // 注意：class 里可能有多个 show_N（如 show_1 show_2 show_3 show_4），
+  // 必须提取全部，不能只取最后一个（否则常驻商品会被误判成只在第4轮）
+  const liRe = /<li[^>]*class="([^"]*)"[^>]*onclick="showShopinfo\('([^']*)','([^']*)','([^']*)','([^']*)'\)"[^>]*>([\s\S]*?)<\/li>/g;
   let m;
   while ((m = liRe.exec(html)) !== null) {
-    const round = +m[1];
+    const cls = m[1];
+    const rounds = [];
+    for (let n = 1; n <= 4; n++) {
+      if (cls.indexOf('show_' + n) >= 0) rounds.push(n);
+    }
+    if (!rounds.length) continue;
     const img = unescapeAttr(m[2]);
     const name = unescapeAttr(m[3]);
     const category = unescapeAttr(m[4]);
@@ -58,7 +65,9 @@ function parseKbPage(html) {
     if (!map[name]) {
       map[name] = { category: category, price: price, limit: limit, image: normalizeImg(img), desc: desc, rounds: [] };
     }
-    if (map[name].rounds.indexOf(round) < 0) map[name].rounds.push(round);
+    rounds.forEach(function (r) {
+      if (map[name].rounds.indexOf(r) < 0) map[name].rounds.push(r);
+    });
   }
   return map;
 }

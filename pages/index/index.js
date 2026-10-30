@@ -181,8 +181,31 @@ Page({
   /** 点按钮检查更新 */
   onCheckUpdate: function () {
     if (this.data.refreshing) return;
+    // 顺手续攒订阅配额（已勾「总是保持以上选择」的用户静默生效，不弹窗）
+    var autoAll = false;
+    try { autoAll = wx.getStorageSync('roco_sub_all_v1') === true; } catch (e) { }
+    if (autoAll) this._topUpQuota(3);
     this.syncRemote(false);
     this.syncLive(true);
+  },
+
+  /** 连续请求订阅授权以攒配额（勾了「总是保持」后静默生效；每次调用 = +1 条） */
+  _topUpQuota: function (times) {
+    if (!SUBSCRIBE_TMPL_ID || !wx.requestSubscribeMessage) return;
+    var n = Math.max(0, times || 0);
+    var i = 0;
+    function step() {
+      if (i >= n) return;
+      i++;
+      wx.requestSubscribeMessage({
+        tmplIds: [SUBSCRIBE_TMPL_ID],
+        success: function (res) {
+          if (res && res[SUBSCRIBE_TMPL_ID] === 'accept') step();
+        },
+        fail: function () { }
+      });
+    }
+    step();
   },
 
   /** 拉取实时轮次数据（四轮商品明细），失败静默回退 */
@@ -390,23 +413,9 @@ Page({
           var st = res[SUBSCRIBE_TMPL_ID];
           that._reportSubscription(detailArr);
           if (st === 'accept') {
-            // 已勾「总是保持以上选择」的用户：连调 2 次静默再攒 2 条配额
-            // （未勾的用户第二次调用会 fail，静默忽略）
-            setTimeout(function () {
-              wx.requestSubscribeMessage({
-                tmplIds: [SUBSCRIBE_TMPL_ID],
-                success: function (r2) {
-                  if (r2[SUBSCRIBE_TMPL_ID] === 'accept') {
-                    setTimeout(function () {
-                      wx.requestSubscribeMessage({
-                        tmplIds: [SUBSCRIBE_TMPL_ID]
-                      });
-                    }, 300);
-                  }
-                },
-                fail: function () { }
-              });
-            }, 300);
+            // 已勾「总是保持以上选择」的用户：静默连攒，一次点击最多累计 6 条配额
+            // （未勾的用户后续调用会 fail，静默忽略）
+            that._topUpQuota(5);
             wx.showToast({ title: '推送已开启', icon: 'success', duration: 1500 });
           } else if (st === 'reject') {
             wx.showToast({ title: '已订阅(未开推送)', icon: 'none' });

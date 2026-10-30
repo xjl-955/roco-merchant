@@ -381,7 +381,8 @@ exports.main = async (event, context) => {
     const tasks = [];
     for (const doc of subs.data) {
       const items = doc.items || [];
-      const seenNames = {}; // 【推送去重】同一用户同一物品只推一条
+      const seenNames = {}; // 【推送去重】同一用户同一物品只算一次
+      const matched = [];
       for (const it of items) {
         const name = it.name || it;
         if (!name || seenNames[name]) continue;
@@ -393,37 +394,48 @@ exports.main = async (event, context) => {
         if (!info) continue;
         // 【轮次过滤】当前轮次号在物品的实时 rounds 里（快爆源 show_N 实时）
         if ((info.rounds || []).indexOf(roundNo) < 0) continue;
-        tasks.push({
-          doc: doc, name: name,
+        matched.push({
+          name: name,
           category: info.category || it.category || '',
           price: info.price || it.price || '',
           notifiedKey: notifiedKey
         });
       }
+      if (matched.length) tasks.push({ doc: doc, matched: matched });
     }
     const BATCH = 10;
     for (let i = 0; i < tasks.length; i += BATCH) {
       const batch = tasks.slice(i, i + BATCH);
       const results = await Promise.all(batch.map(async function (task) {
+        const names = task.matched.map(function (m) { return m.name; });
+        const cats = [];
+        task.matched.forEach(function (m) {
+          if (m.category && cats.indexOf(m.category) < 0) cats.push(m.category);
+        });
+        const amount = task.matched.reduce(function (s, m) {
+          return s + (parseInt(String(m.price || '').replace(/[^0-9]/g, ''), 10) || 0);
+        }, 0);
+        const tip = names.length > 1 ? ('共' + names.length + '件已上架，快去看看') : '已上架，快去看看吧';
         try {
           await cloud.openapi.subscribeMessage.send({
             touser: task.doc.openid,
             templateId: task.doc.tmplId,
             page: 'pages/index/index',
             data: {
-              thing1: { value: String(task.name).slice(0, 20) },
-              thing2: { value: String(task.category || '道具').slice(0, 20) },
-              amount3: { value: parseInt(String(task.price || '0').replace(/[^0-9]/g, ''), 10) || 0 },
-              thing4: { value: '已上架，快去看看吧' }
+              thing1: { value: names.join('、').slice(0, 20) },
+              thing2: { value: (cats.join('、') || '道具').slice(0, 20) },
+              amount3: { value: amount },
+              thing4: { value: tip.slice(0, 20) }
             }
           });
-          await db.collection('subscriptions').doc(task.doc._id).update({
-            data: { ['notified.' + task.notifiedKey]: true }
-          });
+          const patch = {};
+          task.matched.forEach(function (m) { patch['notified.' + m.notifiedKey] = true; });
+          await db.collection('subscriptions').doc(task.doc._id).update({ data: patch });
           return { ok: true };
         } catch (e) {
-          console.error('推送失败:', task.name, 'errCode:', e.errCode || e.message);
-          errors.push({ name: task.name, errCode: e.errCode || -1, msg: String(e.errMsg || e.message).slice(0, 100) });
+          const label = names.join('、');
+          console.error('推送失败:', label, 'errCode:', e.errCode || e.message);
+          errors.push({ name: label, errCode: e.errCode || -1, msg: String(e.errMsg || e.message).slice(0, 100) });
           return { ok: false };
         }
       }));

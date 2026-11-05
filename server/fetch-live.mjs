@@ -46,11 +46,13 @@ function extractRounds(classAttr) {
 
 function parsePage(html) {
   var items = {};
-  var liRe = /<li class="([^"]*show_\d[^"]*)"[^>]*data-time="(\d+)"[^>]*onclick="showShopinfo\('([^']*)','([^']*)','([^']*)','([^']*)'\)"/g;
+  // 注意：data-time 在轮次刚开始/未开始时可能为空，不能强制要求，
+  // 否则会漏掉除活动物品外的全部商品（2026-11-05 早上只剩 1 件的原因）
+  var liRe = /<li class="([^"]*show_\d[^"]*)"[^>]*?onclick="showShopinfo\('([^']*)','([^']*)','([^']*)','([^']*)'\)"/g;
   var m;
   while ((m = liRe.exec(html)) !== null) {
     var rounds = extractRounds(m[1]);
-    var name = unescapeAttr(m[4]);
+    var name = unescapeAttr(m[3]);
     if (!name || rounds.length === 0) continue;
     if (items[name]) {
       // 同名商品多段 li：合并轮次
@@ -61,9 +63,9 @@ function parsePage(html) {
     }
     items[name] = {
       name: name,
-      image: normalizeImg(m[3]),
-      category: unescapeAttr(m[5]),
-      description: unescapeAttr(m[6]),
+      image: normalizeImg(m[2]),
+      category: unescapeAttr(m[4]),
+      description: unescapeAttr(m[5]),
       rounds: rounds,
       limit: '',
       price: ''
@@ -125,7 +127,14 @@ function beijingString(d) {
 async function fetchPage() {
   for (var attempt = 1; attempt <= 3; attempt++) {
     try {
-      var res = await fetch(SRC, { headers: UA });
+      // 加时间戳绕过 CDN/页面缓存，并显式声明 no-cache
+      var url = SRC + (SRC.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
+      var res = await fetch(url, {
+        headers: Object.assign({}, UA, {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        })
+      });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       var text = await res.text();
       if (text.length < 2000) throw new Error('页面异常（过短）');
@@ -144,6 +153,19 @@ async function main() {
 
   console.log('[2/3] 解析商品与轮次 ...');
   var items = parsePage(html);
+  // 商品数异常少（页面可能还没刷新完整）：隔 5 秒重抓 2 次并合并，
+  // 避免把「只有活动物品」的残缺快照写进 live.json
+  for (var retry = 0; retry < 2 && items.length < 2; retry++) {
+    await new Promise(function (r) { setTimeout(r, 5000); });
+    try {
+      var html2 = await fetchPage();
+      var more = parsePage(html2);
+      more.forEach(function (it) {
+        if (!items.some(function (x) { return x.name === it.name; })) items.push(it);
+      });
+      console.log('      补抓后商品数:', items.length);
+    } catch (e2) { /* 忽略补抓失败 */ }
+  }
   var withPrice = items.filter(function (i) { return i.price; }).length;
   console.log(`      ${items.length} 种商品（${withPrice} 条含价格）`);
 

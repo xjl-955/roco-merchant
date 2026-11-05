@@ -100,7 +100,8 @@ async function fetchKbLive() {
       if (html.length < 2000) throw new Error('页面异常（过短）');
       const map = parseKbPage(html);
       const names = Object.keys(map);
-      if (names.length < 2) throw new Error('解析到 0 商品');
+      // 允许 1 件（活动期某些轮次可能只有 1 件，如 2026-11-05 第1轮只有捣蛋糖果*30）
+      if (names.length < 1) throw new Error('解析到 0 商品');
       const current = parseShareCurrent(html);
       console.log('快爆源实时解析:', names.length, '件物品', current ? ('| 当前在售清单 ' + current.startH + '-' + current.endH + '点 ' + current.items.length + ' 件') : '| 无分享清单');
       const bj = new Date(Date.now() + 8 * 3600 * 1000);

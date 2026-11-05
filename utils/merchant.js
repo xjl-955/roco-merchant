@@ -108,9 +108,9 @@ function applyLiveToday(payload) {
   if (typeof payload.startedAtBeijing !== 'string') return false;
   if (!TIME_RE.test(payload.startedAtBeijing.slice(0, 16))) return false;
 
-  // 完整性校验：快爆源在轮次切换瞬间可能返回残缺快照
-  // 特征：商品数为 0 或 1（正常每轮至少 2 种：常驻+轮换）
-  if (payload.items.length < 2) return false;
+  // 完整性校验：允许 1 件商品（活动期某些轮次可能只有 1 件，
+  // 如 2026-11-05 第1轮只有「捣蛋糖果*30」；此前要求≥2会导致整页空白）
+  if (payload.items.length < 1) return false;
 
   var items = [];
   for (var i = 0; i < payload.items.length; i++) {

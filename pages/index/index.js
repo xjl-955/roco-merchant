@@ -332,7 +332,7 @@ Page({
         name: it.name,
         windowText: w,
         category: it.category || '',
-        price: it.price || '',
+        price: merchant.formatPrice(it.price || ''),
         checked: true
       });
     }

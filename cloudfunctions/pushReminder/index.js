@@ -38,6 +38,16 @@ function normalizeImg(s) {
   return v;
 }
 
+/** 价格统一解析：'160w'→1600000、'1,600,000'→1600000、'3000'→3000、'16万'→160000 */
+function parsePrice(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return 0;
+  const wan = /^(\d+(?:\.\d+)?)(w|万)$/i.exec(s);
+  if (wan) return Math.round(parseFloat(wan[1]) * 10000);
+  const digits = s.replace(/[^0-9]/g, '');
+  return digits ? parseInt(digits, 10) : 0;
+}
+
 /** 解析快爆源页面 → 实时物品列表（含全部 show_N 轮次） */
 function parseKbPage(html) {
   const map = {};
@@ -244,7 +254,7 @@ exports.main = async (event, context) => {
           data: {
             thing1: { value: String(t.name).slice(0, 20) },
             thing2: { value: String(t.category || '道具').slice(0, 20) },
-            amount3: { value: parseInt(String(t.price || '0').replace(/[^0-9]/g, ''), 10) || 0 },
+            amount3: { value: parsePrice(t.price) },
             thing4: { value: '已上架，快去看看吧' }
           }
         });
@@ -413,9 +423,7 @@ exports.main = async (event, context) => {
         task.matched.forEach(function (m) {
           if (m.category && cats.indexOf(m.category) < 0) cats.push(m.category);
         });
-        const amount = task.matched.reduce(function (s, m) {
-          return s + (parseInt(String(m.price || '').replace(/[^0-9]/g, ''), 10) || 0);
-        }, 0);
+        const amount = task.matched.reduce(function (s, m) { return s + parsePrice(m.price); }, 0);
         const tip = names.length > 1 ? ('共' + names.length + '件已上架，快去看看') : '已上架，快去看看吧';
         try {
           await cloud.openapi.subscribeMessage.send({

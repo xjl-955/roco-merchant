@@ -68,7 +68,7 @@ function parseKbPage(html) {
     const desc = unescapeAttr(m[5]);
     const inner = m[6];
     const priceM = inner.match(/shop_price">([^<]*)<\/em>/);
-    const price = priceM ? priceM[1].replace(/[^0-9]/g, '') : '';
+    const price = priceM ? parsePrice(priceM[1]) : 0;
     const limitM = inner.match(/限购\s*(\d+)/);
     const limit = limitM ? limitM[1] : '';
     if (!name) continue;

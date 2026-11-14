@@ -155,8 +155,10 @@ function getLiveToday() {
 function formatPrice(raw) {
   var s = String(raw || '').trim();
   if (!s) return '';
-  var wan = /^(\d+(?:\.\d+)?)w$/i.exec(s);
-  if (wan) return wan[1] + '万';
+  var wan = /^(\d+(?:\.\d+)?)(w|万)$/i.exec(s);
+  if (wan) {
+    return String(Math.round(parseFloat(wan[1]) * 10000)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
   if (/^\d+$/.test(s)) {
     return s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }

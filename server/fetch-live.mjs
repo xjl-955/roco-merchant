@@ -96,8 +96,15 @@ function parsePage(html) {
     var blockBefore = i > 0 ? html.slice(nameIdx[i - 1].start, cur.start) : html.slice(0, cur.start);
     if (!items[cur.name]) continue;
     if (!items[cur.name].price) {
-      var pm = /<em class="shop_price">价格：\s*([\d,.]+w?)/.exec(blockAfter);
-      if (pm) items[cur.name].price = pm[1].replace(/,/g, '');
+      var pm = /<em class="shop_price">价格：\s*([\d,.]+\s*[w万]?)/.exec(blockAfter);
+      if (pm) {
+        // 统一转换为完整数字（'16w'→160000、'1,600,000'→1600000）
+        var pv = pm[1].replace(/\s/g, '');
+        var wanM = /^([\d.]+)(w|万)$/i.exec(pv);
+        items[cur.name].price = wanM
+          ? String(Math.round(parseFloat(wanM[1]) * 10000))
+          : pv.replace(/,/g, '');
+      }
     }
     if (!items[cur.name].limit) {
       // 限购优先从"本商品的 li 起点到 shop_name"这段往前找（即本 li 图块内）

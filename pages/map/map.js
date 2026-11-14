@@ -1,13 +1,7 @@
 var MAPS_INDEX = 'https://xjl-955.github.io/roco-data/maps/index.json';
 var MAPS_BASE = 'https://xjl-955.github.io/roco-data/maps/';
-var TILE_FLOORS = {
-  'G': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-G/6/',
-  'B1': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-B1/6/',
-  'B2': 'https://wiki-dev-patch-oss.oss-cn-hangzhou.aliyuncs.com/res/lkwg/S3/tiles-B2/6/'
-};
-var CAT_ICONS = { '传送与功能': '🧭', '商店': '🏪', '特殊玩法': '🎮', '奖励资源': '🎁', '对战NPC': '⚔️', '采集物': '🌿', '地点': '📍', '宝箱': '🎁', '互动': '🤝', '采矿': '⛏️', '采集': '🌿', '果树': '🌳', '收集': '🏅' };
-var TILE_RANGE = [-4, -3, -2, -1, 0, 1, 2, 3];
-// 屏幕可用宽度（rpx）：750 - 左右 padding 40
+// 逻辑画布：WIKI 世界 4096×4096（4×4×1024），映射为 2048rpx 视觉尺寸
+var CANVAS_RPX = 2048;
 var AREA_W = 710;
 
 Page({
@@ -17,41 +11,48 @@ Page({
     cats: [],
     mapMode: false,
     activeCat: '',
-    activeCatIcon: '📍',
-    activeFloor: 'G',
+    // 层
+    layers: [],
+    layerIndex: 0,
+    layerGroups: [],
+    activeLayerId: '',
+    // 瓦片/单图
     tiles: [],
+    layerImage: '',
+    // 标记
     mapMarkers: [],
     subs: [],
     activeSub: '全部',
     selected: null,
+    selectedDetail: null,
     total: 0,
     zoom: 1,
     zoomText: '1x',
-    scaleValue: 1,
-    canvasStyle: 'width: 710rpx; height: 710rpx;',
+    canvasStyle: 'width: ' + AREA_W + 'rpx; height: ' + AREA_W + 'rpx;',
     x: 0,
     y: 0
   },
 
-  _markers: [],
-  _cats: [],
+  _index: null,
+  _layerPoints: [],
+  _allPoints: [],
+  _details: null,
+  _assets: null,
 
   onLoad: function () {
     var that = this;
-    var KEY = 'roco_maps_index_v6';
+    var KEY = 'roco_maps_index_v11';
     try {
       var c = wx.getStorageSync(KEY);
-      if (c && c.data) { that._apply(c.data); }
+      if (c && c.data) { that._applyIndex(c.data); }
     } catch (e) { }
     wx.request({
       url: MAPS_INDEX,
       timeout: 20000,
       success: function (res) {
         if (res.statusCode === 200 && res.data && res.data.categories && res.data.categories.length) {
-          if (res.data.categories && res.data.categories.length) {
-            try { wx.setStorageSync(KEY, { data: res.data, at: Date.now() }); } catch (e) { }
-          }
-          that._apply(res.data);
+          try { wx.setStorageSync(KEY, { data: res.data, at: Date.now() }); } catch (e) { }
+          that._applyIndex(res.data);
         } else if (!that.data.cats.length) {
           that.setData({ loading: false, error: true });
         }
@@ -60,97 +61,116 @@ Page({
     });
   },
 
-  _apply: function (indexData) {
-    var cats = (indexData.categories || []).map(function (c) {
-      return { name: c.name, icon: CAT_ICONS[c.name] || '📍', count: c.count, file: c.file };
+  _applyIndex: function (index) {
+    this._index = index;
+    var cats = (index.categories || []).map(function (c) {
+      return { name: c.name, genre: c.genre, icon: c.icon, count: c.count, file: c.file };
     });
-    this._cats = cats;
-    this.setData({ loading: false, cats: cats });
+    this.setData({ loading: false, cats: cats, total: index.total });
+    // 预取 assets 与 details（静默）
+    var that = this;
+    wx.request({ url: MAPS_BASE + 'assets.json', timeout: 20000, success: function (res) { that._assets = res.data || {}; }, fail: function () { } });
+    wx.request({ url: MAPS_BASE + 'details.json', timeout: 20000, success: function (res) { that._details = res.data || {}; }, fail: function () { } });
   },
 
   onCatTap: function (e) {
     var that = this;
-    var name = e.currentTarget.dataset.name;
-    var cat = this._cats.filter(function (c) { return c.name === name; })[0];
+    var genre = e.currentTarget.dataset.genre;
+    var cat = this._cats.filter(function (c) { return c.genre === genre; })[0];
     if (!cat) return;
-    this.setData({ mapMode: true, activeCat: name, activeCatIcon: cat.icon, loading: true, activeFloor: 'G', zoom: 1, zoomText: '1x', x: 0, y: 0 });
-    this._buildTiles('G');
+    this._currentGenre = genre;
+    this.setData({ mapMode: true, activeCat: cat.name, loading: true, zoom: 1, zoomText: '1x', x: 0, y: 0, selected: null, selectedDetail: null, activeSub: '全部' });
+    this._loadLayer(this.data.layerIndex || 0, function () {
+      that._loadCat(genre);
+    });
+  },
 
-    var KEY = 'roco_maps_cat_v6_' + name;
-    try {
-      var c = wx.getStorageSync(KEY);
-      if (c && c.data) { that._use(c.data); return; }
-    } catch (e) { }
-
+  /** 加载空间层（地表默认；地下层列表在 index.layers） */
+  _loadLayer: function (layerIndex, done) {
+    var that = this;
+    var layers = (this._index && this._index.layers) || [];
+    var layer = layers[layerIndex] || layers[0];
+    if (!layer) { if (done) done(); return; }
+    this.setData({ layerIndex: layerIndex, activeLayerId: layer.id, loading: true });
+    // 瓦片或单图
+    if (layer.render === 'tiles') {
+      this.setData({ tiles: layer.tiles, layerImage: '' });
+    } else {
+      this.setData({ tiles: [], layerImage: layer.image });
+    }
+    // 点位
+    var file = layer.id === 'surface' ? 'points-mainland.json' : 'points-' + layer.id + '.json';
     wx.request({
-      url: MAPS_BASE + cat.file,
+      url: MAPS_BASE + file,
       timeout: 20000,
       success: function (res) {
-        if (res.statusCode === 200 && res.data) {
-          try { wx.setStorageSync(KEY, { data: res.data, at: Date.now() }); } catch (e) { }
-          that._use(res.data);
-        } else that.setData({ loading: false });
+        that._layerPoints = (res.statusCode === 200 && res.data) ? res.data : [];
+        if (done) done();
       },
-      fail: function () { that.setData({ loading: false }); }
+      fail: function () { that._layerPoints = []; if (done) done(); }
     });
   },
 
-  _buildTiles: function (floor) {
-    var base = TILE_FLOORS[floor] || TILE_FLOORS['G'];
-    var tiles = [];
-    TILE_RANGE.forEach(function (y) {
-      TILE_RANGE.forEach(function (x) {
-        tiles.push({ key: floor + x + '_' + y, url: base + 'tile-' + x + '_' + y + '.png' });
-      });
-    });
-    this.setData({ tiles: tiles, activeFloor: floor });
+  _loadCat: function (genre) {
+    // 分类筛选：大类匹配 className（WIKI "对战 NPC" 与分类名 "对战NPC" 归一）
+    var norm = function (s) { return String(s || '').replace(/\s+/g, ''); };
+    var points = this._layerPoints || [];
+    var list = points.filter(function (p) { return norm(p.className) === norm(genre); });
+    this._allPoints = list;
+    this._buildMarkers(genre);
+    this.setData({ loading: false });
   },
 
-
-  _use: function (markers) {
-    this._markers = markers.map(function (mk, i) {
+  _buildMarkers: function (genre) {
+    var layer = (this._index.layers || [])[this.data.layerIndex];
+    if (!layer) return;
+    var minX = layer.bounds[0], minY = layer.bounds[1], side = layer.sideLength;
+    var size = Math.round(AREA_W * this.data.zoom);
+    var assets = this._assets || {};
+    var list = this._allPoints;
+    var subs = {};
+    var markers = list.map(function (p, i) {
+      // projectWorld: (x-minX)/sideLength → 百分比（瓦片世界 4096px）
+      var xp = ((p.x - minX) / side) * 100;
+      var yp = ((p.y - minY) / side) * 100;
+      subs[p.genre] = (subs[p.genre] || 0) + 1;
       return {
-        i: i, name: mk.name, sub: mk.sub, desc: mk.desc,
-        layer: mk.layer, icon: mk.icon, xPct: mk.xPct, yPct: mk.yPct
+        i: i, id: p.id, name: p.name, genre: p.genre, region: p.region,
+        icon: assets[p.icon] || '',
+        xPct: xp, yPct: yp,
+        left: Math.round(xp / 100 * size),
+        top: Math.round(yp / 100 * size)
       };
     });
-    var subs = {};
-    this._markers.forEach(function (m) { subs[m.sub] = (subs[m.sub] || 0) + 1; });
+    // sub 排序按数量
     var subList = Object.keys(subs).map(function (n) { return { name: n, count: subs[n] }; });
     subList.sort(function (a, b) { return b.count - a.count; });
-    this.setData({ loading: false, subs: subList });
-    this._applyZoom();
+    this.setData({ mapMarkers: markers, subs: subList, total: markers.length });
     this._filterMarkers();
   },
 
   _filterMarkers: function () {
-    var floor = this.data.activeFloor;
     var sub = this.data.activeSub;
-    var size = Math.round(710 * this.data.zoom);
-    var list = this._markers.filter(function (m) {
-      if (floor !== 'G' && m.layer !== floor) return false;
-      if (floor === 'G' && m.layer && m.layer !== 'G') return false;
-      if (sub !== '全部' && m.sub !== sub) return false;
-      return true;
-    });
-    // 标记位置：rpx 像素（随 zoom 的 canvas 尺寸）
+    var size = Math.round(AREA_W * this.data.zoom);
+    var all = this.data.mapMarkers;
+    var list = sub === '全部' ? all : all.filter(function (m) { return m.genre === sub; });
     var positioned = list.map(function (mk, i) {
-      return {
-        i: i, name: mk.name, sub: mk.sub, desc: mk.desc, layer: mk.layer,
-        icon: mk.icon,
-        left: Math.round((parseFloat(mk.xPct) / 100) * size),
-        top: Math.round((parseFloat(mk.yPct) / 100) * size)
-      };
+      var xp = mk.xPct, yp = mk.yPct;
+      return Object.assign({}, mk, {
+        i: i,
+        left: Math.round(xp / 100 * size),
+        top: Math.round(yp / 100 * size)
+      });
     });
     this.setData({ mapMarkers: positioned, total: list.length });
   },
 
-  onFloorTap: function (e) {
-    var floor = e.currentTarget.dataset.floor;
-    this.setData({ activeFloor: floor, zoom: 1, zoomText: '1x', x: 0, y: 0 });
-    this._buildTiles(floor);
-    this._applyZoom();
-    this._filterMarkers();
+  onLayerTap: function (e) {
+    var idx = +e.currentTarget.dataset.index;
+    var that = this;
+    var genre = this._currentGenre || (this._cats[0] && this._cats[0].genre);
+    this.setData({ activeSub: '全部', zoom: 1, zoomText: '1x', x: 0, y: 0 });
+    this._loadLayer(idx, function () { that._loadCat(genre); });
   },
 
   onSubTap: function (e) {
@@ -161,45 +181,39 @@ Page({
   onMarkerTap: function (e) {
     var i = +e.currentTarget.dataset.i;
     var mk = this.data.mapMarkers[i];
-    if (mk) this.setData({ selected: mk });
+    if (!mk) return;
+    this.setData({ selected: mk });
+    var d = this._details && this._details[mk.id];
+    this.setData({ selectedDetail: d || null });
   },
 
-  onClose: function () { this.setData({ selected: null }); },
+  onClose: function () { this.setData({ selected: null, selectedDetail: null }); },
 
   onBackCats: function () {
-    this.setData({ mapMode: false, activeCat: '', selected: null, zoom: 1, zoomText: '1x' });
+    this.setData({ mapMode: false, activeCat: '', selected: null, selectedDetail: null, zoom: 1, zoomText: '1x' });
   },
 
-  /** 手势缩放回调（双指） */
   onScale: function (e) {
-    if (e.detail && e.detail.scale) {
-      this.setData({ zoomText: e.detail.scale.toFixed(1) + 'x' });
-    }
+    if (e.detail && e.detail.scale) this.setData({ zoomText: e.detail.scale.toFixed(1) + 'x' });
   },
 
   onZoomIn: function () {
-    this.setData({ zoom: Math.min(3, +(this.data.zoom + 0.5).toFixed(1)) });
-    this._applyZoom();
-    this._filterMarkers();
+    this.setData({ zoom: Math.min(4, +(this.data.zoom + 0.5).toFixed(1)) });
+    this._applyZoom(); this._filterMarkers();
   },
-
   onZoomOut: function () {
     this.setData({ zoom: Math.max(1, +(this.data.zoom - 0.5).toFixed(1)) });
-    this._applyZoom();
-    this._filterMarkers();
+    this._applyZoom(); this._filterMarkers();
   },
 
-  /** zoom 变化：canvas 尺寸 = 710×zoom（最小 710=全图适配屏宽）+ 居中定位 */
   _applyZoom: function () {
     var z = this.data.zoom;
-    var size = Math.round(710 * z);
+    var size = Math.round(AREA_W * z);
     this.setData({
       canvasStyle: 'width: ' + size + 'rpx; height: ' + size + 'rpx;',
       moverStyle: 'width: ' + size + 'rpx; height: ' + size + 'rpx;'
     });
-    // movable-view 居中：x/y = -(content - area)/2（负值向左上偏移）
-    var off = Math.round((710 * z - 710) / 2);
-    this.setData({ x: -off, y: -off });
-    this.setData({ zoomText: z + 'x' });
+    var off = Math.round((AREA_W * z - AREA_W) / 2);
+    this.setData({ x: -off, y: -off, zoomText: z + 'x' });
   }
 });

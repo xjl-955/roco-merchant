@@ -7,13 +7,13 @@
   <block wx:if="{{!loading && !error && !mapMode}}">
     <view class="head">
       <view class="head-title">🗺️ 世界地图</view>
-      <view class="head-sub">7148 个点位 · 点分类进入，可多选叠加</view>
+      <view class="head-sub">{{total}} 个点位 · WIKI 数据 · 点分类进入，可多选叠加</view>
     </view>
 
     <view class="cat-list">
-      <view class="cat-item" wx:for="{{cats}}" wx:key="name"
-            data-name="{{item.name}}" bindtap="onCatTap">
-        <text class="cat-icon">{{item.icon}}</text>
+      <view class="cat-item" wx:for="{{cats}}" wx:key="genre"
+            data-genre="{{item.genre}}" bindtap="onCatTap">
+        <image class="cat-icon-img" src="{{item.icon}}" mode="aspectFit"></image>
         <view class="cat-info">
           <view class="cat-name">{{item.name}}</view>
           <view class="cat-count">{{item.count}} 个点位</view>
@@ -28,7 +28,7 @@
 
     <view class="toolbar">
       <view class="tb-back" bindtap="onBackCats">‹ 分类</view>
-      <view class="tb-title">{{activeCatIcon}} {{activeCat}}</view>
+      <view class="tb-title">{{activeCat}}</view>
       <view class="zoom-btns">
         <view class="zoom-btn" bindtap="onZoomOut">−</view>
         <view class="zoom-num">{{zoomText}}</view>
@@ -36,14 +36,16 @@
       </view>
     </view>
 
-    <view class="floor-tabs">
-      <view class="floor-tab {{activeFloor === 'G' ? 'floor-on' : ''}}"
-            data-floor="G" bindtap="onFloorTap">🗺️ 大地图</view>
-      <view class="floor-tab {{activeFloor === 'B1' ? 'floor-on' : ''}}"
-            data-floor="B1" bindtap="onFloorTap">🕳️ 地底一层</view>
-      <view class="floor-tab {{activeFloor === 'B2' ? 'floor-on' : ''}}"
-            data-floor="B2" bindtap="onFloorTap">🕳️ 地底二层</view>
-    </view>
+    <!-- 空间层切换：地表 + 各地下层 -->
+    <scroll-view scroll-x class="floor-tabs">
+      <view class="floor-row">
+        <view class="floor-tab {{layerIndex === index ? 'floor-on' : ''}}"
+              wx:for="{{layers}}" wx:for-index="index" wx:key="id"
+              data-index="{{index}}" bindtap="onLayerTap">
+          {{index === 0 ? '🗺️ ' + item.name : '🕳️ ' + item.name}}
+        </view>
+      </view>
+    </scroll-view>
 
     <scroll-view scroll-x class="sub-scroll">
       <view class="sub-row">
@@ -54,17 +56,22 @@
       </view>
     </scroll-view>
 
-    <!-- 互动地图：canvas 尺寸 = 710×zoom rpx（zoom=1 全图适配屏宽） -->
+    <!-- 互动地图 -->
     <movable-area class="map-area">
       <movable-view class="map-mover" style="{{moverStyle}}" direction="all" inertia out-of-bounds="{{false}}"
                     x="{{x}}" y="{{y}}"
-                    scale scale-min="0.5" scale-max="3" scale-value="{{scaleValue}}"
-                    bindchange="onMoveChange" bindscale="onScale">
+                    scale scale-min="0.5" scale-max="4" scale-value="{{zoom}}"
+                    bindscale="onScale">
         <view class="map-canvas" style="{{canvasStyle}}">
-          <view class="tile-grid">
-            <image class="tile" wx:for="{{tiles}}" wx:key="key" src="{{item.url}}" mode="scaleToFill"></image>
+          <!-- 瓦片渲染（地表：4×4）-->
+          <view class="tile-grid" wx:if="{{tiles.length > 0}}">
+            <image class="tile" wx:for="{{tiles}}" wx:key="url" src="{{item.url}}" mode="scaleToFill"
+                   style="left: {{item.col * 25}}%; top: {{item.row * 25}}%;"></image>
           </view>
-          <view class="marker" wx:for="{{mapMarkers}}" wx:key="i"
+          <!-- 单图渲染（地下层）-->
+          <image class="layer-image" wx:if="{{layerImage}}" src="{{layerImage}}" mode="scaleToFill"></image>
+          <!-- 标记 -->
+          <view class="marker" wx:for="{{mapMarkers}}" wx:key="id"
                 style="left: {{item.left}}rpx; top: {{item.top}}rpx;"
                 data-i="{{index}}" catchtap="onMarkerTap">
             <image class="mk-icon" src="{{item.icon}}" mode="aspectFit"></image>
@@ -73,14 +80,24 @@
       </movable-view>
     </movable-area>
 
+    <!-- 详情弹窗 -->
     <view class="info-bar" wx:if="{{selected}}">
       <view class="ib-close" bindtap="onClose">✕</view>
       <view class="ib-name">{{selected.name}}</view>
-      <view class="ib-meta">{{selected.sub}} <text wx:if="{{selected.layer}}" class="ib-floor">· 楼层 {{selected.layer}}</text></view>
-      <view class="ib-desc" wx:if="{{selected.desc}}">{{selected.desc}}</view>
+      <view class="ib-meta">{{selected.genre}} · {{selected.region}}</view>
+      <block wx:if="{{selectedDetail}}">
+        <view class="ib-desc" wx:if="{{selectedDetail.description}}">{{selectedDetail.description}}</view>
+        <block wx:if="{{selectedDetail.rewardSections && selectedDetail.rewardSections.length}}">
+          <view class="ib-reward" wx:for="{{selectedDetail.rewardSections}}" wx:for-item="sec" wx:key="title">
+            <text class="ib-reward-title">{{sec.title}}</text>
+            <text class="ib-reward-note" wx:if="{{sec.note}}">{{sec.note}}</text>
+          </view>
+        </block>
+      </block>
+      <view class="ib-desc" wx:elif="{{selected.region}}">位于 {{selected.region}}</view>
     </view>
     <view class="info-bar ib-tip" wx:else>
-      💡 拖动 · ±缩放 · 点标记看详情 · {{total}} 个点位
+      💡 拖动 · 双指缩放 · 点标记看详情 · {{total}} 个点位
     </view>
 
   </block>

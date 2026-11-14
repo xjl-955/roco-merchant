@@ -41,6 +41,11 @@ Page({
 
   onLoad: function () {
     var that = this;
+    if (!this._cats) this._cats = [];
+    if (!this._layerPoints) this._layerPoints = [];
+    if (!this._allPoints) this._allPoints = [];
+    if (!this._assets) this._assets = {};
+    if (!this._details) this._details = {};
     var KEY = 'roco_maps_index_v11';
     try {
       var c = wx.getStorageSync(KEY);
@@ -75,12 +80,27 @@ Page({
 
   onCatTap: function (e) {
     var that = this;
+    if (!this._cats || !this._cats.length) this._cats = this.data.cats || [];
     var name = e.currentTarget.dataset.name;
-    var cat = this._cats.filter(function (c) { return c.name === name; })[0];
+    var cat = (this._cats || []).filter(function (c) { return c.name === name; })[0];
+    if (!cat) {
+      // 兜底：从 data.cats 直接找（热重载/实例重建后 _cats 可能丢失）
+      cat = (this.data.cats || []).filter(function (c) { return c.name === name; })[0];
+    }
     if (!cat) return;
     this._currentCat = cat;
-    this._currentGenre = ''; // 大类不限定子类
+    this._currentGenre = '';
     this.setData({ mapMode: true, activeCat: cat.name, loading: true, zoom: 1, zoomText: '1x', x: 0, y: 0, selected: null, selectedDetail: null, activeSub: '全部' });
+    if (!this._index) {
+      // 热重载后 _index 丢失：从缓存恢复或直接请求
+      var KEY = 'roco_maps_index_v11';
+      var cached = null;
+      try { cached = wx.getStorageSync(KEY); } catch (e) { }
+      if (cached && cached.data) { this._index = cached.data; }
+    }
+    if (!this._assets) this._assets = {};
+    if (!this._details) this._details = {};
+    if (!this._layerPoints) this._layerPoints = [];
     this._loadLayer(this.data.layerIndex || 0, function () {
       that._loadCat(cat);
     });
@@ -115,20 +135,22 @@ Page({
   _loadCat: function (cat) {
     // 大类过滤：className 归一匹配（WIKI "对战 NPC" ↔ 分类名 "对战NPC"）
     var norm = function (s) { return String(s || '').replace(/\s+/g, ''); };
-    var points = this._layerPoints || [];
-    var list = points.filter(function (p) { return norm(p.className) === norm(cat.name); });
+    var points = Array.isArray(this._layerPoints) ? this._layerPoints : [];
+    var catName = cat && cat.name ? cat.name : '';
+    var list = points.filter(function (p) { return norm(p.className) === norm(catName); });
     this._allPoints = list;
-    this._buildMarkers(cat);
+    this._buildMarkers(cat || { name: catName, subs: [] });
     this.setData({ loading: false });
   },
 
   _buildMarkers: function (cat) {
-    var layer = (this._index.layers || [])[this.data.layerIndex];
-    if (!layer) return;
-    var minX = layer.bounds[0], minY = layer.bounds[1], side = layer.sideLength;
+    var layers = (this._index && this._index.layers) || [];
+    var layer = layers[this.data.layerIndex] || layers[0];
+    if (!layer || !layer.bounds) return;
+    var minX = layer.bounds[0], minY = layer.bounds[1], side = layer.sideLength || 1;
     var size = Math.round(AREA_W * this.data.zoom);
     var assets = this._assets || {};
-    var list = this._allPoints;
+    var list = Array.isArray(this._allPoints) ? this._allPoints : [];
     var subs = {};
     var markers = list.map(function (p, i) {
       // projectWorld: (x-minX)/sideLength → 百分比（瓦片世界 4096px）
@@ -144,7 +166,7 @@ Page({
       };
     });
     // 子类 chips：优先大类自带的子类清单（保证 WIKI 全量与顺序），数量取实况
-    var subList = (cat.subs || []).map(function (s) {
+    var subList = ((cat && cat.subs) || []).map(function (s) {
       return { name: s.name, count: subs[s.name] || 0 };
     }).filter(function (s) { return s.count > 0; });
     // 兜底：点位里有但清单没有的子类

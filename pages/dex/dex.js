@@ -17,7 +17,7 @@ Page({
     shinyOptions: ['异色', '有异色', '无异色'],
     shinyPickIndex: 0,
     // 赛季筛选（不含"全部"）
-    seasons: ['赛季', '暗夜拾光', '狂欢怪谈', '铅字幻梦', '月涌狂想'],
+    seasons: ['赛季', '暗夜拾光', '狂欢怪谈', '铅字幻梦', '月涌狂想', '圣龙宝藏'],
     seasonIndex: 0,
     // 列表
     list: [],
@@ -124,9 +124,9 @@ Page({
         if (stage === '三阶' && st !== '三阶') return false;
         if (stage === '首领' && st.indexOf('首领') < 0) return false;
       }
-      // 赛季（名称映射 S1-S4）
+      // 赛季（名称映射 S1-S5）
       if (that.data.seasonIndex > 0) {
-        var seasonMap = { '暗夜拾光': 'S1', '狂欢怪谈': 'S2', '铅字幻梦': 'S3', '月涌狂想': 'S4' };
+        var seasonMap = { '暗夜拾光': 'S1', '狂欢怪谈': 'S2', '铅字幻梦': 'S3', '月涌狂想': 'S4', '圣龙宝藏': 'S5' };
         if ((s.season || 'none') !== seasonMap[season]) return false;
       }
       // 属性

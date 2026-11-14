@@ -1,6 +1,6 @@
 {
  "formatVersion": 4,
- "generatedAt": "2026-11-14T13:07:42.802Z",
+ "generatedAt": "2026-11-14T13:36:17.733Z",
  "meta": {
   "updatedAt": "2026-09-29",
   "source": "洛克王国世界WIKI · 精灵图鉴（625卡权威源）"
@@ -4134,7 +4134,7 @@
     "两栖组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/cce07b8db91d8ee253c542f4007f5140.png",
    "stage": "1",
    "form": "main",
@@ -7289,7 +7289,7 @@
     "两栖组"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/78dec90efe86452b2e06fa89a7bd1904.png",
    "stage": "1",
    "form": "main",
@@ -7312,7 +7312,7 @@
     "两栖组"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/a05204f29fc524175a88db50fd8ab03c.png",
    "stage": "2",
    "form": "main",
@@ -7333,7 +7333,7 @@
     "巨龙组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/bd68d30af5eb67e68f5cebbd7dd32ac8.png",
    "stage": "1",
    "form": "main",
@@ -7354,7 +7354,7 @@
     "巨龙组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/2c304cb08e617eae8ea19835d7eed91f.png",
    "stage": "",
    "form": "lord",
@@ -7375,7 +7375,7 @@
     "巨龙组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/270b5d49939c075d86d37df349f776e7.png",
    "stage": "2",
    "form": "main",
@@ -7928,7 +7928,7 @@
     "巨龙组"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/95e18b0380d3638b2889a49d3c4d0247.png",
    "stage": "1",
    "form": "main",
@@ -7951,7 +7951,7 @@
     "巨龙组"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/8b5aa227f08e9c43213a87a87966fd4c.png",
    "stage": "2",
    "form": "main",
@@ -8056,7 +8056,7 @@
     "机械组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/48f6cde3a15bd8754cfb1a62a000d5ba.png",
    "stage": "1",
    "form": "main",
@@ -8077,7 +8077,7 @@
     "机械组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/eca5394e0c17319441d49d8054626f5f.png",
    "stage": "2",
    "form": "main",
@@ -8826,7 +8826,7 @@
     "拟人组"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/f562a9fde22ff6bba69765910b59e753.png",
    "stage": "1",
    "form": "main",
@@ -8848,7 +8848,7 @@
     "拟人组"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/2d3636f96514d26c62184d9f5b452bc2.png",
    "stage": "2",
    "form": "main",
@@ -8870,7 +8870,7 @@
     "拟人组"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/4460b962b2c3ebe858d82a9d8ce465a0.png",
    "stage": "3",
    "form": "main",
@@ -9428,7 +9428,7 @@
     "巨灵组"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/004aa9fa0da4cf1120dd8792420d6422.png",
    "stage": "1",
    "form": "main",
@@ -9821,7 +9821,7 @@
     "两栖组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/a9561367da6268d75024f8346cd7f114.png",
    "stage": "1",
    "form": "main",
@@ -9844,7 +9844,7 @@
     "两栖组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/536b9cd609015f807e33a201b52678bf.png",
    "stage": "2",
    "form": "main",
@@ -9867,7 +9867,7 @@
     "两栖组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/783e89a80b2b6ca562a6e856b24717ae.png",
    "stage": "",
    "form": "lord",
@@ -11217,7 +11217,7 @@
     "未发现"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/dc37850357752bad142172255d46192d.png",
    "stage": "1",
    "form": "main",
@@ -11238,7 +11238,7 @@
     "未发现"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/2fab59558331f3dd55c93e2246f6f0e6.png",
    "stage": "2",
    "form": "main",
@@ -11259,7 +11259,7 @@
     "未发现"
    ],
    "ride": "可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://img.71acg.net/whd~hykb_tools/lkwg/jltj/pet/20260728/3da0e88530ab7750aa7ef69ca6fe36c2.png",
    "stage": "3",
    "form": "main",
@@ -13876,7 +13876,7 @@
     "海洋组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://patchwiki.biligame.com/images/nrc/5/5d/r2nfkbcq0yhy48tpth456ztup3bc23f.png",
    "stage": "1",
    "form": "main",
@@ -13897,7 +13897,7 @@
     "海洋组"
    ],
    "ride": "不可同乘",
-   "shiny": false,
+   "shiny": true,
    "image": "https://patchwiki.biligame.com/images/nrc/4/46/fmp2c9y1knur9nfah33hpznoxkvuwaq.png",
    "stage": "2",
    "form": "main",

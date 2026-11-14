@@ -75,13 +75,14 @@ Page({
 
   onCatTap: function (e) {
     var that = this;
-    var genre = e.currentTarget.dataset.genre;
-    var cat = this._cats.filter(function (c) { return c.genre === genre; })[0];
+    var name = e.currentTarget.dataset.name;
+    var cat = this._cats.filter(function (c) { return c.name === name; })[0];
     if (!cat) return;
-    this._currentGenre = genre;
+    this._currentCat = cat;
+    this._currentGenre = ''; // 大类不限定子类
     this.setData({ mapMode: true, activeCat: cat.name, loading: true, zoom: 1, zoomText: '1x', x: 0, y: 0, selected: null, selectedDetail: null, activeSub: '全部' });
     this._loadLayer(this.data.layerIndex || 0, function () {
-      that._loadCat(genre);
+      that._loadCat(cat);
     });
   },
 
@@ -111,17 +112,17 @@ Page({
     });
   },
 
-  _loadCat: function (genre) {
-    // 分类筛选：大类匹配 className（WIKI "对战 NPC" 与分类名 "对战NPC" 归一）
+  _loadCat: function (cat) {
+    // 大类过滤：className 归一匹配（WIKI "对战 NPC" ↔ 分类名 "对战NPC"）
     var norm = function (s) { return String(s || '').replace(/\s+/g, ''); };
     var points = this._layerPoints || [];
-    var list = points.filter(function (p) { return norm(p.className) === norm(genre); });
+    var list = points.filter(function (p) { return norm(p.className) === norm(cat.name); });
     this._allPoints = list;
-    this._buildMarkers(genre);
+    this._buildMarkers(cat);
     this.setData({ loading: false });
   },
 
-  _buildMarkers: function (genre) {
+  _buildMarkers: function (cat) {
     var layer = (this._index.layers || [])[this.data.layerIndex];
     if (!layer) return;
     var minX = layer.bounds[0], minY = layer.bounds[1], side = layer.sideLength;
@@ -142,8 +143,14 @@ Page({
         top: Math.round(yp / 100 * size)
       };
     });
-    // sub 排序按数量
-    var subList = Object.keys(subs).map(function (n) { return { name: n, count: subs[n] }; });
+    // 子类 chips：优先大类自带的子类清单（保证 WIKI 全量与顺序），数量取实况
+    var subList = (cat.subs || []).map(function (s) {
+      return { name: s.name, count: subs[s.name] || 0 };
+    }).filter(function (s) { return s.count > 0; });
+    // 兜底：点位里有但清单没有的子类
+    Object.keys(subs).forEach(function (n) {
+      if (!subList.some(function (s) { return s.name === n; })) subList.push({ name: n, count: subs[n] });
+    });
     subList.sort(function (a, b) { return b.count - a.count; });
     this.setData({ mapMarkers: markers, subs: subList, total: markers.length });
     this._filterMarkers();
@@ -168,9 +175,9 @@ Page({
   onLayerTap: function (e) {
     var idx = +e.currentTarget.dataset.index;
     var that = this;
-    var genre = this._currentGenre || (this._cats[0] && this._cats[0].genre);
+    var cat = this._currentCat || this._cats[0];
     this.setData({ activeSub: '全部', zoom: 1, zoomText: '1x', x: 0, y: 0 });
-    this._loadLayer(idx, function () { that._loadCat(genre); });
+    this._loadLayer(idx, function () { that._loadCat(cat); });
   },
 
   onSubTap: function (e) {

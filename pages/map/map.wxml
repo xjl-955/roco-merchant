@@ -11,8 +11,8 @@
     </view>
 
     <view class="cat-list">
-      <view class="cat-item" wx:for="{{cats}}" wx:key="genre"
-            data-genre="{{item.genre}}" bindtap="onCatTap">
+      <view class="cat-item" wx:for="{{cats}}" wx:key="name"
+            data-name="{{item.name}}" bindtap="onCatTap">
         <image class="cat-icon-img" src="{{item.icon}}" mode="aspectFit"></image>
         <view class="cat-info">
           <view class="cat-name">{{item.name}}</view>

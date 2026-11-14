@@ -504,805 +504,521 @@
  ],
  "categories": [
   {
-   "id": "2:大型眠枭庇护所",
-   "classId": 2,
-   "className": "传送与功能",
-   "genre": "大型眠枭庇护所",
-   "name": "大型眠枭庇护所",
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/7c/pgryfh3ivnniwibga4dahm0esmd6hhn.png",
-   "count": 37
-  },
-  {
-   "id": "2:家园",
-   "classId": 2,
-   "className": "传送与功能",
-   "genre": "家园",
-   "name": "家园",
-   "icon": "https://patchwiki.biligame.com/images/nrc/d/d6/pjutnglae8ly9bytx1i6j6fsaongw7z.png",
-   "count": 1
-  },
-  {
-   "id": "2:小型眠枭庇护所",
-   "classId": 2,
-   "className": "传送与功能",
-   "genre": "小型眠枭庇护所",
-   "name": "小型眠枭庇护所",
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/75/kaas2skk09mfwurjew3fmdyij7nc7ab.png",
-   "count": 11
-  },
-  {
-   "id": "2:炼金釜",
-   "classId": 2,
-   "className": "传送与功能",
-   "genre": "炼金釜",
-   "name": "炼金釜",
-   "icon": "https://patchwiki.biligame.com/images/nrc/1/11/a6yi0fqfk2877zzcj0bixe0mvequ94p.png",
-   "count": 28
-  },
-  {
-   "id": "2:秘境入口",
-   "classId": 2,
-   "className": "传送与功能",
-   "genre": "秘境入口",
-   "name": "秘境入口",
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/7a/hmtus0il23qrlr6h90eh37la7dg127t.png",
-   "count": 30
-  },
-  {
-   "id": "2:魔力之源",
-   "classId": 2,
-   "className": "传送与功能",
-   "genre": "魔力之源",
-   "name": "魔力之源",
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/76/sdibelxkj6dtossi299yqrrcphjdd7i.png",
-   "count": 43
-  },
-  {
-   "id": "3:传说挑战",
-   "classId": 3,
-   "className": "首领战",
-   "genre": "传说挑战",
-   "name": "传说挑战",
-   "icon": "https://patchwiki.biligame.com/images/nrc/e/e8/amsvyxkj8x34wefldtpjs9szd4ukvna.png",
-   "count": 5
-  },
-  {
-   "id": "3:精灵首领",
-   "classId": 3,
-   "className": "首领战",
-   "genre": "精灵首领",
-   "name": "精灵首领",
-   "icon": "https://patchwiki.biligame.com/images/nrc/4/44/9ggklyi7evdu2jns9ehhu3kc1x4q5xy.png",
-   "count": 21
-  },
-  {
-   "id": "4:力气测试仪",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "力气测试仪",
-   "name": "力气测试仪",
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/77/iazf7tgi59w00bctm7o7xugenug7byw.png",
-   "count": 53
-  },
-  {
-   "id": "4:噩梦祭台",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "噩梦祭台",
-   "name": "噩梦祭台",
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/7f/63vmneq1ergj0u6dixs72kbtz8aqj4g.png",
-   "count": 13
-  },
-  {
-   "id": "4:天气石像",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "天气石像",
-   "name": "天气石像",
-   "icon": "https://patchwiki.biligame.com/images/nrc/2/2f/g1v9vd4xit195017r6zycmvlzw6gqfo.png",
-   "count": 14
-  },
-  {
-   "id": "4:女神祭坛",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "女神祭坛",
-   "name": "女神祭坛",
-   "icon": "https://patchwiki.biligame.com/images/nrc/9/95/fdmi80p0fdoumwp57lxx98gfy0p9mkp.png",
-   "count": 1
-  },
-  {
-   "id": "4:小游戏",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "小游戏",
-   "name": "小游戏",
-   "icon": "https://patchwiki.biligame.com/images/nrc/6/67/aybvnyggb92rm0b0id9unlcai02wv5x.png",
-   "count": 32
-  },
-  {
-   "id": "4:扭蛋机",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "扭蛋机",
-   "name": "扭蛋机",
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/7a/dcufmhvntrbt2dfdgnymvpegodeb96q.png",
-   "count": 18
-  },
-  {
-   "id": "4:星光对决",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "星光对决",
-   "name": "星光对决",
-   "icon": "https://patchwiki.biligame.com/images/nrc/5/5e/nwvdu4rur9gqbrxsqqurg1shinm0hc0.png",
-   "count": 1
-  },
-  {
-   "id": "4:火盆",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "火盆",
-   "name": "火盆",
-   "icon": "https://patchwiki.biligame.com/images/nrc/c/c4/pw23ifyfedv1xenwhtqvcp2uvbkhk76.png",
-   "count": 80
-  },
-  {
-   "id": "4:结晶树",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "结晶树",
-   "name": "结晶树",
-   "icon": "https://patchwiki.biligame.com/images/nrc/6/6a/5gv14h27qz15a292rsmcmew2vtvl3pt.png",
-   "count": 1
-  },
-  {
-   "id": "4:芽眼魔",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "芽眼魔",
-   "name": "芽眼魔",
-   "icon": "https://patchwiki.biligame.com/images/nrc/4/4d/fjynbm2de455qysr8s383zih3mue3cl.png",
-   "count": 8
-  },
-  {
-   "id": "4:赛季玩法",
-   "classId": 4,
-   "className": "特殊玩法",
-   "genre": "赛季玩法",
-   "name": "赛季玩法",
-   "icon": "https://patchwiki.biligame.com/images/nrc/c/c7/c9eenqcrqlpm2c0od2sf6o0kbmrfe50.png",
-   "count": 4
-  },
-  {
-   "id": "5:不咕钟零件",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "不咕钟零件",
-   "name": "不咕钟零件",
-   "icon": "https://patchwiki.biligame.com/images/nrc/c/c0/bhcf4gc5yqgbjad0pexrbvaz2fpn4b2.png",
-   "count": 51
-  },
-  {
-   "id": "5:初级宝箱",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "初级宝箱",
-   "name": "初级宝箱",
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/73/pjrutk7171n45d8s17wnd4st6oz7psh.png",
-   "count": 396
-  },
-  {
-   "id": "5:高级宝箱",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "高级宝箱",
-   "name": "高级宝箱",
-   "icon": "https://patchwiki.biligame.com/images/nrc/0/00/0o3wo0hkmx1d5cfpl6m8in4vyi2qgz8.png",
-   "count": 86
-  },
-  {
-   "id": "5:系别宝箱",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "系别宝箱",
-   "name": "系别宝箱",
-   "icon": "https://patchwiki.biligame.com/images/nrc/1/10/o76a4cyzhwxw83y5mdw3obu34x20j5r.png",
-   "count": 204
-  },
-  {
-   "id": "5:精灵问答宝箱",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "精灵问答宝箱",
-   "name": "精灵问答宝箱",
-   "icon": "https://patchwiki.biligame.com/images/nrc/0/00/0o3wo0hkmx1d5cfpl6m8in4vyi2qgz8.png",
-   "count": 68
-  },
-  {
-   "id": "5:初级闪光点",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "初级闪光点",
-   "name": "初级闪光点",
-   "icon": "https://patchwiki.biligame.com/images/nrc/6/64/aq94yh30sv2nmv2wip253qpl92sea68.png",
-   "count": 956
-  },
-  {
-   "id": "5:高级闪光点",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "高级闪光点",
-   "name": "高级闪光点",
-   "icon": "https://patchwiki.biligame.com/images/nrc/b/b0/6qogppaucbc9vkau3br8zmc489d2ey9.png",
-   "count": 99
-  },
-  {
-   "id": "5:蓝色智慧树苗",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "蓝色智慧树苗",
-   "name": "蓝色智慧树苗",
-   "icon": "https://patchwiki.biligame.com/images/nrc/c/cb/34z99jeu30yadoc10j6490c139glew9.png",
-   "count": 5
-  },
-  {
-   "id": "5:金色智慧树苗",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "金色智慧树苗",
-   "name": "金色智慧树苗",
-   "icon": "https://patchwiki.biligame.com/images/nrc/c/c8/rpcovu7bovjsgfz9757l0z5srtdv3wg.png",
-   "count": 12
-  },
-  {
-   "id": "5:紫色智慧树苗",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "紫色智慧树苗",
-   "name": "紫色智慧树苗",
-   "icon": "https://patchwiki.biligame.com/images/nrc/4/4a/0onus6hkvt2x927qakqsxghdzvdxpwa.png",
-   "count": 2
-  },
-  {
-   "id": "5:蓝色眠枭之星",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "蓝色眠枭之星",
-   "name": "蓝色眠枭之星",
-   "icon": "https://patchwiki.biligame.com/images/nrc/6/60/mebtr92zdlbvmpx8ujhlmqcom9lpg6n.png",
-   "count": 239
-  },
-  {
-   "id": "5:金色眠枭之星",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "金色眠枭之星",
-   "name": "金色眠枭之星",
-   "icon": "https://patchwiki.biligame.com/images/nrc/d/d9/7qsncvokm4oj6mrqybvz9y6m67i27mt.png",
-   "count": 228
-  },
-  {
-   "id": "5:紫色眠枭之星",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "紫色眠枭之星",
-   "name": "紫色眠枭之星",
-   "icon": "https://patchwiki.biligame.com/images/nrc/0/07/5z23asb943j9rflge5sfnto2l5klxox.png",
-   "count": 104
-  },
-  {
-   "id": "5:音乐收集",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "音乐收集",
-   "name": "音乐收集",
-   "icon": "https://patchwiki.biligame.com/images/nrc/3/3f/o80q0lu778zwlh9qgjlfytgv4q4deja.png",
-   "count": 73
-  },
-  {
-   "id": "5:魔法石",
-   "classId": 5,
-   "className": "奖励资源",
-   "genre": "魔法石",
-   "name": "魔法石",
-   "icon": "https://patchwiki.biligame.com/images/nrc/f/f9/90efnry7vhpy9wh84n317mgy04npmwb.png",
-   "count": 373
-  },
-  {
-   "id": "11:商店",
-   "classId": 11,
-   "className": "商店",
-   "genre": "商店",
-   "name": "商店",
-   "icon": "https://patchwiki.biligame.com/images/nrc/c/cb/qp794qhrnuj61m3blm6ebw0n7jy78o9.png",
-   "count": 20
-  },
-  {
-   "id": "11:安妮",
-   "classId": 11,
-   "className": "商店",
-   "genre": "安妮",
-   "name": "安妮",
-   "icon": "https://patchwiki.biligame.com/images/nrc/c/cb/qp794qhrnuj61m3blm6ebw0n7jy78o9.png",
-   "count": 3
-  },
-  {
-   "id": "11:皮卡",
-   "classId": 11,
-   "className": "商店",
-   "genre": "皮卡",
-   "name": "皮卡",
-   "icon": "https://patchwiki.biligame.com/images/nrc/f/f4/cwa80g9gra5a1h5hwmz3a8fxa87tq1s.png",
-   "count": 3
-  },
-  {
-   "id": "7:精灵栖息地",
-   "classId": 7,
-   "className": "精灵生态",
-   "genre": "精灵栖息地",
-   "name": "精灵栖息地",
-   "icon": "https://patchwiki.biligame.com/images/nrc/4/45/g2lkv0kt8f80bss2vot0eir3bay6t1g.svg",
-   "count": 109
-  },
-  {
-   "id": "8:伞伞菌",
+   "name": "采集物",
+   "genre": "采集物",
    "classId": 8,
-   "className": "采集物",
-   "genre": "伞伞菌",
-   "name": "伞伞菌",
    "icon": "https://patchwiki.biligame.com/images/nrc/e/e5/kafrl1nyyu3r9o6q0ien852ir1vwk4a.png",
-   "count": 206
+   "count": 3932,
+   "subs": [
+    {
+     "genre": "伞伞菌",
+     "name": "伞伞菌",
+     "count": 206
+    },
+    {
+     "genre": "凤眼莲",
+     "name": "凤眼莲",
+     "count": 42
+    },
+    {
+     "genre": "可可果树",
+     "name": "可可果树",
+     "count": 153
+    },
+    {
+     "genre": "向阳花",
+     "name": "向阳花",
+     "count": 130
+    },
+    {
+     "genre": "喵喵草",
+     "name": "喵喵草",
+     "count": 98
+    },
+    {
+     "genre": "喷气菇",
+     "name": "喷气菇",
+     "count": 70
+    },
+    {
+     "genre": "大嘴花",
+     "name": "大嘴花",
+     "count": 60
+    },
+    {
+     "genre": "天使草",
+     "name": "天使草",
+     "count": 101
+    },
+    {
+     "genre": "幽幽草",
+     "name": "幽幽草",
+     "count": 139
+    },
+    {
+     "genre": "幽幽鬼火",
+     "name": "幽幽鬼火",
+     "count": 32
+    },
+    {
+     "genre": "彩玉花",
+     "name": "彩玉花",
+     "count": 44
+    },
+    {
+     "genre": "恶魔雪茄",
+     "name": "恶魔雪茄",
+     "count": 102
+    },
+    {
+     "genre": "无花果树",
+     "name": "无花果树",
+     "count": 80
+    },
+    {
+     "genre": "星霜花",
+     "name": "星霜花",
+     "count": 45
+    },
+    {
+     "genre": "杏黄贝",
+     "name": "杏黄贝",
+     "count": 42
+    },
+    {
+     "genre": "洋红珊瑚",
+     "name": "洋红珊瑚",
+     "count": 12
+    },
+    {
+     "genre": "流星兰",
+     "name": "流星兰",
+     "count": 83
+    },
+    {
+     "genre": "海桑花",
+     "name": "海桑花",
+     "count": 74
+    },
+    {
+     "genre": "海珊瑚",
+     "name": "海珊瑚",
+     "count": 16
+    },
+    {
+     "genre": "海神花",
+     "name": "海神花",
+     "count": 89
+    },
+    {
+     "genre": "火焰石",
+     "name": "火焰石",
+     "count": 16
+    },
+    {
+     "genre": "火焰花",
+     "name": "火焰花",
+     "count": 84
+    },
+    {
+     "genre": "睡铃",
+     "name": "睡铃",
+     "count": 176
+    },
+    {
+     "genre": "短木莲",
+     "name": "短木莲",
+     "count": 52
+    },
+    {
+     "genre": "石耳",
+     "name": "石耳",
+     "count": 153
+    },
+    {
+     "genre": "紫晶菇",
+     "name": "紫晶菇",
+     "count": 28
+    },
+    {
+     "genre": "紫绒花",
+     "name": "紫绒花",
+     "count": 37
+    },
+    {
+     "genre": "紫莲刚玉",
+     "name": "紫莲刚玉",
+     "count": 125
+    },
+    {
+     "genre": "紫雀花",
+     "name": "紫雀花",
+     "count": 76
+    },
+    {
+     "genre": "结晶花",
+     "name": "结晶花",
+     "count": 133
+    },
+    {
+     "genre": "美愿结晶",
+     "name": "美愿结晶",
+     "count": 42
+    },
+    {
+     "genre": "花星角",
+     "name": "花星角",
+     "count": 19
+    },
+    {
+     "genre": "荧光兰",
+     "name": "荧光兰",
+     "count": 93
+    },
+    {
+     "genre": "蓝掌",
+     "name": "蓝掌",
+     "count": 50
+    },
+    {
+     "genre": "蓝晶碧玺",
+     "name": "蓝晶碧玺",
+     "count": 78
+    },
+    {
+     "genre": "藻羽花",
+     "name": "藻羽花",
+     "count": 141
+    },
+    {
+     "genre": "蜜黄菌",
+     "name": "蜜黄菌",
+     "count": 68
+    },
+    {
+     "genre": "蝠蝶兰",
+     "name": "蝠蝶兰",
+     "count": 56
+    },
+    {
+     "genre": "象牙花",
+     "name": "象牙花",
+     "count": 80
+    },
+    {
+     "genre": "雪菇",
+     "name": "雪菇",
+     "count": 112
+    },
+    {
+     "genre": "风卷草",
+     "name": "风卷草",
+     "count": 74
+    },
+    {
+     "genre": "骨片",
+     "name": "骨片",
+     "count": 31
+    },
+    {
+     "genre": "魔力果树",
+     "name": "魔力果树",
+     "count": 31
+    },
+    {
+     "genre": "魔菇",
+     "name": "魔菇",
+     "count": 23
+    },
+    {
+     "genre": "黄石榴石",
+     "name": "黄石榴石",
+     "count": 196
+    },
+    {
+     "genre": "黑晶琉璃",
+     "name": "黑晶琉璃",
+     "count": 340
+    }
+   ]
   },
   {
-   "id": "8:凤眼莲",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "凤眼莲",
-   "name": "凤眼莲",
-   "icon": "https://patchwiki.biligame.com/images/nrc/e/ee/3zlcf6zq94vpanxnoaf89z8ryyc4wu7.png",
-   "count": 42
+   "name": "奖励资源",
+   "genre": "奖励资源",
+   "classId": 5,
+   "icon": "https://patchwiki.biligame.com/images/nrc/c/c0/bhcf4gc5yqgbjad0pexrbvaz2fpn4b2.png",
+   "count": 2896,
+   "subs": [
+    {
+     "genre": "不咕钟零件",
+     "name": "不咕钟零件",
+     "count": 51
+    },
+    {
+     "genre": "初级宝箱",
+     "name": "初级宝箱",
+     "count": 396
+    },
+    {
+     "genre": "高级宝箱",
+     "name": "高级宝箱",
+     "count": 86
+    },
+    {
+     "genre": "系别宝箱",
+     "name": "系别宝箱",
+     "count": 204
+    },
+    {
+     "genre": "精灵问答宝箱",
+     "name": "精灵问答宝箱",
+     "count": 68
+    },
+    {
+     "genre": "初级闪光点",
+     "name": "初级闪光点",
+     "count": 956
+    },
+    {
+     "genre": "高级闪光点",
+     "name": "高级闪光点",
+     "count": 99
+    },
+    {
+     "genre": "蓝色智慧树苗",
+     "name": "蓝色智慧树苗",
+     "count": 5
+    },
+    {
+     "genre": "金色智慧树苗",
+     "name": "金色智慧树苗",
+     "count": 12
+    },
+    {
+     "genre": "紫色智慧树苗",
+     "name": "紫色智慧树苗",
+     "count": 2
+    },
+    {
+     "genre": "蓝色眠枭之星",
+     "name": "蓝色眠枭之星",
+     "count": 239
+    },
+    {
+     "genre": "金色眠枭之星",
+     "name": "金色眠枭之星",
+     "count": 228
+    },
+    {
+     "genre": "紫色眠枭之星",
+     "name": "紫色眠枭之星",
+     "count": 104
+    },
+    {
+     "genre": "音乐收集",
+     "name": "音乐收集",
+     "count": 73
+    },
+    {
+     "genre": "魔法石",
+     "name": "魔法石",
+     "count": 373
+    }
+   ]
   },
   {
-   "id": "8:可可果树",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "可可果树",
-   "name": "可可果树",
-   "icon": "https://patchwiki.biligame.com/images/nrc/5/55/917ct1jht5zjf6d6ftyfgwaqbqmi4u6.png",
-   "count": 153
+   "name": "特殊玩法",
+   "genre": "特殊玩法",
+   "classId": 4,
+   "icon": "https://patchwiki.biligame.com/images/nrc/7/77/iazf7tgi59w00bctm7o7xugenug7byw.png",
+   "count": 225,
+   "subs": [
+    {
+     "genre": "力气测试仪",
+     "name": "力气测试仪",
+     "count": 53
+    },
+    {
+     "genre": "噩梦祭台",
+     "name": "噩梦祭台",
+     "count": 13
+    },
+    {
+     "genre": "天气石像",
+     "name": "天气石像",
+     "count": 14
+    },
+    {
+     "genre": "女神祭坛",
+     "name": "女神祭坛",
+     "count": 1
+    },
+    {
+     "genre": "小游戏",
+     "name": "小游戏",
+     "count": 32
+    },
+    {
+     "genre": "扭蛋机",
+     "name": "扭蛋机",
+     "count": 18
+    },
+    {
+     "genre": "星光对决",
+     "name": "星光对决",
+     "count": 1
+    },
+    {
+     "genre": "火盆",
+     "name": "火盆",
+     "count": 80
+    },
+    {
+     "genre": "结晶树",
+     "name": "结晶树",
+     "count": 1
+    },
+    {
+     "genre": "芽眼魔",
+     "name": "芽眼魔",
+     "count": 8
+    },
+    {
+     "genre": "赛季玩法",
+     "name": "赛季玩法",
+     "count": 4
+    }
+   ]
   },
   {
-   "id": "8:向阳花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "向阳花",
-   "name": "向阳花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/4/4b/ifb5jnhil9kfur7px1yftlfah8zhcmt.png",
-   "count": 130
-  },
-  {
-   "id": "8:喵喵草",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "喵喵草",
-   "name": "喵喵草",
-   "icon": "https://patchwiki.biligame.com/images/nrc/8/83/hs6vx7ljpikp90jihceykugitp8fba4.png",
-   "count": 98
-  },
-  {
-   "id": "8:喷气菇",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "喷气菇",
-   "name": "喷气菇",
-   "icon": "https://patchwiki.biligame.com/images/nrc/f/f2/55rfsc6gwyr8rp2r3o6bw2adwvm0u12.png",
-   "count": 70
-  },
-  {
-   "id": "8:大嘴花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "大嘴花",
-   "name": "大嘴花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/3/38/pjf7ksa2inroq78lg923jb5i9ud7735.png",
-   "count": 60
-  },
-  {
-   "id": "8:天使草",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "天使草",
-   "name": "天使草",
-   "icon": "https://patchwiki.biligame.com/images/nrc/8/88/epyqxi8o0xqf48yncw71zxe9237av8k.png",
-   "count": 101
-  },
-  {
-   "id": "8:幽幽草",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "幽幽草",
-   "name": "幽幽草",
-   "icon": "https://patchwiki.biligame.com/images/nrc/f/f9/3epvz4vzgnrswm77jg2xwv7sy5e8n5y.png",
-   "count": 139
-  },
-  {
-   "id": "8:幽幽鬼火",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "幽幽鬼火",
-   "name": "幽幽鬼火",
-   "icon": "https://patchwiki.biligame.com/images/nrc/a/a8/t6tbqngve137vc5wzn9zdmcsg1jp9f4.png",
-   "count": 32
-  },
-  {
-   "id": "8:彩玉花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "彩玉花",
-   "name": "彩玉花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/0/07/ft5ssyy8usds144r2apm1rvaqgtl2et.png",
-   "count": 44
-  },
-  {
-   "id": "8:恶魔雪茄",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "恶魔雪茄",
-   "name": "恶魔雪茄",
-   "icon": "https://patchwiki.biligame.com/images/nrc/1/1f/0fawqh4mo6xfhqhda2mkd9jit4lcgnb.png",
-   "count": 102
-  },
-  {
-   "id": "8:无花果树",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "无花果树",
-   "name": "无花果树",
-   "icon": "https://patchwiki.biligame.com/images/nrc/a/aa/8ucmkwx205r89kthoujgyct4ex3usxn.png",
-   "count": 80
-  },
-  {
-   "id": "8:星霜花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "星霜花",
-   "name": "星霜花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/6/66/nh23rn0vb6mmk6pdx6grnhf19qvlh8i.png",
-   "count": 45
-  },
-  {
-   "id": "8:杏黄贝",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "杏黄贝",
-   "name": "杏黄贝",
-   "icon": "https://patchwiki.biligame.com/images/nrc/b/b0/76cxy5ki6bae4srlfmsz8ms9ej03m6y.png",
-   "count": 42
-  },
-  {
-   "id": "8:洋红珊瑚",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "洋红珊瑚",
-   "name": "洋红珊瑚",
-   "icon": "https://patchwiki.biligame.com/images/nrc/1/19/mhtsvahuv2emcdb4mtg8hv3gy3wwig1.png",
-   "count": 12
-  },
-  {
-   "id": "8:流星兰",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "流星兰",
-   "name": "流星兰",
-   "icon": "https://patchwiki.biligame.com/images/nrc/0/03/6i9icgucsl9udn60rtngk6lns1v2ls7.png",
-   "count": 83
-  },
-  {
-   "id": "8:海桑花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "海桑花",
-   "name": "海桑花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/3/3e/bq9llmyqicxtaie4z9fv0y1asezy9zm.png",
-   "count": 74
-  },
-  {
-   "id": "8:海珊瑚",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "海珊瑚",
-   "name": "海珊瑚",
-   "icon": "https://patchwiki.biligame.com/images/nrc/8/87/0mztdnn0ezi5yrgrys9uflsb69e11xb.png",
-   "count": 16
-  },
-  {
-   "id": "8:海神花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "海神花",
-   "name": "海神花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/9/92/a27zj53s5m40p9kb9q9v9wt70acxc24.png",
-   "count": 89
-  },
-  {
-   "id": "8:火焰石",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "火焰石",
-   "name": "火焰石",
-   "icon": "https://patchwiki.biligame.com/images/nrc/2/20/bwwmqiiin0rcgqrach597sxovhbcg2u.png",
-   "count": 16
-  },
-  {
-   "id": "8:火焰花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "火焰花",
-   "name": "火焰花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/b/b8/gs8y15s355mmh9ktpledfxlza39uvhx.png",
-   "count": 84
-  },
-  {
-   "id": "8:睡铃",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "睡铃",
-   "name": "睡铃",
-   "icon": "https://patchwiki.biligame.com/images/nrc/b/bb/tb04lckoztoeodpnd90f7a2ns0iemul.png",
-   "count": 176
-  },
-  {
-   "id": "8:短木莲",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "短木莲",
-   "name": "短木莲",
-   "icon": "https://patchwiki.biligame.com/images/nrc/f/ff/gcvo7qptpp1f8gbkrjrd288mbcgzi9j.png",
-   "count": 52
-  },
-  {
-   "id": "8:石耳",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "石耳",
-   "name": "石耳",
-   "icon": "https://patchwiki.biligame.com/images/nrc/6/66/fqu75r62ikt77ap320dkpancp0xo3ch.png",
-   "count": 153
-  },
-  {
-   "id": "8:紫晶菇",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "紫晶菇",
-   "name": "紫晶菇",
-   "icon": "https://patchwiki.biligame.com/images/nrc/0/0a/df1kk2drm1z0h0ipmx14st0eriudrxq.png",
-   "count": 28
-  },
-  {
-   "id": "8:紫绒花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "紫绒花",
-   "name": "紫绒花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/a/a5/hc4iubrlj64uqmw4fmoxewb17qeizes.png",
-   "count": 37
-  },
-  {
-   "id": "8:紫莲刚玉",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "紫莲刚玉",
-   "name": "紫莲刚玉",
-   "icon": "https://patchwiki.biligame.com/images/nrc/4/4e/ansz7utcnam40nckgyw8hsb26t6zkp6.png",
-   "count": 125
-  },
-  {
-   "id": "8:紫雀花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "紫雀花",
-   "name": "紫雀花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/8/8c/6bnm71szdu8owh9r9i8ccy6qwzq1s2x.png",
-   "count": 76
-  },
-  {
-   "id": "8:结晶花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "结晶花",
-   "name": "结晶花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/1/1c/tqvhle85nujnbnxo9fcu23evujlu54p.png",
-   "count": 133
-  },
-  {
-   "id": "8:美愿结晶",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "美愿结晶",
-   "name": "美愿结晶",
-   "icon": "https://patchwiki.biligame.com/images/nrc/d/d3/omjhvzwmmmyg63espo4gsec8tzy7k1z.png",
-   "count": 42
-  },
-  {
-   "id": "8:花星角",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "花星角",
-   "name": "花星角",
-   "icon": "https://patchwiki.biligame.com/images/nrc/8/80/edr6ut42a72p0bge76w17tng45r4nrb.png",
-   "count": 19
-  },
-  {
-   "id": "8:荧光兰",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "荧光兰",
-   "name": "荧光兰",
-   "icon": "https://patchwiki.biligame.com/images/nrc/4/48/868cp8kb0pe6xlg2535ya9h1dsr15v5.png",
-   "count": 93
-  },
-  {
-   "id": "8:蓝掌",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "蓝掌",
-   "name": "蓝掌",
-   "icon": "https://patchwiki.biligame.com/images/nrc/8/89/47v7xg1wmje8vuygnjb4k31xomomjte.png",
-   "count": 50
-  },
-  {
-   "id": "8:蓝晶碧玺",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "蓝晶碧玺",
-   "name": "蓝晶碧玺",
-   "icon": "https://patchwiki.biligame.com/images/nrc/2/22/qvuqiz0ukwsemz9eusd53l77zlyq4w7.png",
-   "count": 78
-  },
-  {
-   "id": "8:藻羽花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "藻羽花",
-   "name": "藻羽花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/e/ef/a8qk68i7p1lbpb5anxf94g36ow1ar6y.png",
-   "count": 141
-  },
-  {
-   "id": "8:蜜黄菌",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "蜜黄菌",
-   "name": "蜜黄菌",
-   "icon": "https://patchwiki.biligame.com/images/nrc/2/22/rinqxqlbrobzvdv3i8w2pfz2mbbnobu.png",
-   "count": 68
-  },
-  {
-   "id": "8:蝠蝶兰",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "蝠蝶兰",
-   "name": "蝠蝶兰",
-   "icon": "https://patchwiki.biligame.com/images/nrc/9/9e/6lifjpocs40sa90og9p21kpgk62n9e6.png",
-   "count": 56
-  },
-  {
-   "id": "8:象牙花",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "象牙花",
-   "name": "象牙花",
-   "icon": "https://patchwiki.biligame.com/images/nrc/8/85/oqnsqagk6zafrc6qzgmecc8sl9psehm.png",
-   "count": 80
-  },
-  {
-   "id": "8:雪菇",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "雪菇",
-   "name": "雪菇",
-   "icon": "https://patchwiki.biligame.com/images/nrc/9/98/euufjb5uwot5k3fxgu2lubm2p9xacis.png",
-   "count": 112
-  },
-  {
-   "id": "8:风卷草",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "风卷草",
-   "name": "风卷草",
-   "icon": "https://patchwiki.biligame.com/images/nrc/e/ef/h55omygzq38mzswsa5unc6wcatdfpsr.png",
-   "count": 74
-  },
-  {
-   "id": "8:骨片",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "骨片",
-   "name": "骨片",
-   "icon": "https://patchwiki.biligame.com/images/nrc/d/d5/bu7jx8jtrjs9fxaz4orb51vv34g5usx.png",
-   "count": 31
-  },
-  {
-   "id": "8:魔力果树",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "魔力果树",
-   "name": "魔力果树",
-   "icon": "https://patchwiki.biligame.com/images/nrc/8/84/1diof1aevgi1uaghvhb7tslchq9ivei.png",
-   "count": 31
-  },
-  {
-   "id": "8:魔菇",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "魔菇",
-   "name": "魔菇",
-   "icon": "https://patchwiki.biligame.com/images/nrc/1/1f/nuz8c4fkdc95pvfe7z0xonr5mh7byrr.png",
-   "count": 23
-  },
-  {
-   "id": "8:黄石榴石",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "黄石榴石",
-   "name": "黄石榴石",
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/7e/4phgvgj688r2dhlhn3l226p7xr34v3b.png",
-   "count": 196
-  },
-  {
-   "id": "8:黑晶琉璃",
-   "classId": 8,
-   "className": "采集物",
-   "genre": "黑晶琉璃",
-   "name": "黑晶琉璃",
-   "icon": "https://patchwiki.biligame.com/images/nrc/4/42/4bwk3h4wupclfo3s6cqmcifwahetpbi.png",
-   "count": 340
-  },
-  {
-   "id": "9:克洛修斯的试炼",
+   "name": "对战 NPC",
+   "genre": "对战 NPC",
    "classId": 9,
-   "className": "对战 NPC",
-   "genre": "克洛修斯的试炼",
-   "name": "克洛修斯的试炼",
    "icon": "https://patchwiki.biligame.com/images/nrc/6/65/ekr08xtl4akgrj1m0rm9pwu7pmoqd2a.png",
-   "count": 1
+   "count": 155,
+   "subs": [
+    {
+     "genre": "克洛修斯的试炼",
+     "name": "克洛修斯的试炼",
+     "count": 1
+    },
+    {
+     "genre": "赛季对战研究员",
+     "name": "赛季对战研究员",
+     "count": 8
+    },
+    {
+     "genre": "隐藏对战",
+     "name": "隐藏对战",
+     "count": 37
+    },
+    {
+     "genre": "露天对战",
+     "name": "露天对战",
+     "count": 87
+    },
+    {
+     "genre": "黑衣人",
+     "name": "黑衣人",
+     "count": 22
+    }
+   ]
   },
   {
-   "id": "9:赛季对战研究员",
-   "classId": 9,
-   "className": "对战 NPC",
-   "genre": "赛季对战研究员",
-   "name": "赛季对战研究员",
-   "icon": "https://patchwiki.biligame.com/images/nrc/6/6c/387z0ajazn7zv6f3q23akl7b5vy6naw.png",
-   "count": 8
+   "name": "传送与功能",
+   "genre": "传送与功能",
+   "classId": 2,
+   "icon": "https://patchwiki.biligame.com/images/nrc/7/7c/pgryfh3ivnniwibga4dahm0esmd6hhn.png",
+   "count": 150,
+   "subs": [
+    {
+     "genre": "大型眠枭庇护所",
+     "name": "大型眠枭庇护所",
+     "count": 37
+    },
+    {
+     "genre": "家园",
+     "name": "家园",
+     "count": 1
+    },
+    {
+     "genre": "小型眠枭庇护所",
+     "name": "小型眠枭庇护所",
+     "count": 11
+    },
+    {
+     "genre": "炼金釜",
+     "name": "炼金釜",
+     "count": 28
+    },
+    {
+     "genre": "秘境入口",
+     "name": "秘境入口",
+     "count": 30
+    },
+    {
+     "genre": "魔力之源",
+     "name": "魔力之源",
+     "count": 43
+    }
+   ]
   },
   {
-   "id": "9:隐藏对战",
-   "classId": 9,
-   "className": "对战 NPC",
-   "genre": "隐藏对战",
-   "name": "隐藏对战",
-   "icon": "",
-   "count": 37
+   "name": "精灵生态",
+   "genre": "精灵生态",
+   "classId": 7,
+   "icon": "https://patchwiki.biligame.com/images/nrc/4/45/g2lkv0kt8f80bss2vot0eir3bay6t1g.svg",
+   "count": 109,
+   "subs": [
+    {
+     "genre": "精灵栖息地",
+     "name": "精灵栖息地",
+     "count": 109
+    }
+   ]
   },
   {
-   "id": "9:露天对战",
-   "classId": 9,
-   "className": "对战 NPC",
-   "genre": "露天对战",
-   "name": "露天对战",
-   "icon": "https://patchwiki.biligame.com/images/nrc/1/11/fwxpen4vzg5dw80e2lfhqehau57kqhu.png",
-   "count": 87
+   "name": "首领战",
+   "genre": "首领战",
+   "classId": 3,
+   "icon": "https://patchwiki.biligame.com/images/nrc/e/e8/amsvyxkj8x34wefldtpjs9szd4ukvna.png",
+   "count": 26,
+   "subs": [
+    {
+     "genre": "传说挑战",
+     "name": "传说挑战",
+     "count": 5
+    },
+    {
+     "genre": "精灵首领",
+     "name": "精灵首领",
+     "count": 21
+    }
+   ]
   },
   {
-   "id": "9:黑衣人",
-   "classId": 9,
-   "className": "对战 NPC",
-   "genre": "黑衣人",
-   "name": "黑衣人",
-   "icon": "https://patchwiki.biligame.com/images/nrc/2/2a/8sasccvcv6gb483830fct9zhjhmii3y.png",
-   "count": 22
+   "name": "商店",
+   "genre": "商店",
+   "classId": 11,
+   "icon": "https://patchwiki.biligame.com/images/nrc/c/cb/qp794qhrnuj61m3blm6ebw0n7jy78o9.png",
+   "count": 26,
+   "subs": [
+    {
+     "genre": "商店",
+     "name": "商店",
+     "count": 20
+    },
+    {
+     "genre": "安妮",
+     "name": "安妮",
+     "count": 3
+    },
+    {
+     "genre": "皮卡",
+     "name": "皮卡",
+     "count": 3
+    }
+   ]
   }
  ],
  "total": 7519

@@ -49,7 +49,11 @@ Page({
     var KEY = 'roco_maps_index_v11';
     try {
       var c = wx.getStorageSync(KEY);
-      if (c && c.data) { that._applyIndex(c.data); }
+      // 【校验】必须是聚合后的 8 大类版本（带 subs 字段），否则弃用缓存
+      if (c && c.data && c.data.categories && c.data.categories.length === 8 &&
+          c.data.categories[0].subs) {
+        that._applyIndex(c.data);
+      }
     } catch (e) { }
     wx.request({
       url: MAPS_INDEX,
@@ -106,7 +110,8 @@ Page({
     });
   },
 
-  /** 加载空间层（地表默认；地下层列表在 index.layers） */
+  /** 加载空间层（地表默认；地下层列表在 index.layers）
+   *  点位文件缓存到 storage（points-mainland 2MB+，避免每次切换重复下载）*/
   _loadLayer: function (layerIndex, done) {
     var that = this;
     var layers = (this._index && this._index.layers) || [];
@@ -119,13 +124,23 @@ Page({
     } else {
       this.setData({ tiles: [], layerImage: layer.image });
     }
-    // 点位
+    // 点位（缓存优先）
     var file = layer.id === 'surface' ? 'points-mainland.json' : 'points-' + layer.id + '.json';
+    var CACHE_KEY = 'roco_maps_pts_v11_' + layer.id;
+    try {
+      var c = wx.getStorageSync(CACHE_KEY);
+      if (c && Array.isArray(c.data) && c.data.length) {
+        that._layerPoints = c.data;
+        if (done) done();
+        return;
+      }
+    } catch (e) { }
     wx.request({
       url: MAPS_BASE + file,
-      timeout: 20000,
+      timeout: 30000,
       success: function (res) {
         that._layerPoints = (res.statusCode === 200 && res.data) ? res.data : [];
+        try { wx.setStorageSync(CACHE_KEY, { data: that._layerPoints, at: Date.now() }); } catch (e) { }
         if (done) done();
       },
       fail: function () { that._layerPoints = []; if (done) done(); }

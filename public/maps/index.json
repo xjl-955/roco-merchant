@@ -504,6 +504,251 @@
  ],
  "categories": [
   {
+   "name": "传送与功能",
+   "genre": "传送与功能",
+   "classId": 2,
+   "icon": "https://patchwiki.biligame.com/images/nrc/7/7c/pgryfh3ivnniwibga4dahm0esmd6hhn.png",
+   "count": 150,
+   "subs": [
+    {
+     "genre": "大型眠枭庇护所",
+     "name": "大型眠枭庇护所",
+     "count": 37
+    },
+    {
+     "genre": "家园",
+     "name": "家园",
+     "count": 1
+    },
+    {
+     "genre": "小型眠枭庇护所",
+     "name": "小型眠枭庇护所",
+     "count": 11
+    },
+    {
+     "genre": "炼金釜",
+     "name": "炼金釜",
+     "count": 28
+    },
+    {
+     "genre": "秘境入口",
+     "name": "秘境入口",
+     "count": 30
+    },
+    {
+     "genre": "魔力之源",
+     "name": "魔力之源",
+     "count": 43
+    }
+   ]
+  },
+  {
+   "name": "商店",
+   "genre": "商店",
+   "classId": 11,
+   "icon": "https://patchwiki.biligame.com/images/nrc/c/cb/qp794qhrnuj61m3blm6ebw0n7jy78o9.png",
+   "count": 26,
+   "subs": [
+    {
+     "genre": "商店",
+     "name": "商店",
+     "count": 20
+    },
+    {
+     "genre": "安妮",
+     "name": "安妮",
+     "count": 3
+    },
+    {
+     "genre": "皮卡",
+     "name": "皮卡",
+     "count": 3
+    }
+   ]
+  },
+  {
+   "name": "特殊玩法",
+   "genre": "特殊玩法",
+   "classId": 4,
+   "icon": "https://patchwiki.biligame.com/images/nrc/7/77/iazf7tgi59w00bctm7o7xugenug7byw.png",
+   "count": 225,
+   "subs": [
+    {
+     "genre": "力气测试仪",
+     "name": "力气测试仪",
+     "count": 53
+    },
+    {
+     "genre": "噩梦祭台",
+     "name": "噩梦祭台",
+     "count": 13
+    },
+    {
+     "genre": "天气石像",
+     "name": "天气石像",
+     "count": 14
+    },
+    {
+     "genre": "女神祭坛",
+     "name": "女神祭坛",
+     "count": 1
+    },
+    {
+     "genre": "小游戏",
+     "name": "小游戏",
+     "count": 32
+    },
+    {
+     "genre": "扭蛋机",
+     "name": "扭蛋机",
+     "count": 18
+    },
+    {
+     "genre": "星光对决",
+     "name": "星光对决",
+     "count": 1
+    },
+    {
+     "genre": "火盆",
+     "name": "火盆",
+     "count": 80
+    },
+    {
+     "genre": "结晶树",
+     "name": "结晶树",
+     "count": 1
+    },
+    {
+     "genre": "芽眼魔",
+     "name": "芽眼魔",
+     "count": 8
+    },
+    {
+     "genre": "赛季玩法",
+     "name": "赛季玩法",
+     "count": 4
+    }
+   ]
+  },
+  {
+   "name": "奖励资源",
+   "genre": "奖励资源",
+   "classId": 5,
+   "icon": "https://patchwiki.biligame.com/images/nrc/c/c0/bhcf4gc5yqgbjad0pexrbvaz2fpn4b2.png",
+   "count": 2896,
+   "subs": [
+    {
+     "genre": "不咕钟零件",
+     "name": "不咕钟零件",
+     "count": 51
+    },
+    {
+     "genre": "初级宝箱",
+     "name": "初级宝箱",
+     "count": 396
+    },
+    {
+     "genre": "高级宝箱",
+     "name": "高级宝箱",
+     "count": 86
+    },
+    {
+     "genre": "系别宝箱",
+     "name": "系别宝箱",
+     "count": 204
+    },
+    {
+     "genre": "精灵问答宝箱",
+     "name": "精灵问答宝箱",
+     "count": 68
+    },
+    {
+     "genre": "初级闪光点",
+     "name": "初级闪光点",
+     "count": 956
+    },
+    {
+     "genre": "高级闪光点",
+     "name": "高级闪光点",
+     "count": 99
+    },
+    {
+     "genre": "蓝色智慧树苗",
+     "name": "蓝色智慧树苗",
+     "count": 5
+    },
+    {
+     "genre": "金色智慧树苗",
+     "name": "金色智慧树苗",
+     "count": 12
+    },
+    {
+     "genre": "紫色智慧树苗",
+     "name": "紫色智慧树苗",
+     "count": 2
+    },
+    {
+     "genre": "蓝色眠枭之星",
+     "name": "蓝色眠枭之星",
+     "count": 239
+    },
+    {
+     "genre": "金色眠枭之星",
+     "name": "金色眠枭之星",
+     "count": 228
+    },
+    {
+     "genre": "紫色眠枭之星",
+     "name": "紫色眠枭之星",
+     "count": 104
+    },
+    {
+     "genre": "音乐收集",
+     "name": "音乐收集",
+     "count": 73
+    },
+    {
+     "genre": "魔法石",
+     "name": "魔法石",
+     "count": 373
+    }
+   ]
+  },
+  {
+   "name": "对战 NPC",
+   "genre": "对战 NPC",
+   "classId": 9,
+   "icon": "https://patchwiki.biligame.com/images/nrc/6/65/ekr08xtl4akgrj1m0rm9pwu7pmoqd2a.png",
+   "count": 155,
+   "subs": [
+    {
+     "genre": "克洛修斯的试炼",
+     "name": "克洛修斯的试炼",
+     "count": 1
+    },
+    {
+     "genre": "赛季对战研究员",
+     "name": "赛季对战研究员",
+     "count": 8
+    },
+    {
+     "genre": "隐藏对战",
+     "name": "隐藏对战",
+     "count": 37
+    },
+    {
+     "genre": "露天对战",
+     "name": "露天对战",
+     "count": 87
+    },
+    {
+     "genre": "黑衣人",
+     "name": "黑衣人",
+     "count": 22
+    }
+   ]
+  },
+  {
    "name": "采集物",
    "genre": "采集物",
    "classId": 8,
@@ -743,241 +988,6 @@
    ]
   },
   {
-   "name": "奖励资源",
-   "genre": "奖励资源",
-   "classId": 5,
-   "icon": "https://patchwiki.biligame.com/images/nrc/c/c0/bhcf4gc5yqgbjad0pexrbvaz2fpn4b2.png",
-   "count": 2896,
-   "subs": [
-    {
-     "genre": "不咕钟零件",
-     "name": "不咕钟零件",
-     "count": 51
-    },
-    {
-     "genre": "初级宝箱",
-     "name": "初级宝箱",
-     "count": 396
-    },
-    {
-     "genre": "高级宝箱",
-     "name": "高级宝箱",
-     "count": 86
-    },
-    {
-     "genre": "系别宝箱",
-     "name": "系别宝箱",
-     "count": 204
-    },
-    {
-     "genre": "精灵问答宝箱",
-     "name": "精灵问答宝箱",
-     "count": 68
-    },
-    {
-     "genre": "初级闪光点",
-     "name": "初级闪光点",
-     "count": 956
-    },
-    {
-     "genre": "高级闪光点",
-     "name": "高级闪光点",
-     "count": 99
-    },
-    {
-     "genre": "蓝色智慧树苗",
-     "name": "蓝色智慧树苗",
-     "count": 5
-    },
-    {
-     "genre": "金色智慧树苗",
-     "name": "金色智慧树苗",
-     "count": 12
-    },
-    {
-     "genre": "紫色智慧树苗",
-     "name": "紫色智慧树苗",
-     "count": 2
-    },
-    {
-     "genre": "蓝色眠枭之星",
-     "name": "蓝色眠枭之星",
-     "count": 239
-    },
-    {
-     "genre": "金色眠枭之星",
-     "name": "金色眠枭之星",
-     "count": 228
-    },
-    {
-     "genre": "紫色眠枭之星",
-     "name": "紫色眠枭之星",
-     "count": 104
-    },
-    {
-     "genre": "音乐收集",
-     "name": "音乐收集",
-     "count": 73
-    },
-    {
-     "genre": "魔法石",
-     "name": "魔法石",
-     "count": 373
-    }
-   ]
-  },
-  {
-   "name": "特殊玩法",
-   "genre": "特殊玩法",
-   "classId": 4,
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/77/iazf7tgi59w00bctm7o7xugenug7byw.png",
-   "count": 225,
-   "subs": [
-    {
-     "genre": "力气测试仪",
-     "name": "力气测试仪",
-     "count": 53
-    },
-    {
-     "genre": "噩梦祭台",
-     "name": "噩梦祭台",
-     "count": 13
-    },
-    {
-     "genre": "天气石像",
-     "name": "天气石像",
-     "count": 14
-    },
-    {
-     "genre": "女神祭坛",
-     "name": "女神祭坛",
-     "count": 1
-    },
-    {
-     "genre": "小游戏",
-     "name": "小游戏",
-     "count": 32
-    },
-    {
-     "genre": "扭蛋机",
-     "name": "扭蛋机",
-     "count": 18
-    },
-    {
-     "genre": "星光对决",
-     "name": "星光对决",
-     "count": 1
-    },
-    {
-     "genre": "火盆",
-     "name": "火盆",
-     "count": 80
-    },
-    {
-     "genre": "结晶树",
-     "name": "结晶树",
-     "count": 1
-    },
-    {
-     "genre": "芽眼魔",
-     "name": "芽眼魔",
-     "count": 8
-    },
-    {
-     "genre": "赛季玩法",
-     "name": "赛季玩法",
-     "count": 4
-    }
-   ]
-  },
-  {
-   "name": "对战 NPC",
-   "genre": "对战 NPC",
-   "classId": 9,
-   "icon": "https://patchwiki.biligame.com/images/nrc/6/65/ekr08xtl4akgrj1m0rm9pwu7pmoqd2a.png",
-   "count": 155,
-   "subs": [
-    {
-     "genre": "克洛修斯的试炼",
-     "name": "克洛修斯的试炼",
-     "count": 1
-    },
-    {
-     "genre": "赛季对战研究员",
-     "name": "赛季对战研究员",
-     "count": 8
-    },
-    {
-     "genre": "隐藏对战",
-     "name": "隐藏对战",
-     "count": 37
-    },
-    {
-     "genre": "露天对战",
-     "name": "露天对战",
-     "count": 87
-    },
-    {
-     "genre": "黑衣人",
-     "name": "黑衣人",
-     "count": 22
-    }
-   ]
-  },
-  {
-   "name": "传送与功能",
-   "genre": "传送与功能",
-   "classId": 2,
-   "icon": "https://patchwiki.biligame.com/images/nrc/7/7c/pgryfh3ivnniwibga4dahm0esmd6hhn.png",
-   "count": 150,
-   "subs": [
-    {
-     "genre": "大型眠枭庇护所",
-     "name": "大型眠枭庇护所",
-     "count": 37
-    },
-    {
-     "genre": "家园",
-     "name": "家园",
-     "count": 1
-    },
-    {
-     "genre": "小型眠枭庇护所",
-     "name": "小型眠枭庇护所",
-     "count": 11
-    },
-    {
-     "genre": "炼金釜",
-     "name": "炼金釜",
-     "count": 28
-    },
-    {
-     "genre": "秘境入口",
-     "name": "秘境入口",
-     "count": 30
-    },
-    {
-     "genre": "魔力之源",
-     "name": "魔力之源",
-     "count": 43
-    }
-   ]
-  },
-  {
-   "name": "精灵生态",
-   "genre": "精灵生态",
-   "classId": 7,
-   "icon": "https://patchwiki.biligame.com/images/nrc/4/45/g2lkv0kt8f80bss2vot0eir3bay6t1g.svg",
-   "count": 109,
-   "subs": [
-    {
-     "genre": "精灵栖息地",
-     "name": "精灵栖息地",
-     "count": 109
-    }
-   ]
-  },
-  {
    "name": "首领战",
    "genre": "首领战",
    "classId": 3,
@@ -997,26 +1007,16 @@
    ]
   },
   {
-   "name": "商店",
-   "genre": "商店",
-   "classId": 11,
-   "icon": "https://patchwiki.biligame.com/images/nrc/c/cb/qp794qhrnuj61m3blm6ebw0n7jy78o9.png",
-   "count": 26,
+   "name": "精灵生态",
+   "genre": "精灵生态",
+   "classId": 7,
+   "icon": "https://patchwiki.biligame.com/images/nrc/4/45/g2lkv0kt8f80bss2vot0eir3bay6t1g.svg",
+   "count": 109,
    "subs": [
     {
-     "genre": "商店",
-     "name": "商店",
-     "count": 20
-    },
-    {
-     "genre": "安妮",
-     "name": "安妮",
-     "count": 3
-    },
-    {
-     "genre": "皮卡",
-     "name": "皮卡",
-     "count": 3
+     "genre": "精灵栖息地",
+     "name": "精灵栖息地",
+     "count": 109
     }
    ]
   }

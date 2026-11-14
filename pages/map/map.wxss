@@ -8,7 +8,14 @@
 .head-title { font-size: 38rpx; font-weight: bold; color: #F5F8FC; }
 .head-sub { font-size: 24rpx; color: #8FA0B5; margin-top: 8rpx; }
 
-.cat-list { padding: 0 24rpx; }
+.cat-scroll {
+  height: calc(100vh - 120rpx); /* 预留底部 tabbar */
+  box-sizing: border-box;
+}
+
+.cat-list {
+  padding: 0 24rpx 140rpx; /* 底部留出 tabbar 空间 */
+}
 
 .cat-item {
   display: flex;

@@ -4,7 +4,7 @@
   <view class="state" wx:if="{{error}}">加载失败，请检查网络</view>
 
   <!-- ═══ 分类选择（首屏）═══ -->
-  <block wx:if="{{!loading && !error && !mapMode}}">
+  <scroll-view scroll-y class="cat-scroll" wx:if="{{!loading && !error && !mapMode}}">
     <view class="head">
       <view class="head-title">🗺️ 世界地图</view>
       <view class="head-sub">{{total}} 个点位 · WIKI 数据 · 点分类进入，可多选叠加</view>
@@ -21,7 +21,7 @@
         <view class="cat-arrow">›</view>
       </view>
     </view>
-  </block>
+  </scroll-view>
 
   <!-- ═══ 互动地图（已选分类）═══ -->
   <block wx:if="{{mapMode}}">

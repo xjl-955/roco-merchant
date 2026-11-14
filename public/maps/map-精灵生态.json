@@ -1,0 +1,32 @@
+[
+ {
+  "name": "望风半岛寻宝区 · 精灵栖息地",
+  "sub": "精灵栖息地",
+  "lat": 26.9,
+  "lng": 1264,
+  "layer": "G",
+  "icon": "https://wiki.biligame.com/nrcundefined",
+  "xPct": "80.86",
+  "yPct": "50.66"
+ },
+ {
+  "name": "未命名区域 · 精灵栖息地",
+  "sub": "精灵栖息地",
+  "lat": 424.2,
+  "lng": -362.2,
+  "layer": "G",
+  "icon": "https://wiki.biligame.com/nrcundefined",
+  "xPct": "41.16",
+  "yPct": "60.36"
+ },
+ {
+  "name": "未命名区域 · 精灵栖息地",
+  "sub": "精灵栖息地",
+  "lat": 437.3,
+  "lng": -349.3,
+  "layer": "G",
+  "icon": "https://wiki.biligame.com/nrcundefined",
+  "xPct": "41.47",
+  "yPct": "60.68"
+ }
+]

@@ -62,17 +62,15 @@ Page({
     });
   },
 
-  /** 构建 WIKI 官方顺序的蛋组列表（含数量） */
+  /** 构建 WIKI 官方蛋组列表（含数量）——名称与顺序对齐 WIKI Catalog */
   buildGroups: function () {
-    // 蛋组名映射：data.php 旧名 → WIKI 官方名
-    var NAME_MAP = { '岩石组': '大地组', '巨龙组': '飞龙组', '无法孵蛋': '未发现' };
-    var WIKI_ORDER = ['未发现', '动物组', '拟人组', '巨灵组', '魔力组', '天空组', '两栖组', '植物组', '大地组', '妖精组', '昆虫组', '软体组', '机械组', '海洋组', '飞龙组'];
+    // WIKI Catalog 官方蛋组名与顺序（egg_group 编码 2~15，1=未发现）
+    var WIKI_ORDER = ['动物组', '巨灵组', '拟人组', '魔力组', '两栖组', '昆虫组', '软体组', '岩石组', '妖精组', '植物组', '天空组', '海洋组', '机械组', '巨龙组'];
 
-    // 归一化每只精灵的蛋组（映射旧名 + 空值归类未发现）
+    // 归一化每只精灵的蛋组（spirits.json 已是 WIKI 官方名；空值归类未发现）
     this.all = (this.dex.spirits || []).map(function (s) {
       var groups = String(s.egg || '').split(',').map(function (g) {
-        g = g.trim();
-        return NAME_MAP[g] || g;
+        return g.trim();
       }).filter(function (g) { return g && g !== '未发现'; });
       if (!groups.length) groups = ['未发现'];
       return {

@@ -1,6 +1,7 @@
 var EGG_URL = 'https://xjl-955.github.io/roco-data/eggsizes.json';
 var EGG_KEY = 'roco_eggsizes_cache_v1';
 var TTL = 24 * 60 * 60 * 1000;
+var eggPredict = require('../../utils/eggpredict.js');
 
 Component({
   data: {
@@ -64,28 +65,50 @@ Component({
         return;
       }
       this.setData({ identifying: true, error: '', result: null });
-      // ① 优先调用云端（与「离愁轩」同源算法/数据，数值完全一致）
-      this._cloudPredict(h, w, function (ok) {
-        if (ok) return;
-        // ② 云端不可用 → 本地算法兜底
-        that._localPredict(h, w);
+      // 三级链路：① 直连离愁轩 API（最快、同源数值）→ ② 云函数代理 → ③ 本地算法
+      var that2 = this;
+      eggPredict.predict(h, w, function (result, err) {
+        if (result && result.matched && result.matched.length) {
+          that2.setData({
+            identifying: false,
+            error: '',
+            result: {
+              matched: result.matched,
+              others: result.others || [],
+              count: result.matched.length,
+              source: 'direct',
+              inputText: '身高 ' + h + 'm + 体重 ' + w + 'kg'
+            }
+          });
+          return;
+        }
+        that2._cloudPredict(h, w, function (ok, errInfo) {
+          if (ok) return;
+          that2._localPredict(h, w, errInfo || err);
+        });
       });
     },
 
     /** 云端鉴定：云函数代理请求，返回官方概率 + 随机蛋不出分组 */
     _cloudPredict: function (h, w, done) {
       var that = this;
-      if (!wx.cloud || !wx.cloud.callFunction) { done(false); return; }
-      var timer = setTimeout(function () { done(false); }, 12000);
+      if (!wx.cloud || !wx.cloud.callFunction) { done(false, 'no_cloud'); return; }
+      this._cloudErr = '';
+      var timer = setTimeout(function () { that._cloudErr = 'timeout'; done(false, 'timeout'); }, 20000);
       wx.cloud.callFunction({
         name: 'pushReminder',
         data: { action: 'eggPredict', size: h, weight: w },
         success: function (res) {
           clearTimeout(timer);
           var r = res && res.result;
-          if (!r || !r.ok || !r.data) { done(false); return; }
+          if (!r) { that._cloudErr = 'empty_result'; done(false, 'empty_result'); return; }
+          if (!r.ok) {
+            that._cloudErr = (r.reason || 'unknown') + (r.stage ? '@' + r.stage : '') + (r.message ? ':' + r.message : '') + (r.detail ? '|' + r.detail : '');
+            done(false, that._cloudErr);
+            return;
+          }
           var d = r.data;
-          if (!d.success || !d.pokemons) { done(false); return; }
+          if (!d || !d.success || !d.pokemons) { that._cloudErr = 'no_data'; done(false, 'no_data'); return; }
           var toNum = function (v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; };
           var matched = d.pokemons.map(function (p) {
             var prob = toNum(p.prob) * 100;
@@ -120,12 +143,16 @@ Component({
           });
           done(true);
         },
-        fail: function () { clearTimeout(timer); done(false); }
+        fail: function (e) {
+          clearTimeout(timer);
+          that._cloudErr = 'callfail:' + (e && e.errMsg ? e.errMsg : 'unknown');
+          done(false, that._cloudErr);
+        }
       });
     },
 
     /** 本地兜底：归一化中心距离模型 */
-    _localPredict: function (h, w) {
+    _localPredict: function (h, w, errInfo) {
       if (!this.sizes) {
         this.setData({ identifying: false, error: '数据加载中，请稍后再试（首次使用需联网）', result: null });
         this.loadEggData();
@@ -162,7 +189,7 @@ Component({
       matched.sort(function (a, b) { return a.distance - b.distance; });
       this.setData({
         identifying: false,
-        error: '',
+        error: errInfo ? ('云端鉴定不可用（' + errInfo + '），已用本地算法') : '',
         result: {
           matched: matched, others: [], count: matched.length, source: 'local',
           inputText: '身高 ' + h + 'm + 体重 ' + w + 'kg'

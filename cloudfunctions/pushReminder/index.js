@@ -241,22 +241,39 @@ exports.main = async (event, context) => {
     const size = parseFloat(event.size);
     const weight = parseFloat(event.weight);
     if (!(size > 0) || !(weight > 0)) return { ok: false, reason: 'bad_input' };
+    // 结果可按参数缓存（同尺寸体重结果稳定）
+    const cacheId = 'egg_' + size + '_' + weight;
+    try {
+      const hit = await db.collection('eggPredictCache').doc(cacheId).get();
+      if (hit.data && hit.data.json && Date.now() - hit.data.at < 6 * 3600 * 1000) {
+        return { ok: true, data: hit.data.json, cached: true };
+      }
+    } catch (e) { }
+    let stage = 'init';
     try {
       const d = lcxEncrypt(size + '|' + weight + '|' + Math.floor(Date.now() / 1000));
-      // ① 取签名
+      stage = 'sign';
       const signBody = JSON.stringify({ params: encodeURIComponent(JSON.stringify({ action: 'predict', d: d, show_details: false })) });
-      const signJson = await httpsPostJson('https://wiki.lcx.cab/lk/api/sign_api.php', signBody, 9000);
-      if (!signJson || !signJson.sign) return { ok: false, reason: 'sign_failed', detail: signJson };
-      // ② 拉预测
+      const signJson = await httpsPostJson('https://wiki.lcx.cab/lk/api/sign_api.php', signBody, 12000);
+      if (!signJson || !signJson.sign) {
+        return { ok: false, reason: 'sign_failed', stage: stage, detail: JSON.stringify(signJson).slice(0, 200) };
+      }
+      stage = 'predict';
       const url = 'https://wiki.lcx.cab/lk/api/egg_predict_api.php?action=predict&d=' + encodeURIComponent(d) +
         '&show_details=0&sign=' + encodeURIComponent(signJson.sign) + '&is_mini=1';
-      const raw = await httpsGet(url, 12000);
+      const raw = await httpsGet(url, 15000);
+      stage = 'decode';
       let json = null;
       try { json = JSON.parse(lcxDecrypt(raw)); } catch (e) { try { json = JSON.parse(raw); } catch (e2) { json = null; } }
-      if (!json) return { ok: false, reason: 'decode_failed' };
+      if (!json) return { ok: false, reason: 'decode_failed', stage: stage, detail: String(raw).slice(0, 160) };
+      if (!json.success && json.error) return { ok: false, reason: 'api_error', detail: String(json.error).slice(0, 160) };
+      // 写缓存（失败不影响返回）
+      try {
+        await db.collection('eggPredictCache').doc(cacheId).set({ data: { json: json, at: Date.now() } });
+      } catch (e) { }
       return { ok: true, data: json, fetchedAt: Date.now() };
     } catch (e) {
-      return { ok: false, reason: 'error', message: String(e && e.message || e) };
+      return { ok: false, reason: 'exception', stage: stage, message: String(e && e.message || e).slice(0, 200) };
     }
   }
 

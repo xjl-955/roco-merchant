@@ -105,7 +105,7 @@ function tryCloud(done) {
       if (d && d.ok && Array.isArray(d.items) && d.items.length >= 1 && merchant.applyLiveToday(d)) {
         try { wx.setStorageSync(STORAGE_KEY, { payload: d, cachedAt: Date.now() }); } catch (e) { }
         var live = merchant.getLiveToday();
-        done({ round: live ? live.round : 0, source: 'cloud' });
+        done({ round: live ? live.round : 0, source: 'cloud', pushStats: d.pushStats || null });
       } else {
         done(null);
       }

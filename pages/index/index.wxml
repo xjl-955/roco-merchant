@@ -49,7 +49,10 @@
   <view class="card remind-card">
     <view class="remind-left">
       <view class="remind-title">物品提醒</view>
-      <view class="remind-desc">{{dayView.items.length > 0 ? '选择物品，到点上架即提醒（小程序内弹窗）' : '暂未开市，可先订阅物品，上架即提醒'}}</view>
+      <view class="remind-desc">{{dayView.items.length > 0 ? '选择物品，到点上架即提醒' : '暂未开市，可先订阅物品，上架即提醒'}}</view>
+      <view class="quota-line" wx:if="{{pushStats.hasSub}}">
+        已订阅 {{pushStats.subCount}} 件 · 今日已推 {{pushStats.pushedToday}} 条 · 累计授权 {{quotaTotal}} 次
+      </view>
     </view>
     <view class="remind-btn" bindtap="onOpenSubscribe">选择物品订阅</view>
   </view>

@@ -290,6 +290,20 @@ exports.main = async (event, context) => {
   if (event.action === 'live') {
     const live = await fetchKbLive();
     if (!live) return { ok: false, reason: '快爆源抓取失败' };
+    // 【推送统计】今日已推送条数 + 订阅商品数（供小程序显示剩余提醒）
+    let pushStats = { pushedToday: 0, subCount: 0, hasSub: false };
+    try {
+      const sd = await db.collection('subscriptions').where({ openid: openid }).get();
+      if (sd.data.length) {
+        const doc = sd.data[0];
+        const todayPrefix = live.date + '|';
+        let cnt = 0;
+        Object.keys(doc.notified || {}).forEach(function (k) {
+          if (k.indexOf(todayPrefix) === 0) cnt++;
+        });
+        pushStats = { pushedToday: cnt, subCount: (doc.items || []).length, hasSub: true };
+      }
+    } catch (e) { }
     const bj = new Date(Date.now() + 8 * 3600 * 1000);
     const hh = bj.getUTCHours();
     const rn = hh >= 8 && hh < 12 ? 1 : hh >= 12 && hh < 16 ? 2 : hh >= 16 && hh < 20 ? 3 : hh >= 20 ? 4 : 0;
@@ -318,6 +332,7 @@ exports.main = async (event, context) => {
         endH: live.current.endH,
         items: live.current.items.map(function (i) { return i.name; })
       } : null,
+      pushStats: pushStats,
       rounds: {},
       items: items
     };

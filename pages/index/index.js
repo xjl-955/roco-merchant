@@ -38,6 +38,8 @@ Page({
     },
     displayItems: [],
     subscribed: {},
+    pushStats: {},
+    quotaTotal: 0,
     showSubscribe: false,
     subscribeOptions: [],
     itemPool: [],
@@ -49,6 +51,8 @@ Page({
   onLoad: function () {
     var that = this;
     this._notified = {}; // 今日已提醒过的物品 key
+    // 读取累计授权数用于展示
+    try { this.setData({ quotaTotal: +(wx.getStorageSync('roco_quota_total_v1') || 0) }); } catch (e) { }
     // 加载全量物品池（远行商人物品档案）
     try {
       var poolCache = wx.getStorageSync('roco_merchant_pool_v2');
@@ -133,6 +137,8 @@ Page({
   onShow: function () {
     this.loadSubscribed();
     this.refresh();
+    // 每次进入前台自动补订阅配额（30 分钟冷却；已勾「总是保持」的用户静默累加）
+    this._autoTopUp();
     // 从后台切回时，若实时数据过期则静默刷新
     if (live.isStale()) {
       this.syncLive(false);
@@ -184,14 +190,18 @@ Page({
     // 顺手续攒订阅配额（已勾「总是保持以上选择」的用户静默生效，不弹窗）
     var autoAll = false;
     try { autoAll = wx.getStorageSync('roco_sub_all_v1') === true; } catch (e) { }
-    if (autoAll) this._topUpQuota(3);
+    if (autoAll) this._autoTopUp();
     this.syncRemote(false);
     this.syncLive(true);
   },
 
-  /** 连续请求订阅授权以攒配额（勾了「总是保持」后静默生效；每次调用 = +1 条） */
+  /**
+   * 连续请求订阅授权以攒配额（勾了「总是保持」后静默生效；每次调用 = +1 条）
+   * 每次 accept 计入本地累计授权数，用于展示「累计授权 N 次」
+   */
   _topUpQuota: function (times) {
     if (!SUBSCRIBE_TMPL_ID || !wx.requestSubscribeMessage) return;
+    var that = this;
     var n = Math.max(0, times || 0);
     var i = 0;
     function step() {
@@ -200,7 +210,15 @@ Page({
       wx.requestSubscribeMessage({
         tmplIds: [SUBSCRIBE_TMPL_ID],
         success: function (res) {
-          if (res && res[SUBSCRIBE_TMPL_ID] === 'accept') step();
+          if (res && res[SUBSCRIBE_TMPL_ID] === 'accept') {
+            // 累计授权计数
+            try {
+              var total = +(wx.getStorageSync('roco_quota_total_v1') || 0) + 1;
+              wx.setStorageSync('roco_quota_total_v1', total);
+              that.setData({ quotaTotal: total });
+            } catch (e) { }
+            step();
+          }
         },
         fail: function () { }
       });
@@ -208,11 +226,29 @@ Page({
     step();
   },
 
+  /**
+   * 打开小程序时自动补配额（30 分钟冷却，避免过度请求）
+   * 勾选「总是保持以上选择」后为静默累加，用户无感知
+   */
+  _autoTopUp: function () {
+    var autoAll = false;
+    try { autoAll = wx.getStorageSync('roco_sub_all_v1') === true; } catch (e) { }
+    if (!autoAll) return;
+    var last = 0;
+    try { last = +(wx.getStorageSync('roco_quota_ts_v1') || 0); } catch (e) { }
+    if (Date.now() - last < 30 * 60 * 1000) return;
+    try { wx.setStorageSync('roco_quota_ts_v1', Date.now()); } catch (e) { }
+    this._topUpQuota(5);
+  },
+
   /** 拉取实时轮次数据（四轮商品明细），失败静默回退 */
   syncLive: function (interactive, done) {
     var that = this;
-    live.fetchLive(function (err) {
+    live.fetchLive(function (err, result) {
       that.refresh();
+      if (result && result.pushStats) {
+        that.setData({ pushStats: result.pushStats });
+      }
       if (interactive) {
         if (err) {
           wx.showToast({ title: '实时数据不可用，已用档期推算', icon: 'none' });

@@ -488,3 +488,9 @@
   color: #fff;
   font-weight: bold;
 }
+
+.quota-line {
+  font-size: 20rpx;
+  color: #7A8CA3;
+  margin-top: 6rpx;
+}

@@ -75,6 +75,7 @@ Page({
     var cats = (index.categories || []).map(function (c) {
       return { name: c.name, genre: c.genre, icon: c.icon, count: c.count, file: c.file };
     });
+    this._cats = cats; // 【必须】同步私有字段，供 onCatTap 使用
     this.setData({ loading: false, cats: cats, total: index.total });
     // 预取 assets 与 details（静默）
     var that = this;

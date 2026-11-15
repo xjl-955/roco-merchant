@@ -130,10 +130,10 @@
 }
 
 .map-area {
-  width: 710rpx;
-  margin: 0 20rpx;
+  width: 750rpx;
+  margin: 0;
   /* 正方形：与地图内容一致，保证四边都能拖到边界 */
-  height: 710rpx;
+  height: 750rpx;
   overflow: hidden;
   background: #dfd4c5;
   position: relative;

@@ -2,7 +2,7 @@ var MAPS_INDEX = 'https://xjl-955.github.io/roco-data/maps/index.json';
 var MAPS_BASE = 'https://xjl-955.github.io/roco-data/maps/';
 // 逻辑画布：WIKI 世界 4096×4096（4×4×1024），映射为 2048rpx 视觉尺寸
 var CANVAS_RPX = 2048;
-var AREA_W = 710;
+var AREA_W = 750;
 
 Page({
   data: {

@@ -1,0 +1,28 @@
+{
+ "stats": {
+  "HP": 98,
+  "ATK": 114,
+  "MATK": 44,
+  "DEF": 84,
+  "MDEF": 66,
+  "SPD": 96
+ },
+ "total": 502,
+ "talents": [],
+ "skills": [],
+ "eggGroup": [
+  "妖精组",
+  "魔力组"
+ ],
+ "wikiDesc": "有个好朋友，天天跟我走。 有时走在前，有时走在后。 我和它说话，就是不开口。",
+ "kind": "精灵",
+ "natures": [],
+ "quests": [],
+ "feature": "剪影：敌方精灵离场时，自己获得技能威力+20。",
+ "meta": {
+  "height": "0.45~0.68M",
+  "weight": "0.27~0.9KG",
+  "skillsCount": 44,
+  "source": "WIKI 词条页"
+ }
+}

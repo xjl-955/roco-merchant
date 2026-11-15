@@ -1,0 +1,28 @@
+{
+ "stats": {
+  "HP": 123,
+  "ATK": 143,
+  "MATK": 56,
+  "DEF": 104,
+  "MDEF": 83,
+  "SPD": 120
+ },
+ "total": 629,
+ "talents": [],
+ "skills": [],
+ "eggGroup": [
+  "妖精组",
+  "魔力组"
+ ],
+ "wikiDesc": "剪影似我又似错，踩它不避也不躲。 一举一动都照做，每时每刻永伴我。",
+ "kind": "精灵",
+ "natures": [],
+ "quests": [],
+ "feature": "剪影：敌方精灵离场时，自己获得技能威力+20。",
+ "meta": {
+  "height": "1.28~1.57M",
+  "weight": "1.2~2.3KG",
+  "skillsCount": 44,
+  "source": "WIKI 词条页"
+ }
+}

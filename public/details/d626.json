@@ -35,10 +35,439 @@
    "desc": "战斗胜利或投掷捕捉成功时，出战编队内的精灵获得经验值将显著增加。"
   }
  ],
- "skills": [],
- "eggGroup": [
-  "海洋组"
+ "skills": [
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "魔攻",
+   "power": "40",
+   "name": "水弹",
+   "cost": "0",
+   "lv": "LV1",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "音波弹",
+   "cost": "1",
+   "lv": "LV1",
+   "desc": "造成魔伤，1连击。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "蓄水",
+   "cost": "1",
+   "lv": "LV1",
+   "desc": "下次使用的技能能耗-6。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "魔攻",
+   "power": "80",
+   "name": "水弹枪",
+   "cost": "2",
+   "lv": "LV3",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "防御",
+   "power": "-1",
+   "name": "防御",
+   "cost": "1",
+   "lv": "LV6",
+   "desc": "减伤70%，应对攻击。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "魔攻",
+   "power": "20",
+   "name": "水花四溅",
+   "cost": "3",
+   "lv": "LV13",
+   "desc": "造成魔伤，4连击。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "润泽",
+   "cost": "7",
+   "lv": "LV21",
+   "desc": "自己获得魔攻+190%。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "洗礼",
+   "cost": "1",
+   "lv": "LV23",
+   "desc": "驱散自己的减益，并获得全技能能耗-1。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "魔攻",
+   "power": "120",
+   "name": "激流",
+   "cost": "4",
+   "lv": "LV25",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "盐水浴",
+   "cost": "2",
+   "lv": "LV33",
+   "desc": "自己获得全技能能耗-2，应对防御：改为技能能耗-3。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "魔攻",
+   "power": "75",
+   "name": "阻断",
+   "cost": "2",
+   "lv": "LV36",
+   "desc": "造成魔伤，应对状态：额外打断被应对技能。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "应激反应",
+   "cost": "2",
+   "lv": "LV38",
+   "desc": "自己回复25%生命，应对防御：改为回复50%生命。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "魔攻",
+   "power": "150",
+   "name": "天洪",
+   "cost": "7",
+   "lv": "LV40",
+   "desc": "造成魔伤，应对状态：本技能能耗永久-6。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "复写",
+   "cost": "0",
+   "lv": "",
+   "desc": "每回合随机变成自己未携带的技能，且该技能能耗-2。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "魔攻",
+   "power": "115",
+   "name": "消毒法",
+   "cost": "4",
+   "lv": "",
+   "desc": "造成魔伤，驱散敌方5层增益。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "鼓劲",
+   "cost": "3",
+   "lv": "",
+   "desc": "自己获得魔防+170%。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "晒太阳",
+   "cost": "1",
+   "lv": "",
+   "desc": "驱散敌方所有增益。"
+  },
+  {
+   "source": "machine",
+   "type": "草",
+   "cat": "魔攻",
+   "power": "30",
+   "name": "汲取",
+   "cost": "1",
+   "lv": "",
+   "desc": "造成魔伤，并吸血100%。"
+  },
+  {
+   "source": "machine",
+   "type": "草",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "花香",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "草",
+   "cat": "魔攻",
+   "power": "120",
+   "name": "叶绿光束",
+   "cost": "4",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "草",
+   "cat": "状态",
+   "power": "-1",
+   "name": "富养化",
+   "cost": "3",
+   "lv": "",
+   "desc": "为场下每个精灵回复3能量。"
+  },
+  {
+   "source": "machine",
+   "type": "萌",
+   "cat": "状态",
+   "power": "-1",
+   "name": "甜心续航",
+   "cost": "3",
+   "lv": "",
+   "desc": "自己和敌方获得萌化：回复40%生命。"
+  },
+  {
+   "source": "machine",
+   "type": "萌",
+   "cat": "魔攻",
+   "power": "30",
+   "name": "撒娇",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成魔伤，3连击。自己获得萌化：全技能威力永久+10。"
+  },
+  {
+   "source": "machine",
+   "type": "萌",
+   "cat": "魔攻",
+   "power": "80",
+   "name": "破罐破摔",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成魔伤，自己有减益时，本次技能威力+60。"
+  },
+  {
+   "source": "machine",
+   "type": "翼",
+   "cat": "魔攻",
+   "power": "40",
+   "name": "鸣叫",
+   "cost": "0",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "blood",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "休息回复",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己回复30%生命。 普通"
+  },
+  {
+   "source": "blood",
+   "type": "草",
+   "cat": "状态",
+   "power": "-1",
+   "name": "徒长",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己回复10能量。 草"
+  },
+  {
+   "source": "blood",
+   "type": "火",
+   "cat": "状态",
+   "power": "-1",
+   "name": "引燃",
+   "cost": "2",
+   "lv": "",
+   "desc": "敌方获得10层灼烧。 火"
+  },
+  {
+   "source": "blood",
+   "type": "水",
+   "cat": "防御",
+   "power": "-1",
+   "name": "水泡盾",
+   "cost": "2",
+   "lv": "",
+   "desc": "减伤80%，应对攻击：自己获得魔攻+70%。 水"
+  },
+  {
+   "source": "blood",
+   "type": "光",
+   "cat": "物攻",
+   "power": "60",
+   "name": "透射",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 光"
+  },
+  {
+   "source": "blood",
+   "type": "地",
+   "cat": "防御",
+   "power": "-1",
+   "name": "淤泥表皮",
+   "cost": "2",
+   "lv": "",
+   "desc": "减伤80%，应对攻击：敌方获得连击数-3。 地"
+  },
+  {
+   "source": "blood",
+   "type": "冰",
+   "cat": "状态",
+   "power": "-1",
+   "name": "霜降",
+   "cost": "1",
+   "lv": "",
+   "desc": "敌方获得4层冻结。 冰"
+  },
+  {
+   "source": "blood",
+   "type": "龙",
+   "cat": "魔攻",
+   "power": "200",
+   "name": "升龙咆哮",
+   "cost": "3",
+   "lv": "",
+   "desc": "蓄力，对敌方造成魔法伤害。 龙"
+  },
+  {
+   "source": "blood",
+   "type": "电",
+   "cat": "状态",
+   "power": "-1",
+   "name": "麻痹",
+   "cost": "2",
+   "lv": "",
+   "desc": "敌方先手-1，应对防御：额外使敌方获得双攻-70%。 电"
+  },
+  {
+   "source": "blood",
+   "type": "毒",
+   "cat": "物攻",
+   "power": "80",
+   "name": "毒沼",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 毒"
+  },
+  {
+   "source": "blood",
+   "type": "虫",
+   "cat": "状态",
+   "power": "-1",
+   "name": "假寐",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己回复2能量，己方队伍获得1次奉献：能耗-2。 虫"
+  },
+  {
+   "source": "blood",
+   "type": "武",
+   "cat": "状态",
+   "power": "-1",
+   "name": "化劲",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得全技能威力+40。 武"
+  },
+  {
+   "source": "blood",
+   "type": "翼",
+   "cat": "物攻",
+   "power": "80",
+   "name": "风矢",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 翼"
+  },
+  {
+   "source": "blood",
+   "type": "萌",
+   "cat": "魔攻",
+   "power": "80",
+   "name": "飞吻",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 萌"
+  },
+  {
+   "source": "blood",
+   "type": "幽",
+   "cat": "防御",
+   "power": "-1",
+   "name": "报复",
+   "cost": "2",
+   "lv": "",
+   "desc": "减伤70%，应对攻击：敌方失去3能量。 幽"
+  },
+  {
+   "source": "blood",
+   "type": "恶",
+   "cat": "状态",
+   "power": "-1",
+   "name": "贪婪",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得100%吸血。 恶"
+  },
+  {
+   "source": "blood",
+   "type": "机械",
+   "cat": "物攻",
+   "power": "45",
+   "name": "械斗",
+   "cost": "1",
+   "lv": "",
+   "desc": "造成物伤，本技能位于1号位时威力+60，传动1。 机械"
+  },
+  {
+   "source": "blood",
+   "type": "幻",
+   "cat": "物攻",
+   "power": "80",
+   "name": "念力膨胀",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 幻"
+  }
  ],
+ "eggGroup": "海洋组",
  "wikiDesc": "云梦豚对水特别挑，水稍微脏一点，它就会耷拉下小小的胸鳍不肯游动。很依赖长江豚，游到哪儿都要贴在它身边半个身位，只有天特别好的时候才敢自己钻出水面看一眼太阳，看两秒又躲到长江豚肚子底下。",
  "kind": "精灵",
  "natures": [],
@@ -47,7 +476,6 @@
  "meta": {
   "height": "0.34~0.51M",
   "weight": "14~28KG",
-  "skillsCount": 43,
   "source": "WIKI 词条页"
  }
 }

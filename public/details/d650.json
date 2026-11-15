@@ -1,0 +1,515 @@
+{
+ "stats": {
+  "HP": 91,
+  "ATK": 89,
+  "MATK": 89,
+  "DEF": 73,
+  "MDEF": 98,
+  "SPD": 80
+ },
+ "total": 520,
+ "talents": [],
+ "skills": [
+  {
+   "source": "level",
+   "type": "毒",
+   "cat": "物攻",
+   "power": "20",
+   "name": "毒针",
+   "cost": "0",
+   "lv": "LV1",
+   "desc": "造成物伤，敌方获得1层中毒。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "45",
+   "name": "落星",
+   "cost": "0",
+   "lv": "LV1",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "防御",
+   "power": "-1",
+   "name": "防御",
+   "cost": "1",
+   "lv": "LV1",
+   "desc": "减伤70%，应对攻击。"
+  },
+  {
+   "source": "level",
+   "type": "毒",
+   "cat": "魔攻",
+   "power": "35",
+   "name": "腐蚀酸液",
+   "cost": "2",
+   "lv": "LV5",
+   "desc": "造成魔伤，敌方获得2层中毒。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "星轨裂变",
+   "cost": "1",
+   "lv": "LV10",
+   "desc": "敌方获得2层星陨印记。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "混合态",
+   "cost": "1",
+   "lv": "LV16",
+   "desc": "敌方获得随机10层属性减益。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "魔攻",
+   "power": "90",
+   "name": "星痕",
+   "cost": "3",
+   "lv": "LV24",
+   "desc": "造成魔伤，若敌方有印记，本次技能威力+40。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "晒太阳",
+   "cost": "1",
+   "lv": "LV32",
+   "desc": "驱散敌方所有增益。"
+  },
+  {
+   "source": "level",
+   "type": "毒",
+   "cat": "物攻",
+   "power": "90",
+   "name": "投毒",
+   "cost": "3",
+   "lv": "LV36",
+   "desc": "造成物伤，使敌方获得至少2次中毒后，每次使用本技能攻击中毒目标时威力+25。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "应激反应",
+   "cost": "2",
+   "lv": "LV38",
+   "desc": "自己回复25%生命，应对防御：改为回复50%生命。"
+  },
+  {
+   "source": "level",
+   "type": "毒",
+   "cat": "防御",
+   "power": "-1",
+   "name": "溶解",
+   "cost": "2",
+   "lv": "LV40",
+   "desc": "减伤90%，应对攻击：驱散敌方1种增益。"
+  },
+  {
+   "source": "level",
+   "type": "毒",
+   "cat": "魔攻",
+   "power": "100",
+   "name": "瘴气喷射",
+   "cost": "3",
+   "lv": "LV42",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "薄纱环",
+   "cost": "3",
+   "lv": "LV44",
+   "desc": "选择：敌方随机获得1种负面印记或自己随机获得1种正面印记。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "35",
+   "name": "旋转突击",
+   "cost": "3",
+   "lv": "LV46",
+   "desc": "造成物伤，3连击。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "魔攻",
+   "power": "100",
+   "name": "大爆炸",
+   "cost": "3",
+   "lv": "LV48",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "毒",
+   "cat": "物攻",
+   "power": "80",
+   "name": "毒沼",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "毒",
+   "cat": "状态",
+   "power": "-1",
+   "name": "腐化",
+   "cost": "1",
+   "lv": "",
+   "desc": "敌方每有1层中毒效果，敌方获得双攻-30%。"
+  },
+  {
+   "source": "machine",
+   "type": "毒",
+   "cat": "状态",
+   "power": "-1",
+   "name": "剧毒",
+   "cost": "2",
+   "lv": "",
+   "desc": "敌方获得3层中毒，应对防御：改为获得8层。"
+  },
+  {
+   "source": "machine",
+   "type": "毒",
+   "cat": "防御",
+   "power": "-1",
+   "name": "不可接触",
+   "cost": "1",
+   "lv": "",
+   "desc": "减伤50%，敌方每有1层中毒效果，本技能减伤+10%，应对攻击。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "奇点",
+   "cost": "4",
+   "lv": "",
+   "desc": "造成魔伤，若上回合双方有精灵使用水系技能，敌方获得4层星陨印记。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "星链",
+   "cost": "3",
+   "lv": "",
+   "desc": "2连击，每次连击使敌方获得1层星陨印记。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "仰望夜空",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得魔攻和魔防+70%。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "二律背反",
+   "cost": "4",
+   "lv": "",
+   "desc": "敌方获得3层星陨印记，应对防御：额外使敌方星陨印记层数翻倍。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "物攻",
+   "power": "100",
+   "name": "双星",
+   "cost": "3",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "水",
+   "cat": "物攻",
+   "power": "80",
+   "name": "潮涌",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "洗礼",
+   "cost": "1",
+   "lv": "",
+   "desc": "驱散自己的减益，并获得全技能能耗-1。"
+  },
+  {
+   "source": "machine",
+   "type": "水",
+   "cat": "防御",
+   "power": "-1",
+   "name": "水环",
+   "cost": "2",
+   "lv": "",
+   "desc": "减伤60%，应对攻击：自己获得全技能能耗-2。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "魔攻",
+   "power": "125",
+   "name": "同频",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成魔法伤害，巧变：魔攻技能。"
+  },
+  {
+   "source": "machine",
+   "type": "毒",
+   "cat": "物攻",
+   "power": "15",
+   "name": "连续毒针",
+   "cost": "2",
+   "lv": "",
+   "desc": "造成物伤，2连击，每次连击使敌方获得1层中毒。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "操控",
+   "cost": "1",
+   "lv": "",
+   "desc": "敌方本回合使用的技能能耗+7，持续3回合。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "复写",
+   "cost": "0",
+   "lv": "",
+   "desc": "每回合随机变成自己未携带的技能，且该技能能耗-2。"
+  },
+  {
+   "source": "blood",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "休息回复",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己回复30%生命。 普通"
+  },
+  {
+   "source": "blood",
+   "type": "草",
+   "cat": "防御",
+   "power": "-1",
+   "name": "蜡质膜",
+   "cost": "2",
+   "lv": "",
+   "desc": "减伤80%，应对攻击：回复3能量。 草"
+  },
+  {
+   "source": "blood",
+   "type": "火",
+   "cat": "状态",
+   "power": "-1",
+   "name": "引燃",
+   "cost": "2",
+   "lv": "",
+   "desc": "敌方获得10层灼烧。 火"
+  },
+  {
+   "source": "blood",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "蓄水",
+   "cost": "1",
+   "lv": "",
+   "desc": "下次使用的技能能耗-6。 水"
+  },
+  {
+   "source": "blood",
+   "type": "光",
+   "cat": "魔攻",
+   "power": "100",
+   "name": "虹光冲击",
+   "cost": "3",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 光"
+  },
+  {
+   "source": "blood",
+   "type": "地",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "泥巴喷射",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 地"
+  },
+  {
+   "source": "blood",
+   "type": "冰",
+   "cat": "状态",
+   "power": "-1",
+   "name": "霜降",
+   "cost": "1",
+   "lv": "",
+   "desc": "敌方获得4层冻结。 冰"
+  },
+  {
+   "source": "blood",
+   "type": "龙",
+   "cat": "魔攻",
+   "power": "200",
+   "name": "升龙咆哮",
+   "cost": "3",
+   "lv": "",
+   "desc": "蓄力，对敌方造成魔法伤害。 龙"
+  },
+  {
+   "source": "blood",
+   "type": "电",
+   "cat": "状态",
+   "power": "-1",
+   "name": "麻痹",
+   "cost": "2",
+   "lv": "",
+   "desc": "敌方先手-1，应对防御：额外使敌方获得双攻-70%。 电"
+  },
+  {
+   "source": "blood",
+   "type": "毒",
+   "cat": "状态",
+   "power": "-1",
+   "name": "毒孢子",
+   "cost": "3",
+   "lv": "",
+   "desc": "敌方获得5层中毒。 毒"
+  },
+  {
+   "source": "blood",
+   "type": "虫",
+   "cat": "状态",
+   "power": "-1",
+   "name": "假寐",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己回复2能量，己方队伍获得1次奉献：能耗-2。 虫"
+  },
+  {
+   "source": "blood",
+   "type": "武",
+   "cat": "状态",
+   "power": "-1",
+   "name": "化劲",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得全技能威力+40。 武"
+  },
+  {
+   "source": "blood",
+   "type": "翼",
+   "cat": "状态",
+   "power": "-1",
+   "name": "羽化加速",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得全技能威力+20，迅捷。 翼"
+  },
+  {
+   "source": "blood",
+   "type": "萌",
+   "cat": "状态",
+   "power": "-1",
+   "name": "甜心续航",
+   "cost": "3",
+   "lv": "",
+   "desc": "自己和敌方获得萌化：回复40%生命。 萌"
+  },
+  {
+   "source": "blood",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "勾魂",
+   "cost": "1",
+   "lv": "",
+   "desc": "偷取敌方3能量。 幽"
+  },
+  {
+   "source": "blood",
+   "type": "恶",
+   "cat": "状态",
+   "power": "-1",
+   "name": "贪婪",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得100%吸血。 恶"
+  },
+  {
+   "source": "blood",
+   "type": "机械",
+   "cat": "状态",
+   "power": "-1",
+   "name": "啮合传递",
+   "cost": "1",
+   "lv": "",
+   "desc": "自己获得速度+30，本技能位于1号或3号位时额外获得物攻+80%，传动1。 机械"
+  },
+  {
+   "source": "blood",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "超维投射",
+   "cost": "4",
+   "lv": "",
+   "desc": "敌方获得4层星陨印记。 幻"
+  }
+ ],
+ "eggGroup": "海洋组",
+ "wikiDesc": "魔法学院的期末到来时，有些小洛克会借助它们旋转时出现的斑点数量来做出命运的抉择——但其实滴溜豚们大多有着严重的选择困难症，连它们自己都不知道该选什么。",
+ "kind": "精灵",
+ "natures": [],
+ "quests": [],
+ "feature": "游戏的本质：入场时随机获得1~6点，在场时双方根据点数获得不同效果。",
+ "meta": {
+  "height": "0.15~0.3M",
+  "weight": "1.5~3KG",
+  "source": "WIKI 词条页"
+ }
+}

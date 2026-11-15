@@ -35,10 +35,459 @@
    "desc": "战斗胜利或投掷捕捉成功时，出战编队内的精灵获得经验值将显著增加。"
   }
  ],
- "skills": [],
- "eggGroup": [
-  "未发现"
+ "skills": [
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "40",
+   "name": "诡刺",
+   "cost": "0",
+   "lv": "LV1",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "防御",
+   "power": "-1",
+   "name": "防御",
+   "cost": "1",
+   "lv": "LV1",
+   "desc": "减伤70%，应对攻击。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "魔镜",
+   "cost": "2",
+   "lv": "LV1",
+   "desc": "敌方获得魔防-50%，且失去3能量。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "90",
+   "name": "扫尾",
+   "cost": "2",
+   "lv": "LV6",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "65",
+   "name": "穿膛",
+   "cost": "2",
+   "lv": "LV9",
+   "desc": "造成物伤，若敌方能量小于等于2，造成5倍伤害。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "65",
+   "name": "掠影",
+   "cost": "3",
+   "lv": "LV13",
+   "desc": "造成物伤，若上回合双方有精灵使用火系技能，偷取敌方3能量。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "降灵",
+   "cost": "2",
+   "lv": "LV17",
+   "desc": "敌方获得1层降灵印记。"
+  },
+  {
+   "source": "level",
+   "type": "龙",
+   "cat": "状态",
+   "power": "-1",
+   "name": "咒火",
+   "cost": "3",
+   "lv": "LV24",
+   "desc": "蓄力，自己获得2层龙噬印记。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "80",
+   "name": "惊吓盒子",
+   "cost": "3",
+   "lv": "LV29",
+   "desc": "造成物伤，应对状态：使敌方失去6能量。"
+  },
+  {
+   "source": "level",
+   "type": "龙",
+   "cat": "物攻",
+   "power": "115",
+   "name": "深红龙击",
+   "cost": "5",
+   "lv": "LV35",
+   "desc": "造成物伤。自己每进入1次蓄力状态，本技能能耗永久-2。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "冥暗诅咒",
+   "cost": "2",
+   "lv": "LV39",
+   "desc": "敌方失去5能量，且下回合末回复3能量，应对防御：下回合不回复能量。"
+  },
+  {
+   "source": "level",
+   "type": "龙",
+   "cat": "物攻",
+   "power": "130",
+   "name": "龙之利爪",
+   "cost": "3",
+   "lv": "LV43",
+   "desc": "蓄力，造成物伤并吸血50%。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "120",
+   "name": "撞鬼",
+   "cost": "4",
+   "lv": "LV48",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "180",
+   "name": "坟场搏击",
+   "cost": "4",
+   "lv": "",
+   "desc": "造成物伤，敌方每有1能量，本次技能威力-10%。"
+  },
+  {
+   "source": "machine",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "入梦",
+   "cost": "1",
+   "lv": "",
+   "desc": "敌方下回合回复的能量-5，冷却2回合。"
+  },
+  {
+   "source": "machine",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "勾魂",
+   "cost": "1",
+   "lv": "",
+   "desc": "偷取敌方3能量。"
+  },
+  {
+   "source": "machine",
+   "type": "龙",
+   "cat": "物攻",
+   "power": "170",
+   "name": "吹炎",
+   "cost": "3",
+   "lv": "",
+   "desc": "蓄力，造成物伤，应对状态：本次技能威力翻倍。"
+  },
+  {
+   "source": "machine",
+   "type": "龙",
+   "cat": "状态",
+   "power": "-1",
+   "name": "龙吟",
+   "cost": "3",
+   "lv": "",
+   "desc": "蓄力，自己获得双攻+150%和速度+80。"
+  },
+  {
+   "source": "machine",
+   "type": "恶",
+   "cat": "物攻",
+   "power": "85",
+   "name": "撕裂",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，应对状态：本次攻击吸血100%。"
+  },
+  {
+   "source": "machine",
+   "type": "恶",
+   "cat": "状态",
+   "power": "-1",
+   "name": "贪婪",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得100%吸血。"
+  },
+  {
+   "source": "machine",
+   "type": "翼",
+   "cat": "物攻",
+   "power": "75",
+   "name": "扇风",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，若先于敌方攻击，本次技能威力+50%。"
+  },
+  {
+   "source": "machine",
+   "type": "翼",
+   "cat": "状态",
+   "power": "-1",
+   "name": "超声波",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得全技能威力+20，选择：本次能耗-1或应对防御时改为全技能威力永久+20。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "85",
+   "name": "偷袭",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，应对状态：本次技能威力变为3倍。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "80",
+   "name": "当头棒喝",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，若敌方本回合更换精灵，本次技能威力+100。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "力量增效",
+   "cost": "1",
+   "lv": "",
+   "desc": "自己获得物攻+100%。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "借用",
+   "cost": "0",
+   "lv": "",
+   "desc": "每回合随机变成己方队伍中其他精灵的技能。"
+  },
+  {
+   "source": "blood",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "65",
+   "name": "猛烈撞击",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 普通"
+  },
+  {
+   "source": "blood",
+   "type": "草",
+   "cat": "物攻",
+   "power": "80",
+   "name": "荆棘爪",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 草"
+  },
+  {
+   "source": "blood",
+   "type": "火",
+   "cat": "物攻",
+   "power": "80",
+   "name": "火焰箭",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 火"
+  },
+  {
+   "source": "blood",
+   "type": "水",
+   "cat": "物攻",
+   "power": "60",
+   "name": "泡沫",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 水"
+  },
+  {
+   "source": "blood",
+   "type": "光",
+   "cat": "物攻",
+   "power": "80",
+   "name": "折线冲击",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 光"
+  },
+  {
+   "source": "blood",
+   "type": "地",
+   "cat": "物攻",
+   "power": "80",
+   "name": "跺地",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 地"
+  },
+  {
+   "source": "blood",
+   "type": "冰",
+   "cat": "物攻",
+   "power": "80",
+   "name": "冰爪",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 冰"
+  },
+  {
+   "source": "blood",
+   "type": "龙",
+   "cat": "物攻",
+   "power": "60",
+   "name": "龙吼",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 龙"
+  },
+  {
+   "source": "blood",
+   "type": "电",
+   "cat": "物攻",
+   "power": "60",
+   "name": "球状闪电",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 电"
+  },
+  {
+   "source": "blood",
+   "type": "毒",
+   "cat": "物攻",
+   "power": "80",
+   "name": "毒沼",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 毒"
+  },
+  {
+   "source": "blood",
+   "type": "虫",
+   "cat": "物攻",
+   "power": "80",
+   "name": "尾后针",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 虫"
+  },
+  {
+   "source": "blood",
+   "type": "武",
+   "cat": "物攻",
+   "power": "25",
+   "name": "反击拳",
+   "cost": "2",
+   "lv": "",
+   "desc": "造成物伤，2连击，若后手攻击，改为3连击。 武"
+  },
+  {
+   "source": "blood",
+   "type": "翼",
+   "cat": "物攻",
+   "power": "80",
+   "name": "风矢",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 翼"
+  },
+  {
+   "source": "blood",
+   "type": "萌",
+   "cat": "物攻",
+   "power": "60",
+   "name": "碰爪",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 萌"
+  },
+  {
+   "source": "blood",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "60",
+   "name": "幻象",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 幽"
+  },
+  {
+   "source": "blood",
+   "type": "恶",
+   "cat": "物攻",
+   "power": "80",
+   "name": "诋毁",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 恶"
+  },
+  {
+   "source": "blood",
+   "type": "机械",
+   "cat": "物攻",
+   "power": "45",
+   "name": "械斗",
+   "cost": "1",
+   "lv": "",
+   "desc": "造成物伤，本技能位于1号位时威力+60，传动1。 机械"
+  },
+  {
+   "source": "blood",
+   "type": "幻",
+   "cat": "物攻",
+   "power": "80",
+   "name": "念力膨胀",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 幻"
+  },
+  {
+   "source": "legendary",
+   "type": "龙",
+   "cat": "物攻",
+   "power": "130",
+   "name": "荒芜之噬",
+   "cost": "5",
+   "lv": "",
+   "desc": "造成物伤，若击败敌方，自己等级+20。"
+  }
  ],
+ "eggGroup": "未发现",
  "wikiDesc": "天真纯粹的恶、「圣龙博弈」头号玩家、「圣龙乐园」的常驻导游、桀桀坏笑的小混蛋，这些身份不可能同时出现在一个生物身上。 “你说是吧，小冥龙？” “啊？我吗？”",
  "kind": "精灵",
  "natures": [],
@@ -47,7 +496,6 @@
  "meta": {
   "height": "0.7~0.92M",
   "weight": "31~66KG",
-  "skillsCount": 45,
   "source": "WIKI 词条页"
  }
 }

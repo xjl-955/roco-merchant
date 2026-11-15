@@ -35,11 +35,449 @@
    "desc": "战斗胜利或投掷捕捉成功时，出战编队内的精灵获得经验值将显著增加。"
   }
  ],
- "skills": [],
- "eggGroup": [
-  "海洋组",
-  "妖精组"
+ "skills": [
+  {
+   "source": "level",
+   "type": "冰",
+   "cat": "魔攻",
+   "power": "30",
+   "name": "风吹雪",
+   "cost": "0",
+   "lv": "LV1",
+   "desc": "造成魔伤，自己回复1能量。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "音波弹",
+   "cost": "1",
+   "lv": "LV1",
+   "desc": "造成魔伤，1连击。"
+  },
+  {
+   "source": "level",
+   "type": "冰",
+   "cat": "状态",
+   "power": "-1",
+   "name": "严霜",
+   "cost": "4",
+   "lv": "LV1",
+   "desc": "敌方获得8层冻结。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "星轨裂变",
+   "cost": "1",
+   "lv": "LV6",
+   "desc": "敌方获得2层星陨印记。"
+  },
+  {
+   "source": "level",
+   "type": "冰",
+   "cat": "魔攻",
+   "power": "45",
+   "name": "打雪仗",
+   "cost": "3",
+   "lv": "LV10",
+   "desc": "造成魔伤，2连击。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "加固",
+   "cost": "2",
+   "lv": "LV16",
+   "desc": "自己获得物防+140%。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "魔攻",
+   "power": "110",
+   "name": "蓝移",
+   "cost": "4",
+   "lv": "LV19",
+   "desc": "造成魔伤，使敌方获得至少4层星陨后，每次使用本技能可使敌方获得1层星陨。"
+  },
+  {
+   "source": "level",
+   "type": "冰",
+   "cat": "状态",
+   "power": "-1",
+   "name": "冰点",
+   "cost": "2",
+   "lv": "LV23",
+   "desc": "敌方获得5层冻结，应对防御：额外获得5层。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "防御",
+   "power": "-1",
+   "name": "防御",
+   "cost": "1",
+   "lv": "LV31",
+   "desc": "减伤70%，应对攻击。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "防御",
+   "power": "-1",
+   "name": "冥想",
+   "cost": "3",
+   "lv": "LV33",
+   "desc": "减伤80%，应对攻击：敌方获得2层星陨印记。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "魔攻",
+   "power": "100",
+   "name": "大爆炸",
+   "cost": "3",
+   "lv": "LV38",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "level",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "超新星馈赠",
+   "cost": "2",
+   "lv": "LV40",
+   "desc": "敌方获得2层星陨印记，每使用1次，赋予的星陨印记层数永久+1。"
+  },
+  {
+   "source": "level",
+   "type": "冰",
+   "cat": "状态",
+   "power": "-1",
+   "name": "冬至",
+   "cost": "7",
+   "lv": "LV48",
+   "desc": "将天气改为暴风雪，持续8回合。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "魔攻",
+   "power": "85",
+   "name": "坍缩",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成魔伤，若击败敌方，自己获得魔攻+70%。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "奇点",
+   "cost": "4",
+   "lv": "",
+   "desc": "造成魔伤，若上回合双方有精灵使用水系技能，敌方获得4层星陨印记。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "星链",
+   "cost": "3",
+   "lv": "",
+   "desc": "2连击，每次连击使敌方获得1层星陨印记。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "仰望夜空",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得魔攻和魔防+70%。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "二律背反",
+   "cost": "4",
+   "lv": "",
+   "desc": "敌方获得3层星陨印记，应对防御：额外使敌方星陨印记层数翻倍。"
+  },
+  {
+   "source": "machine",
+   "type": "冰",
+   "cat": "魔攻",
+   "power": "90",
+   "name": "冰冻光线",
+   "cost": "7",
+   "lv": "",
+   "desc": "造成魔伤，敌方获得全技能能耗+2。"
+  },
+  {
+   "source": "machine",
+   "type": "冰",
+   "cat": "魔攻",
+   "power": "70",
+   "name": "寒风吹",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成魔伤，敌方获得魔防-50%。"
+  },
+  {
+   "source": "machine",
+   "type": "水",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "肥皂泡",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "洗礼",
+   "cost": "1",
+   "lv": "",
+   "desc": "驱散自己的减益，并获得全技能能耗-1。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "魔攻",
+   "power": "165",
+   "name": "打鼾",
+   "cost": "6",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "魔攻",
+   "power": "65",
+   "name": "吹散",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成魔伤，选择：驱散敌方所有增益或驱散双方1层印记。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "魔法增效",
+   "cost": "0",
+   "lv": "",
+   "desc": "自己获得魔攻+70%。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "借用",
+   "cost": "0",
+   "lv": "",
+   "desc": "每回合随机变成己方队伍中其他精灵的技能。"
+  },
+  {
+   "source": "blood",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "休息回复",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己回复30%生命。 普通"
+  },
+  {
+   "source": "blood",
+   "type": "草",
+   "cat": "防御",
+   "power": "-1",
+   "name": "蜡质膜",
+   "cost": "2",
+   "lv": "",
+   "desc": "减伤80%，应对攻击：回复3能量。 草"
+  },
+  {
+   "source": "blood",
+   "type": "火",
+   "cat": "状态",
+   "power": "-1",
+   "name": "引燃",
+   "cost": "2",
+   "lv": "",
+   "desc": "敌方获得10层灼烧。 火"
+  },
+  {
+   "source": "blood",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "蓄水",
+   "cost": "1",
+   "lv": "",
+   "desc": "下次使用的技能能耗-6。 水"
+  },
+  {
+   "source": "blood",
+   "type": "光",
+   "cat": "魔攻",
+   "power": "100",
+   "name": "虹光冲击",
+   "cost": "3",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 光"
+  },
+  {
+   "source": "blood",
+   "type": "地",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "泥巴喷射",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 地"
+  },
+  {
+   "source": "blood",
+   "type": "冰",
+   "cat": "状态",
+   "power": "-1",
+   "name": "霜降",
+   "cost": "1",
+   "lv": "",
+   "desc": "敌方获得4层冻结。 冰"
+  },
+  {
+   "source": "blood",
+   "type": "龙",
+   "cat": "魔攻",
+   "power": "200",
+   "name": "升龙咆哮",
+   "cost": "3",
+   "lv": "",
+   "desc": "蓄力，对敌方造成魔法伤害。 龙"
+  },
+  {
+   "source": "blood",
+   "type": "电",
+   "cat": "状态",
+   "power": "-1",
+   "name": "麻痹",
+   "cost": "2",
+   "lv": "",
+   "desc": "敌方先手-1，应对防御：额外使敌方获得双攻-70%。 电"
+  },
+  {
+   "source": "blood",
+   "type": "毒",
+   "cat": "状态",
+   "power": "-1",
+   "name": "毒孢子",
+   "cost": "3",
+   "lv": "",
+   "desc": "敌方获得5层中毒。 毒"
+  },
+  {
+   "source": "blood",
+   "type": "虫",
+   "cat": "状态",
+   "power": "-1",
+   "name": "假寐",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己回复2能量，己方队伍获得1次奉献：能耗-2。 虫"
+  },
+  {
+   "source": "blood",
+   "type": "武",
+   "cat": "状态",
+   "power": "-1",
+   "name": "化劲",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得全技能威力+40。 武"
+  },
+  {
+   "source": "blood",
+   "type": "翼",
+   "cat": "状态",
+   "power": "-1",
+   "name": "羽化加速",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得全技能威力+20，迅捷。 翼"
+  },
+  {
+   "source": "blood",
+   "type": "萌",
+   "cat": "状态",
+   "power": "-1",
+   "name": "甜心续航",
+   "cost": "3",
+   "lv": "",
+   "desc": "自己和敌方获得萌化：回复40%生命。 萌"
+  },
+  {
+   "source": "blood",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "勾魂",
+   "cost": "1",
+   "lv": "",
+   "desc": "偷取敌方3能量。 幽"
+  },
+  {
+   "source": "blood",
+   "type": "恶",
+   "cat": "状态",
+   "power": "-1",
+   "name": "贪婪",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得100%吸血。 恶"
+  },
+  {
+   "source": "blood",
+   "type": "机械",
+   "cat": "魔攻",
+   "power": "75",
+   "name": "锁芯",
+   "cost": "2",
+   "lv": "",
+   "desc": "造成魔伤，此技能位置不会改变。 机械"
+  },
+  {
+   "source": "blood",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "超维投射",
+   "cost": "4",
+   "lv": "",
+   "desc": "敌方获得4层星陨印记。 幻"
+  }
  ],
+ "eggGroup": "海洋组 / 妖精组",
  "wikiDesc": "十分聪明且友善，是相当亲近洛克的精灵。喜欢偶尔突然装作很凶的样子，变换气泡故意惊吓年幼的小洛克，完成小小的恶作剧。似乎对创造生活中的小乐趣，有很强的责任感。",
  "kind": "精灵",
  "natures": [],
@@ -48,7 +486,6 @@
  "meta": {
   "height": "1.15~1.5M",
   "weight": "80~140KG",
-  "skillsCount": 44,
   "source": "WIKI 词条页"
  }
 }

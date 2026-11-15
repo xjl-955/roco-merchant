@@ -1,0 +1,455 @@
+{
+ "stats": {
+  "HP": 123,
+  "ATK": 117,
+  "MATK": 46,
+  "DEF": 120,
+  "MDEF": 88,
+  "SPD": 95
+ },
+ "total": 589,
+ "talents": [],
+ "skills": [
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "35",
+   "name": "抓挠",
+   "cost": "0",
+   "lv": "LV1",
+   "desc": "造成物伤，自己回复1能量。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "防御",
+   "power": "-1",
+   "name": "防御",
+   "cost": "1",
+   "lv": "LV1",
+   "desc": "减伤70%，应对攻击。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "物攻",
+   "power": "80",
+   "name": "潮涌",
+   "cost": "2",
+   "lv": "LV7",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "咆哮",
+   "cost": "1",
+   "lv": "LV10",
+   "desc": "敌方获得物攻-60%和速度-60。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "55",
+   "name": "先发制人",
+   "cost": "2",
+   "lv": "LV16",
+   "desc": "造成物理伤害，先手+1。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "物攻",
+   "power": "10",
+   "name": "叠浪",
+   "cost": "3",
+   "lv": "LV22",
+   "desc": "造成物伤，3连击，本技能能耗每-1，威力+10。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "续杯",
+   "cost": "2",
+   "lv": "LV28",
+   "desc": "自己获得双攻+50%，本技能能耗每-1，额外获得50%。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "洗礼",
+   "cost": "1",
+   "lv": "LV30",
+   "desc": "驱散自己的减益，并获得全技能能耗-1。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "85",
+   "name": "偷袭",
+   "cost": "3",
+   "lv": "LV33",
+   "desc": "造成物伤，应对状态：本次技能威力变为3倍。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "物攻",
+   "power": "125",
+   "name": "离岸流",
+   "cost": "5",
+   "lv": "LV40",
+   "desc": "造成物伤，使用至少2次水系技能后，本技能能耗永久-3。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "清洗",
+   "cost": "0",
+   "lv": "LV41",
+   "desc": "驱散自己的减益，自己每有1层减益，本技能能耗-1，巧变：水系攻击技能。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "物攻",
+   "power": "100",
+   "name": "水幕冲击",
+   "cost": "3",
+   "lv": "LV47",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "level",
+   "type": "水",
+   "cat": "物攻",
+   "power": "110",
+   "name": "沉溺",
+   "cost": "4",
+   "lv": "LV49",
+   "desc": "造成物伤，天气为雨天时，本技能能耗-2。"
+  },
+  {
+   "source": "machine",
+   "type": "水",
+   "cat": "物攻",
+   "power": "115",
+   "name": "水刃",
+   "cost": "4",
+   "lv": "",
+   "desc": "造成物伤，应对状态：本技能能耗永久-3。"
+  },
+  {
+   "source": "machine",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "蓄水",
+   "cost": "1",
+   "lv": "",
+   "desc": "下次使用的技能能耗-6。"
+  },
+  {
+   "source": "machine",
+   "type": "冰",
+   "cat": "物攻",
+   "power": "90",
+   "name": "丢冰块",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，敌方获得速度-30。"
+  },
+  {
+   "source": "machine",
+   "type": "冰",
+   "cat": "状态",
+   "power": "-1",
+   "name": "冰点",
+   "cost": "2",
+   "lv": "",
+   "desc": "敌方获得5层冻结，应对防御：额外获得5层。"
+  },
+  {
+   "source": "machine",
+   "type": "萌",
+   "cat": "状态",
+   "power": "-1",
+   "name": "赤子之心",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得萌化：全技能能耗永久-2。"
+  },
+  {
+   "source": "machine",
+   "type": "萌",
+   "cat": "物攻",
+   "power": "100",
+   "name": "超级糖果",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，自己获得萌化：本次技能威力+60。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "80",
+   "name": "当头棒喝",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，若敌方本回合更换精灵，本次技能威力+100。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "力量增效",
+   "cost": "1",
+   "lv": "",
+   "desc": "自己获得物攻+100%。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "复写",
+   "cost": "0",
+   "lv": "",
+   "desc": "每回合随机变成自己未携带的技能，且该技能能耗-2。"
+  },
+  {
+   "source": "machine",
+   "type": "地",
+   "cat": "状态",
+   "power": "-1",
+   "name": "泥浆铠甲",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得物攻和物防+60%，应对防御：额外使自己的增益翻倍。"
+  },
+  {
+   "source": "machine",
+   "type": "地",
+   "cat": "状态",
+   "power": "-1",
+   "name": "蓄势待发",
+   "cost": "4",
+   "lv": "",
+   "desc": "自己获得1层蓄势印记。"
+  },
+  {
+   "source": "machine",
+   "type": "地",
+   "cat": "物攻",
+   "power": "80",
+   "name": "震击",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，敌方获得连击数-3。"
+  },
+  {
+   "source": "blood",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "65",
+   "name": "猛烈撞击",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 普通"
+  },
+  {
+   "source": "blood",
+   "type": "草",
+   "cat": "物攻",
+   "power": "80",
+   "name": "荆棘爪",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 草"
+  },
+  {
+   "source": "blood",
+   "type": "火",
+   "cat": "物攻",
+   "power": "80",
+   "name": "火焰箭",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 火"
+  },
+  {
+   "source": "blood",
+   "type": "水",
+   "cat": "物攻",
+   "power": "60",
+   "name": "泡沫",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 水"
+  },
+  {
+   "source": "blood",
+   "type": "光",
+   "cat": "物攻",
+   "power": "80",
+   "name": "折线冲击",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 光"
+  },
+  {
+   "source": "blood",
+   "type": "地",
+   "cat": "物攻",
+   "power": "80",
+   "name": "跺地",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 地"
+  },
+  {
+   "source": "blood",
+   "type": "冰",
+   "cat": "物攻",
+   "power": "80",
+   "name": "冰爪",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 冰"
+  },
+  {
+   "source": "blood",
+   "type": "龙",
+   "cat": "魔攻",
+   "power": "200",
+   "name": "升龙咆哮",
+   "cost": "3",
+   "lv": "",
+   "desc": "蓄力，对敌方造成魔法伤害。 龙"
+  },
+  {
+   "source": "blood",
+   "type": "电",
+   "cat": "物攻",
+   "power": "60",
+   "name": "球状闪电",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 电"
+  },
+  {
+   "source": "blood",
+   "type": "毒",
+   "cat": "物攻",
+   "power": "80",
+   "name": "毒沼",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 毒"
+  },
+  {
+   "source": "blood",
+   "type": "虫",
+   "cat": "物攻",
+   "power": "80",
+   "name": "尾后针",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 虫"
+  },
+  {
+   "source": "blood",
+   "type": "武",
+   "cat": "物攻",
+   "power": "25",
+   "name": "反击拳",
+   "cost": "2",
+   "lv": "",
+   "desc": "造成物伤，2连击，若后手攻击，改为3连击。 武"
+  },
+  {
+   "source": "blood",
+   "type": "翼",
+   "cat": "物攻",
+   "power": "80",
+   "name": "风矢",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 翼"
+  },
+  {
+   "source": "blood",
+   "type": "萌",
+   "cat": "物攻",
+   "power": "60",
+   "name": "碰爪",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 萌"
+  },
+  {
+   "source": "blood",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "60",
+   "name": "幻象",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 幽"
+  },
+  {
+   "source": "blood",
+   "type": "恶",
+   "cat": "物攻",
+   "power": "80",
+   "name": "诋毁",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 恶"
+  },
+  {
+   "source": "blood",
+   "type": "机械",
+   "cat": "物攻",
+   "power": "45",
+   "name": "械斗",
+   "cost": "1",
+   "lv": "",
+   "desc": "造成物伤，本技能位于1号位时威力+60，传动1。 机械"
+  },
+  {
+   "source": "blood",
+   "type": "幻",
+   "cat": "物攻",
+   "power": "80",
+   "name": "念力膨胀",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 幻"
+  }
+ ],
+ "eggGroup": "海洋组",
+ "wikiDesc": "会把还没长出保护层的乐乐鲨带在身边，遇到危险时将它们含进嘴巴里，等待状况安全后再吐出来。如果判断对方不是特别危险，也会让强壮的乐乐鲨一同战斗，以此锻炼它们的能力。",
+ "kind": "精灵",
+ "natures": [],
+ "quests": [],
+ "feature": "换牙：驱散1次自己的减益后，获得物攻永久+50%。（最多触发1次）",
+ "meta": {
+  "height": "0.38~0.65M",
+  "weight": "9~15KG",
+  "source": "WIKI 词条页"
+ }
+}

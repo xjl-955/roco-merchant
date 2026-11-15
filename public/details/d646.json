@@ -9,11 +9,449 @@
  },
  "total": 464,
  "talents": [],
- "skills": [],
- "eggGroup": [
-  "昆虫组",
-  "植物组"
+ "skills": [
+  {
+   "source": "level",
+   "type": "虫",
+   "cat": "魔攻",
+   "power": "15",
+   "name": "虫刺",
+   "cost": "1",
+   "lv": "LV1",
+   "desc": "造成魔伤，3连击。"
+  },
+  {
+   "source": "level",
+   "type": "草",
+   "cat": "状态",
+   "power": "-1",
+   "name": "根吸收",
+   "cost": "2",
+   "lv": "LV1",
+   "desc": "自己回复15%生命和4能量。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "防御",
+   "power": "-1",
+   "name": "防御",
+   "cost": "1",
+   "lv": "LV1",
+   "desc": "减伤70%，应对攻击。"
+  },
+  {
+   "source": "level",
+   "type": "草",
+   "cat": "魔攻",
+   "power": "30",
+   "name": "汲取",
+   "cost": "1",
+   "lv": "LV5",
+   "desc": "造成魔伤，并吸血100%。"
+  },
+  {
+   "source": "level",
+   "type": "虫",
+   "cat": "状态",
+   "power": "-1",
+   "name": "假寐",
+   "cost": "2",
+   "lv": "LV10",
+   "desc": "自己回复2能量，己方队伍获得1次奉献：能耗-2。"
+  },
+  {
+   "source": "level",
+   "type": "虫",
+   "cat": "魔攻",
+   "power": "15",
+   "name": "虫鸣",
+   "cost": "2",
+   "lv": "LV18",
+   "desc": "造成魔伤，队伍中的精灵每携带1个虫鸣，本次技能连击数+1。"
+  },
+  {
+   "source": "level",
+   "type": "草",
+   "cat": "防御",
+   "power": "-1",
+   "name": "纤维化",
+   "cost": "2",
+   "lv": "LV20",
+   "desc": "减伤80%，应对攻击：自己获得物防+70%。"
+  },
+  {
+   "source": "level",
+   "type": "草",
+   "cat": "状态",
+   "power": "-1",
+   "name": "富养化",
+   "cost": "3",
+   "lv": "LV21",
+   "desc": "为场下每个精灵回复3能量。"
+  },
+  {
+   "source": "level",
+   "type": "草",
+   "cat": "魔攻",
+   "power": "45",
+   "name": "果粒",
+   "cost": "3",
+   "lv": "LV23",
+   "desc": "造成魔伤，2连击。"
+  },
+  {
+   "source": "level",
+   "type": "草",
+   "cat": "状态",
+   "power": "-1",
+   "name": "芳香诱引",
+   "cost": "2",
+   "lv": "LV31",
+   "desc": "自己获得连击数+2，应对防御：额外造成打断，且敌方下回合获得眩晕。"
+  },
+  {
+   "source": "level",
+   "type": "虫",
+   "cat": "状态",
+   "power": "-1",
+   "name": "食腐",
+   "cost": "2",
+   "lv": "LV40",
+   "desc": "驱散敌方印记，每层印记回复自己10%生命。"
+  },
+  {
+   "source": "level",
+   "type": "草",
+   "cat": "魔攻",
+   "power": "100",
+   "name": "光能聚集",
+   "cost": "7",
+   "lv": "LV44",
+   "desc": "造成魔伤，每次使用其他草系技能后，本技能威力永久+60。"
+  },
+  {
+   "source": "level",
+   "type": "虫",
+   "cat": "状态",
+   "power": "-1",
+   "name": "夏蛰",
+   "cost": "4",
+   "lv": "LV50",
+   "desc": "己方队伍获得2次随机奉献，应对防御：获得所有种类的奉献各1次。"
+  },
+  {
+   "source": "machine",
+   "type": "虫",
+   "cat": "状态",
+   "power": "-1",
+   "name": "虫群智慧",
+   "cost": "3",
+   "lv": "",
+   "desc": "己方队伍获得2次随机奉献。"
+  },
+  {
+   "source": "machine",
+   "type": "虫",
+   "cat": "魔攻",
+   "power": "100",
+   "name": "虫蛊",
+   "cost": "3",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "虫",
+   "cat": "防御",
+   "power": "-1",
+   "name": "虫结阵",
+   "cost": "2",
+   "lv": "",
+   "desc": "减伤80%，应对攻击：己方队伍获得1次随机奉献。"
+  },
+  {
+   "source": "machine",
+   "type": "草",
+   "cat": "魔攻",
+   "power": "120",
+   "name": "叶绿光束",
+   "cost": "4",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "草",
+   "cat": "状态",
+   "power": "-1",
+   "name": "孢子",
+   "cost": "3",
+   "lv": "",
+   "desc": "敌方获得3层寄生。"
+  },
+  {
+   "source": "machine",
+   "type": "草",
+   "cat": "状态",
+   "power": "-1",
+   "name": "移花接木",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己回复15%生命，随后脱离。"
+  },
+  {
+   "source": "machine",
+   "type": "草",
+   "cat": "魔攻",
+   "power": "75",
+   "name": "养分回流",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成魔伤，为场下所有精灵回复1能量。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "魔攻",
+   "power": "50",
+   "name": "能量炮",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成魔伤，2连击。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "快速移动",
+   "cost": "1",
+   "lv": "",
+   "desc": "自己获得速度+80，应对防御：改为速度+160。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "借用",
+   "cost": "0",
+   "lv": "",
+   "desc": "每回合随机变成己方队伍中其他精灵的技能。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "晒太阳",
+   "cost": "1",
+   "lv": "",
+   "desc": "驱散敌方所有增益。"
+  },
+  {
+   "source": "machine",
+   "type": "水",
+   "cat": "状态",
+   "power": "-1",
+   "name": "清洗",
+   "cost": "0",
+   "lv": "",
+   "desc": "驱散自己的减益，自己每有1层减益，本技能能耗-1，巧变：水系攻击技能。"
+  },
+  {
+   "source": "machine",
+   "type": "水",
+   "cat": "魔攻",
+   "power": "20",
+   "name": "水花四溅",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成魔伤，4连击。"
+  },
+  {
+   "source": "blood",
+   "type": "普通",
+   "cat": "魔攻",
+   "power": "65",
+   "name": "拍击",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 普通"
+  },
+  {
+   "source": "blood",
+   "type": "草",
+   "cat": "状态",
+   "power": "-1",
+   "name": "徒长",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己回复10能量。 草"
+  },
+  {
+   "source": "blood",
+   "type": "火",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "火爪",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 火"
+  },
+  {
+   "source": "blood",
+   "type": "水",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "肥皂泡",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 水"
+  },
+  {
+   "source": "blood",
+   "type": "光",
+   "cat": "魔攻",
+   "power": "100",
+   "name": "虹光冲击",
+   "cost": "3",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 光"
+  },
+  {
+   "source": "blood",
+   "type": "地",
+   "cat": "防御",
+   "power": "-1",
+   "name": "淤泥表皮",
+   "cost": "2",
+   "lv": "",
+   "desc": "减伤80%，应对攻击：敌方获得连击数-3。 地"
+  },
+  {
+   "source": "blood",
+   "type": "冰",
+   "cat": "状态",
+   "power": "-1",
+   "name": "霜降",
+   "cost": "1",
+   "lv": "",
+   "desc": "敌方获得4层冻结。 冰"
+  },
+  {
+   "source": "blood",
+   "type": "龙",
+   "cat": "魔攻",
+   "power": "200",
+   "name": "升龙咆哮",
+   "cost": "3",
+   "lv": "",
+   "desc": "蓄力，对敌方造成魔法伤害。 龙"
+  },
+  {
+   "source": "blood",
+   "type": "电",
+   "cat": "魔攻",
+   "power": "60",
+   "name": "磁干扰",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 电"
+  },
+  {
+   "source": "blood",
+   "type": "毒",
+   "cat": "状态",
+   "power": "-1",
+   "name": "毒孢子",
+   "cost": "3",
+   "lv": "",
+   "desc": "敌方获得5层中毒。 毒"
+  },
+  {
+   "source": "blood",
+   "type": "虫",
+   "cat": "防御",
+   "power": "-1",
+   "name": "掩护",
+   "cost": "2",
+   "lv": "",
+   "desc": "减伤70%，紧急脱离，应对攻击：下个入场精灵获得减伤。 虫"
+  },
+  {
+   "source": "blood",
+   "type": "武",
+   "cat": "魔攻",
+   "power": "80",
+   "name": "贯手",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 武"
+  },
+  {
+   "source": "blood",
+   "type": "翼",
+   "cat": "物攻",
+   "power": "80",
+   "name": "风矢",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 翼"
+  },
+  {
+   "source": "blood",
+   "type": "萌",
+   "cat": "状态",
+   "power": "-1",
+   "name": "甜心续航",
+   "cost": "3",
+   "lv": "",
+   "desc": "自己和敌方获得萌化：回复40%生命。 萌"
+  },
+  {
+   "source": "blood",
+   "type": "幽",
+   "cat": "魔攻",
+   "power": "100",
+   "name": "灵媒",
+   "cost": "3",
+   "lv": "",
+   "desc": "对敌方精灵造成魔法伤害。 幽"
+  },
+  {
+   "source": "blood",
+   "type": "恶",
+   "cat": "状态",
+   "power": "-1",
+   "name": "贪婪",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得100%吸血。 恶"
+  },
+  {
+   "source": "blood",
+   "type": "机械",
+   "cat": "魔攻",
+   "power": "75",
+   "name": "锁芯",
+   "cost": "2",
+   "lv": "",
+   "desc": "造成魔伤，此技能位置不会改变。 机械"
+  },
+  {
+   "source": "blood",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "超维投射",
+   "cost": "4",
+   "lv": "",
+   "desc": "敌方获得4层星陨印记。 幻"
+  }
  ],
+ "eggGroup": "昆虫组 / 植物组",
  "wikiDesc": "背上的果肉富有营养，饱含甜丝丝的果汁。西瓜虫趴在地上休息时，常常因为不起眼的体型而被忽略。洛克们不小心踩到的话很容易滑倒，千万要注意。",
  "kind": "精灵",
  "natures": [],
@@ -22,7 +460,6 @@
  "meta": {
   "height": "0.21~0.33M",
   "weight": "0.6~1.5KG",
-  "skillsCount": 44,
   "source": "WIKI 词条页"
  }
 }

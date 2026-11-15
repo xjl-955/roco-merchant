@@ -9,11 +9,449 @@
  },
  "total": 629,
  "talents": [],
- "skills": [],
- "eggGroup": [
-  "妖精组",
-  "魔力组"
+ "skills": [
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "35",
+   "name": "抓挠",
+   "cost": "0",
+   "lv": "LV1",
+   "desc": "造成物伤，自己回复1能量。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "勾魂",
+   "cost": "1",
+   "lv": "LV1",
+   "desc": "偷取敌方3能量。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "防御",
+   "power": "-1",
+   "name": "防御",
+   "cost": "1",
+   "lv": "LV6",
+   "desc": "减伤70%，应对攻击。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "40",
+   "name": "诡刺",
+   "cost": "0",
+   "lv": "LV10",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "25",
+   "name": "灵扰",
+   "cost": "3",
+   "lv": "LV16",
+   "desc": "造成物伤，3连击。偷取敌方能量至少1次后，本技能连击数永久+1。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "80",
+   "name": "当头棒喝",
+   "cost": "3",
+   "lv": "LV18",
+   "desc": "造成物伤，若敌方本回合更换精灵，本次技能威力+100。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "力量增效",
+   "cost": "1",
+   "lv": "LV24",
+   "desc": "自己获得物攻+100%。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "65",
+   "name": "掠影",
+   "cost": "3",
+   "lv": "LV28",
+   "desc": "造成物伤，若上回合双方有精灵使用火系技能，偷取敌方3能量。"
+  },
+  {
+   "source": "level",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "35",
+   "name": "旋转突击",
+   "cost": "3",
+   "lv": "LV34",
+   "desc": "造成物伤，3连击。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "80",
+   "name": "惊吓盒子",
+   "cost": "3",
+   "lv": "LV42",
+   "desc": "造成物伤，应对状态：使敌方失去6能量。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "地缚灵",
+   "cost": "2",
+   "lv": "LV44",
+   "desc": "敌方获得双防-70%，若敌方本回合更换精灵，敌方额外获得速度-50。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "120",
+   "name": "撞鬼",
+   "cost": "4",
+   "lv": "LV46",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "level",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "180",
+   "name": "坟场搏击",
+   "cost": "4",
+   "lv": "LV50",
+   "desc": "造成物伤，敌方每有1能量，本次技能威力-10%。"
+  },
+  {
+   "source": "machine",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "恶作剧",
+   "cost": "1",
+   "lv": "",
+   "desc": "敌方失去3能量，应对防御：改为敌方失去6能量。"
+  },
+  {
+   "source": "machine",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "离魂术",
+   "cost": "3",
+   "lv": "",
+   "desc": "偷取敌方2能量，脱离。"
+  },
+  {
+   "source": "machine",
+   "type": "幽",
+   "cat": "状态",
+   "power": "-1",
+   "name": "降灵",
+   "cost": "2",
+   "lv": "",
+   "desc": "敌方获得1层降灵印记。"
+  },
+  {
+   "source": "machine",
+   "type": "机械",
+   "cat": "物攻",
+   "power": "1",
+   "name": "钢钻",
+   "cost": "4",
+   "lv": "",
+   "desc": "造成物伤，技能威力为两侧技能威力和的三分之一，传动1。"
+  },
+  {
+   "source": "machine",
+   "type": "机械",
+   "cat": "物攻",
+   "power": "20",
+   "name": "传感器",
+   "cost": "1",
+   "lv": "",
+   "desc": "造成物伤，2连击，本技能位于1号或3号位时连击+1，传动1。"
+  },
+  {
+   "source": "machine",
+   "type": "恶",
+   "cat": "物攻",
+   "power": "20",
+   "name": "撕咬",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，3连击，若自己的生命低于50%，本次技能连击数+2。"
+  },
+  {
+   "source": "machine",
+   "type": "恶",
+   "cat": "状态",
+   "power": "-1",
+   "name": "力量吞噬",
+   "cost": "4",
+   "lv": "",
+   "desc": "敌方获得全技能威力-20，自己获得全技能威力+20。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "物攻",
+   "power": "100",
+   "name": "双星",
+   "cost": "3",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。"
+  },
+  {
+   "source": "machine",
+   "type": "幻",
+   "cat": "状态",
+   "power": "-1",
+   "name": "叠加态",
+   "cost": "1",
+   "lv": "",
+   "desc": "自己获得随机16层属性增益，巧变：幻系攻击技能。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "80",
+   "name": "能量刃",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，每应对成功1次，本技能威力永久+90。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "状态",
+   "power": "-1",
+   "name": "取念",
+   "cost": "0",
+   "lv": "",
+   "desc": "每回合随机变成敌方任意精灵的技能，且该技能能耗-2。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "40",
+   "name": "乘胜追击",
+   "cost": "2",
+   "lv": "",
+   "desc": "造成物伤，1连击，每次使用后，本技能连击数永久+1。"
+  },
+  {
+   "source": "machine",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "85",
+   "name": "偷袭",
+   "cost": "3",
+   "lv": "",
+   "desc": "造成物伤，应对状态：本次技能威力变为3倍。"
+  },
+  {
+   "source": "blood",
+   "type": "普通",
+   "cat": "物攻",
+   "power": "65",
+   "name": "猛烈撞击",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 普通"
+  },
+  {
+   "source": "blood",
+   "type": "草",
+   "cat": "物攻",
+   "power": "80",
+   "name": "荆棘爪",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 草"
+  },
+  {
+   "source": "blood",
+   "type": "火",
+   "cat": "物攻",
+   "power": "60",
+   "name": "火焰冲锋",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 火"
+  },
+  {
+   "source": "blood",
+   "type": "水",
+   "cat": "物攻",
+   "power": "60",
+   "name": "泡沫",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 水"
+  },
+  {
+   "source": "blood",
+   "type": "光",
+   "cat": "物攻",
+   "power": "60",
+   "name": "透射",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 光"
+  },
+  {
+   "source": "blood",
+   "type": "地",
+   "cat": "物攻",
+   "power": "80",
+   "name": "跺地",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 地"
+  },
+  {
+   "source": "blood",
+   "type": "冰",
+   "cat": "物攻",
+   "power": "80",
+   "name": "冰爪",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 冰"
+  },
+  {
+   "source": "blood",
+   "type": "龙",
+   "cat": "魔攻",
+   "power": "200",
+   "name": "升龙咆哮",
+   "cost": "3",
+   "lv": "",
+   "desc": "蓄力，对敌方造成魔法伤害。 龙"
+  },
+  {
+   "source": "blood",
+   "type": "电",
+   "cat": "物攻",
+   "power": "60",
+   "name": "球状闪电",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 电"
+  },
+  {
+   "source": "blood",
+   "type": "毒",
+   "cat": "物攻",
+   "power": "80",
+   "name": "毒沼",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 毒"
+  },
+  {
+   "source": "blood",
+   "type": "虫",
+   "cat": "物攻",
+   "power": "80",
+   "name": "尾后针",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 虫"
+  },
+  {
+   "source": "blood",
+   "type": "武",
+   "cat": "状态",
+   "power": "-1",
+   "name": "化劲",
+   "cost": "2",
+   "lv": "",
+   "desc": "自己获得全技能威力+40。 武"
+  },
+  {
+   "source": "blood",
+   "type": "翼",
+   "cat": "物攻",
+   "power": "80",
+   "name": "风矢",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 翼"
+  },
+  {
+   "source": "blood",
+   "type": "萌",
+   "cat": "物攻",
+   "power": "60",
+   "name": "碰爪",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 萌"
+  },
+  {
+   "source": "blood",
+   "type": "幽",
+   "cat": "物攻",
+   "power": "60",
+   "name": "幻象",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 幽"
+  },
+  {
+   "source": "blood",
+   "type": "恶",
+   "cat": "物攻",
+   "power": "80",
+   "name": "诋毁",
+   "cost": "2",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 恶"
+  },
+  {
+   "source": "blood",
+   "type": "机械",
+   "cat": "物攻",
+   "power": "45",
+   "name": "械斗",
+   "cost": "1",
+   "lv": "",
+   "desc": "造成物伤，本技能位于1号位时威力+60，传动1。 机械"
+  },
+  {
+   "source": "blood",
+   "type": "幻",
+   "cat": "物攻",
+   "power": "60",
+   "name": "星云漩涡",
+   "cost": "1",
+   "lv": "",
+   "desc": "对敌方精灵造成物理伤害。 幻"
+  }
  ],
+ "eggGroup": "妖精组 / 魔力组",
  "wikiDesc": "剪影似我又似错，踩它不避也不躲。 一举一动都照做，每时每刻永伴我。",
  "kind": "精灵",
  "natures": [],
@@ -22,7 +460,6 @@
  "meta": {
   "height": "1.28~1.57M",
   "weight": "1.2~2.3KG",
-  "skillsCount": 44,
   "source": "WIKI 词条页"
  }
 }

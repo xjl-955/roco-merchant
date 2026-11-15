@@ -322,19 +322,8 @@ Page({
       wx.showToast({ title: '当前没有可订阅的物品', icon: 'none' });
       return;
     }
-    // 【排序】按价格从高到低（无价格的排最后，同价按名称）
-    var priceNum = function (v) {
-      var s = String(v === undefined || v === null ? '' : v).replace(/[,，\s]/g, '');
-      var m = /^(\d+(?:\.\d+)?)(w|万)$/i.exec(s);
-      if (m) return parseFloat(m[1]) * 10000;
-      var n = parseFloat(s);
-      return isNaN(n) ? -1 : n;
-    };
-    items = items.slice().sort(function (a, b) {
-      var pa = priceNum(a.price), pb = priceNum(b.price);
-      if (pb !== pa) return pb - pa;
-      return String(a.name).localeCompare(String(b.name));
-    });
+    // 【排序】按游戏内物品顺序（utils/merchant.js 的 ITEM_ORDER），未知项排最后
+    items = items.slice().sort(merchant.compareByItemOrder);
     var opts = [];
     for (var i = 0; i < items.length; i++) {
       var it = items[i];

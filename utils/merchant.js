@@ -626,6 +626,43 @@ function getSessionList(now) {
   return list;
 }
 
+/**
+ * 商品展示顺序（对齐游戏内/参考小程序的物品排列）
+ * 订阅弹窗、商品列表统一按此顺序排序；不在表内的商品排最后
+ */
+var ITEM_ORDER = [
+  '祝福项坠', '炫彩蛋', '神奇的蛋', '首领血脉秘药', '万能血脉秘药', '奇异血脉秘药',
+  '国王球', '普通咕噜球', '高级咕噜球',
+  '草系粉尘', '火系粉尘', '水系粉尘', '光系粉尘', '恶系粉尘', '幽系粉尘', '普通粉尘',
+  '地系粉尘', '冰系粉尘', '龙系粉尘', '电系粉尘', '毒系粉尘', '虫系粉尘', '武系粉尘', '翼系粉尘',
+  '萌系粉尘', '机械粉尘', '幻系粉尘',
+  '魔力果', '美妙球', '好战球', '光合球', '网兜球', '暗星球', '调温球', '绝缘球', '淘沙球',
+  '变幻球', '棱镜球', '镜面相框',
+  '黑晶琉璃', '黄石榴石', '蓝晶碧玺', '紫莲刚玉', '瓶装幸运',
+  '普通血脉秘药', '草系血脉秘药', '火系血脉秘药', '水系血脉秘药', '光系血脉秘药',
+  '地系血脉秘药', '冰系血脉秘药', '龙系血脉秘药', '电系血脉秘药', '毒系血脉秘药',
+  '虫系血脉秘药', '武系血脉秘药', '翼系血脉秘药', '萌系血脉秘药', '幽系血脉秘药',
+  '恶系血脉秘药', '机械系血脉秘药', '幻系血脉秘药',
+  '残缺魔镜', '适格钥匙', '能力钥匙'
+];
+var ORDER_MAP = (function () {
+  var m = {};
+  for (var i = 0; i < ITEM_ORDER.length; i++) m[ITEM_ORDER[i]] = i;
+  return m;
+})();
+
+/** 商品排序比较函数：按 ITEM_ORDER，未知项排最后（同序按名称） */
+function compareByItemOrder(a, b) {
+  var na = a && a.name ? a.name : String(a || '');
+  var nb = b && b.name ? b.name : String(b || '');
+  var ia = ORDER_MAP[na];
+  var ib = ORDER_MAP[nb];
+  if (ia === undefined) ia = 9999;
+  if (ib === undefined) ib = 9999;
+  if (ia !== ib) return ia - ib;
+  return String(na).localeCompare(String(nb));
+}
+
 module.exports = {
   applyRemoteData: applyRemoteData,
   setSource: setSource,
@@ -638,5 +675,7 @@ module.exports = {
   applyLiveToday: applyLiveToday,
   clearLiveToday: clearLiveToday,
   getLiveToday: getLiveToday,
-  formatPrice: formatPrice
+  formatPrice: formatPrice,
+  ITEM_ORDER: ITEM_ORDER,
+  compareByItemOrder: compareByItemOrder
 };

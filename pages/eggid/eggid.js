@@ -1,44 +1,17 @@
-var EGG_URL = 'https://xjl-955.github.io/roco-data/eggsizes.json';
-var EGG_KEY = 'roco_eggsizes_cache_v1';
-var TTL = 24 * 60 * 60 * 1000;
+var eggPredict = require('../../utils/eggpredict.js');
 
 Page({
   data: {
     height: '',
     weight: '',
     error: '',
+    identifying: false,
     result: null,
     steps: [
       { n: 1, text: '在游戏中查看精灵蛋的身高和体重。' },
-      { n: 2, text: '输入其中一个数值，或同时输入两个数值获得更准结果。' },
-      { n: 3, text: '打开匹配到的精灵页面，或提交缺失/错误的蛋体型数据。' }
+      { n: 2, text: '两个数值都要填（概率计算需要身高 + 体重）。' },
+      { n: 3, text: '结果含概率与「随机蛋不出」分组，数据与官方攻略站同步。' }
     ]
-  },
-
-  onLoad: function () {
-    this.loadEggData();
-  },
-
-  loadEggData: function () {
-    var that = this;
-    try {
-      var c = wx.getStorageSync(EGG_KEY);
-      if (c && c.sizes && Date.now() - c.at < TTL) {
-        this.sizes = c.sizes;
-        return;
-      }
-    } catch (e) { /* 忽略 */ }
-    wx.request({
-      url: EGG_URL,
-      timeout: 10000,
-      success: function (res) {
-        if (res.statusCode === 200 && res.data && res.data.sizes) {
-          that.sizes = res.data.sizes;
-          try { wx.setStorageSync(EGG_KEY, { sizes: res.data.sizes, at: Date.now() }); } catch (e) { }
-        }
-      },
-      fail: function () { /* 静默，鉴定时再提示 */ }
-    });
   },
 
   onHeightInput: function (e) { this.setData({ height: e.detail.value }); },
@@ -49,44 +22,92 @@ Page({
   },
 
   onIdentify: function () {
+    var that = this;
     var h = parseFloat(this.data.height);
     var w = parseFloat(this.data.weight);
     var hasH = !isNaN(h) && h > 0;
     var hasW = !isNaN(w) && w > 0;
 
-    if (!hasH && !hasW) {
-      this.setData({ error: '请至少输入蛋身高或蛋体重其中一项', result: null });
+    if (!hasH || !hasW) {
+      this.setData({ error: '请同时输入蛋身高和蛋体重（概率计算需要两个数值）', result: null });
       return;
     }
-    if (!this.sizes) {
-      this.setData({ error: '数据加载中，请稍后再试（首次使用需联网）', result: null });
-      this.loadEggData();
-      return;
-    }
+    this.setData({ identifying: true, error: '', result: null });
 
-    var matched = this.sizes.filter(function (s) {
-      var okH = !hasH || (s.eggHeightMin <= h && h <= s.eggHeightMax);
-      var okW = !hasW || (s.eggWeightMin <= w && w <= s.eggWeightMax);
-      return okH && okW;
-    }).map(function (s) {
-      return {
-        name: s.name,
-        pic: s.pic,
-        key: s.name,
-        range: hasH && hasW
-          ? '蛋高 ' + s.eggHeightMin + '~' + s.eggHeightMax + 'm · 蛋重 ' + s.eggWeightMin + '~' + s.eggWeightMax + 'kg'
-          : (hasH ? '蛋高 ' + s.eggHeightMin + '~' + s.eggHeightMax + 'm'
-                  : '蛋重 ' + s.eggWeightMin + '~' + s.eggWeightMax + 'kg')
-      };
-    });
-
-    this.setData({
-      error: '',
-      result: {
-        matched: matched,
-        count: matched.length,
-        inputText: (hasH ? '身高 ' + h + 'm' : '') + (hasH && hasW ? ' + ' : '') + (hasW ? '体重 ' + w + 'kg' : '')
+    // ① 直连攻略站 API → ② 云函数代理 → ③ 报错（不做本地估算）
+    eggPredict.predict(h, w, function (result, err) {
+      if (result && result.matched && result.matched.length) {
+        that.setData({
+          identifying: false,
+          error: '',
+          result: {
+            matched: result.matched,
+            others: result.others || [],
+            count: result.matched.length,
+            source: 'direct',
+            inputText: '身高 ' + h + 'm + 体重 ' + w + 'kg'
+          }
+        });
+        return;
       }
+      that._cloudPredict(h, w, function (ok, errInfo) {
+        if (ok) return;
+        that.setData({
+          identifying: false,
+          result: null,
+          error: '鉴定服务暂时不可用，请检查网络后重试' + (errInfo || err ? '（' + (errInfo || err) + '）' : '')
+        });
+      });
+    });
+  },
+
+  _cloudPredict: function (h, w, done) {
+    var that = this;
+    if (!wx.cloud || !wx.cloud.callFunction) { done(false, 'no_cloud'); return; }
+    var timer = setTimeout(function () { done(false, 'timeout'); }, 20000);
+    wx.cloud.callFunction({
+      name: 'pushReminder',
+      data: { action: 'eggPredict', size: h, weight: w },
+      success: function (res) {
+        clearTimeout(timer);
+        var r = res && res.result;
+        if (!r || !r.ok) { done(false, (r && r.reason) || 'bad_response'); return; }
+        var d = r.data;
+        if (!d || !d.success || !d.pokemons) { done(false, 'no_data'); return; }
+        var toNum = function (v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; };
+        var matched = d.pokemons.map(function (p) {
+          var prob = toNum(p.prob) * 100;
+          return {
+            name: (p.name || '') + (p.form_name || ''),
+            pic: 'https://wiki.lcx.cab/lk/imgs/' + encodeURIComponent(p.imageName || p.name) + '.webp',
+            key: (p.t_id || '') + '_' + (p.name || ''),
+            range: '蛋高 ' + p.egg_diameter + 'm · 蛋重 ' + p.egg_weight + 'kg',
+            prob: prob,
+            probText: prob >= 0.01 ? prob.toFixed(2) + '%' : (prob > 0 ? '<0.01%' : '0%'),
+            label: prob >= 70 ? '极有可能' : prob >= 40 ? '很可能' : prob >= 15 ? '可能' : '较低'
+          };
+        });
+        var others = (d.random_egg_not_appear || []).map(function (p) {
+          return {
+            name: (p.name || '') + (p.form_name || ''),
+            pic: 'https://wiki.lcx.cab/lk/imgs/' + encodeURIComponent(p.imageName || p.name) + '.webp',
+            range: '蛋高 ' + p.egg_diameter + 'm · 蛋重 ' + p.egg_weight + 'kg'
+          };
+        });
+        that.setData({
+          identifying: false,
+          error: '',
+          result: {
+            matched: matched,
+            others: others,
+            count: matched.length,
+            source: 'cloud',
+            inputText: '身高 ' + h + 'm + 体重 ' + w + 'kg'
+          }
+        });
+        done(true);
+      },
+      fail: function () { clearTimeout(timer); done(false, 'callfail'); }
     });
   }
 });

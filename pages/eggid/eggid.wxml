@@ -3,21 +3,21 @@
   <!-- 鉴定器 -->
   <view class="card">
     <view class="title">最准的孵蛋鉴定器</view>
-    <view class="desc">输入游戏里显示的蛋身高和/或体重，系统会按已知蛋体型范围反查可能孵出的精灵。</view>
+    <view class="desc">输入游戏里显示的蛋身高和体重，反查可能孵出的精灵及概率。</view>
 
     <view class="input-row">
       <view class="input-col">
         <view class="label">身高（米）</view>
-        <input class="input" type="digit" placeholder="0.18" value="{{height}}" bindinput="onHeightInput" />
+        <input class="input" type="digit" placeholder="0.21" value="{{height}}" bindinput="onHeightInput" />
       </view>
       <view class="input-col">
         <view class="label">体重（千克）</view>
-        <input class="input" type="digit" placeholder="0.04" value="{{weight}}" bindinput="onWeightInput" />
+        <input class="input" type="digit" placeholder="7.841" value="{{weight}}" bindinput="onWeightInput" />
       </view>
     </view>
 
     <view class="btn-row">
-      <view class="btn-main" bindtap="onIdentify">开始鉴定</view>
+      <view class="btn-main {{identifying ? 'btn-loading' : ''}}" bindtap="onIdentify">{{identifying ? '鉴定中…' : '开始鉴定'}}</view>
       <view class="btn-sub" bindtap="onClear">清除</view>
     </view>
 
@@ -30,20 +30,33 @@
     <block wx:if="{{result}}">
       <view class="r-title">
         {{result.count > 0 ? '可能孵出的精灵' : '暂无结果'}}
-        <text class="r-sub" wx:if="{{result.count > 0}}">（输入 {{result.inputText}}，匹配 {{result.count}} 个）</text>
+        <text class="r-sub" wx:if="{{result.count > 0}}">（输入 {{result.inputText}}）</text>
       </view>
+      <view class="prob-hint" wx:if="{{result.count > 0}}">概率由蛋体型区间推算，合计 100%</view>
       <view class="match" wx:for="{{result.matched}}" wx:key="key">
         <image class="m-img" src="{{item.pic}}" mode="aspectFit" lazy-load="true"></image>
         <view class="m-info">
-          <view class="m-name">{{item.name}}</view>
+          <view class="m-name">{{item.name}}<text class="m-label">{{item.label}}</text></view>
           <view class="m-range">{{item.range}}</view>
         </view>
+        <view class="m-prob">{{item.probText}}</view>
       </view>
-      <view class="empty" wx:if="{{result.count === 0}}">没有匹配的蛋体型，请检查数值或提交数据修正</view>
+      <view class="empty" wx:if="{{result.count === 0}}">没有匹配的蛋体型，请检查数值</view>
+
+      <block wx:if="{{result.others && result.others.length > 0}}">
+        <view class="others-title">🎲 随机蛋不出（仅判断大小）</view>
+        <view class="others-item" wx:for="{{result.others}}" wx:key="name">
+          <image class="o-img" src="{{item.pic}}" mode="aspectFit" lazy-load="true"></image>
+          <view class="o-info">
+            <view class="o-name">{{item.name}}</view>
+            <view class="o-range">{{item.range}}</view>
+          </view>
+        </view>
+      </block>
     </block>
     <block wx:else>
       <view class="r-title">暂无结果</view>
-      <view class="hint-box">输入蛋身高和/或体重后点击开始鉴定，匹配到的精灵会显示在这里。</view>
+      <view class="hint-box">输入蛋身高和体重后点击开始鉴定，匹配到的精灵会显示在这里。</view>
     </block>
   </view>
 

@@ -106,7 +106,10 @@ Page({
     if (!this._assets) this._assets = {};
     if (!this._details) this._details = {};
     if (!this._layerPoints) this._layerPoints = [];
-    this._loadLayer(this.data.layerIndex || 0, function () {
+    // 从分类列表进入时固定回到地表层（index 0），并清空上一类的点位缓存
+    this._allPoints = [];
+    this.setData({ layerIndex: 0, mapMarkers: [], subs: [], total: 0 });
+    this._loadLayer(0, function () {
       that._loadCat(cat);
     });
   },
@@ -165,10 +168,11 @@ Page({
       that._buildMarkers(cat || { name: catName, subs: [] });
       that.setData({ loading: false });
     };
-    // 地下层：内存过滤
+    // 地下层：内存过滤（该层无当前大类点位时，兜底显示该层全部点位）
     if (layer.kind !== 'surface') {
       var pts = Array.isArray(this._layerPoints) ? this._layerPoints : [];
-      apply(pts.filter(function (p) { return norm(p.className) === norm(catName); }));
+      var filtered = pts.filter(function (p) { return norm(p.className) === norm(catName); });
+      apply(filtered.length ? filtered : pts);
       return;
     }
     // 地表：按 classId 请求小文件
@@ -201,28 +205,11 @@ Page({
     });
   },
 
+  /** 构建子类 chips（从原始 _allPoints 统计，不受当前筛选影响） */
   _buildMarkers: function (cat) {
-    var layers = (this._index && this._index.layers) || [];
-    var layer = layers[this.data.layerIndex] || layers[0];
-    if (!layer || !layer.bounds) return;
-    var minX = layer.bounds[0], minY = layer.bounds[1], side = layer.sideLength || 1;
-    var size = Math.round(AREA_W * this.data.zoom);
-    var assets = this._assets || {};
     var list = Array.isArray(this._allPoints) ? this._allPoints : [];
     var subs = {};
-    var markers = list.map(function (p, i) {
-      // projectWorld: (x-minX)/sideLength → 百分比（瓦片世界 4096px）
-      var xp = ((p.x - minX) / side) * 100;
-      var yp = ((p.y - minY) / side) * 100;
-      subs[p.genre] = (subs[p.genre] || 0) + 1;
-      return {
-        i: i, id: p.id, name: p.name, genre: p.genre, region: p.region,
-        icon: assets[p.icon] || '',
-        xPct: xp, yPct: yp,
-        left: Math.round(xp / 100 * size),
-        top: Math.round(yp / 100 * size)
-      };
-    });
+    list.forEach(function (p) { subs[p.genre] = (subs[p.genre] || 0) + 1; });
     // 子类 chips：优先大类自带的子类清单（保证 WIKI 全量与顺序），数量取实况
     var subList = ((cat && cat.subs) || []).map(function (s) {
       return { name: s.name, count: subs[s.name] || 0 };
@@ -232,24 +219,33 @@ Page({
       if (!subList.some(function (s) { return s.name === n; })) subList.push({ name: n, count: subs[n] });
     });
     subList.sort(function (a, b) { return b.count - a.count; });
-    this.setData({ mapMarkers: markers, subs: subList, total: markers.length });
+    this.setData({ subs: subList });
     this._filterMarkers();
   },
 
+  /** 过滤 + 定位：始终从 _allPoints（原始全量）重新计算，避免多次切换累积缩小 */
   _filterMarkers: function () {
-    var sub = this.data.activeSub;
+    var layers = (this._index && this._index.layers) || [];
+    var layer = layers[this.data.layerIndex] || layers[0];
+    if (!layer || !layer.bounds) { this.setData({ mapMarkers: [], total: 0 }); return; }
+    var minX = layer.bounds[0], minY = layer.bounds[1], side = layer.sideLength || 1;
     var size = Math.round(AREA_W * this.data.zoom);
-    var all = this.data.mapMarkers;
-    var list = sub === '全部' ? all : all.filter(function (m) { return m.genre === sub; });
-    var positioned = list.map(function (mk, i) {
-      var xp = mk.xPct, yp = mk.yPct;
-      return Object.assign({}, mk, {
-        i: i,
+    var assets = this._assets || {};
+    var sub = this.data.activeSub;
+    var src = Array.isArray(this._allPoints) ? this._allPoints : [];
+    var list = (sub === '全部') ? src : src.filter(function (p) { return p.genre === sub; });
+    var markers = list.map(function (p, i) {
+      var xp = ((p.x - minX) / side) * 100;
+      var yp = ((p.y - minY) / side) * 100;
+      return {
+        i: i, id: p.id, name: p.name, genre: p.genre, region: p.region,
+        icon: assets[p.icon] || '',
+        xPct: xp, yPct: yp,
         left: Math.round(xp / 100 * size),
         top: Math.round(yp / 100 * size)
-      });
+      };
     });
-    this.setData({ mapMarkers: positioned, total: list.length });
+    this.setData({ mapMarkers: markers, total: markers.length });
   },
 
   onLayerTap: function (e) {

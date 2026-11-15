@@ -56,12 +56,10 @@
       </view>
     </scroll-view>
 
-    <!-- 互动地图 -->
+    <!-- 互动地图：拖动 + ± 按钮缩放（不用双指 scale，避免缩放后边界错位拖不到边）-->
     <movable-area class="map-area">
       <movable-view class="map-mover" style="{{moverStyle}}" direction="all" inertia out-of-bounds="{{false}}"
-                    x="{{x}}" y="{{y}}"
-                    scale scale-min="0.5" scale-max="4" scale-value="{{zoom}}"
-                    bindscale="onScale">
+                    x="{{x}}" y="{{y}}">
         <view class="map-canvas" style="{{canvasStyle}}">
           <!-- 瓦片渲染（地表：4×4）-->
           <view class="tile-grid" wx:if="{{tiles.length > 0}}">

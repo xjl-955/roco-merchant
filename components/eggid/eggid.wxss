@@ -217,3 +217,45 @@
   background: rgba(127, 216, 160, 0.12);
   border-radius: 8rpx;
 }
+
+.btn-loading {
+  opacity: 0.7;
+}
+
+.others-title {
+  margin-top: 24rpx;
+  padding-top: 18rpx;
+  border-top: 1rpx solid #3A4A5F;
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #C6D2E0;
+}
+
+.others-item {
+  display: flex;
+  align-items: center;
+  padding: 14rpx 0;
+}
+
+.o-img {
+  width: 64rpx;
+  height: 64rpx;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.o-info {
+  margin-left: 18rpx;
+  flex: 1;
+}
+
+.o-name {
+  font-size: 26rpx;
+  color: #C6D2E0;
+}
+
+.o-range {
+  font-size: 20rpx;
+  color: #6E7F94;
+  margin-top: 4rpx;
+}

@@ -2,6 +2,7 @@
 // + 数据新鲜度校验 + 同轮去重 + 订阅去重
 const cloud = require('wx-server-sdk');
 const https = require('https');
+const crypto = require('crypto');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
@@ -158,9 +159,106 @@ async function setRetryState(state) {
   try { await db.collection('retryState').doc(STATE_ID).set({ data: state }); } catch (e) { }
 }
 
+// ─── 离愁轩孵蛋 API 加密（SHA256("lcx.cab") 为密钥的 XOR 链式，16 字节分组）───
+const LCX_KEY = (function () {
+  const hex = crypto.createHash('sha256').update('lcx.cab').digest('hex');
+  const arr = [];
+  for (let i = 0; i < hex.length; i += 2) arr.push(parseInt(hex.substr(i, 2), 16));
+  return arr;
+})();
+
+function lcxEncBlocks(plainBytes, key, iv) {
+  const out = [];
+  let prev = iv.slice();
+  for (let a = 0; a < plainBytes.length; a += 16) {
+    const block = plainBytes.slice(a, a + 16);
+    for (let h = 0; h < 16; h++) block[h] ^= key[h % key.length];
+    for (let s = 0; s < 16; s++) block[s] ^= prev[s];
+    for (let k = 0; k < block.length; k++) out.push(block[k]);
+    prev = block.slice();
+  }
+  return out;
+}
+function lcxDecBlocks(ctBytes, key, iv) {
+  const out = [];
+  let prev = iv.slice();
+  for (let a = 0; a < ctBytes.length; a += 16) {
+    const block = ctBytes.slice(a, a + 16);
+    const cipherCopy = block.slice();
+    for (let h = 0; h < 16; h++) block[h] ^= key[h % key.length];
+    for (let s = 0; s < 16; s++) block[s] ^= prev[s];
+    for (let k = 0; k < block.length; k++) out.push(block[k]);
+    prev = cipherCopy;
+  }
+  return out;
+}
+function lcxEncrypt(plain) {
+  const bytes = Array.from(Buffer.from(plain, 'utf8'));
+  const pad = 16 - (bytes.length % 16);
+  for (let i = 0; i < pad; i++) bytes.push(pad);
+  const iv = Array.from(crypto.randomBytes(16));
+  return Buffer.from(iv.concat(lcxEncBlocks(bytes, LCX_KEY, iv))).toString('base64');
+}
+function lcxDecrypt(b64) {
+  const buf = Buffer.from(String(b64), 'base64');
+  const iv = Array.from(buf.slice(0, 16));
+  const out = lcxDecBlocks(Array.from(buf.slice(16)), LCX_KEY, iv);
+  const pad = out[out.length - 1];
+  return Buffer.from(out.slice(0, out.length - pad)).toString('utf8');
+}
+
+function httpsPostJson(url, body, timeout) {
+  return new Promise(function (resolve, reject) {
+    const u = new URL(url);
+    const req = https.request({
+      hostname: u.hostname, path: u.pathname + u.search, method: 'POST',
+      timeout: timeout || 9000,
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body),
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    }, function (res) {
+      let data = '';
+      res.on('data', function (c) { data += c; });
+      res.on('end', function () {
+        try { resolve(JSON.parse(data)); } catch (e) { resolve({ __raw: data.slice(0, 300) }); }
+      });
+    });
+    req.on('timeout', function () { req.destroy(new Error('timeout')); });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
+
+  // ── 孵蛋推测（代理离愁轩公开 API，数值与其完全一致）──
+  if (event.action === 'eggPredict') {
+    const size = parseFloat(event.size);
+    const weight = parseFloat(event.weight);
+    if (!(size > 0) || !(weight > 0)) return { ok: false, reason: 'bad_input' };
+    try {
+      const d = lcxEncrypt(size + '|' + weight + '|' + Math.floor(Date.now() / 1000));
+      // ① 取签名
+      const signBody = JSON.stringify({ params: encodeURIComponent(JSON.stringify({ action: 'predict', d: d, show_details: false })) });
+      const signJson = await httpsPostJson('https://wiki.lcx.cab/lk/api/sign_api.php', signBody, 9000);
+      if (!signJson || !signJson.sign) return { ok: false, reason: 'sign_failed', detail: signJson };
+      // ② 拉预测
+      const url = 'https://wiki.lcx.cab/lk/api/egg_predict_api.php?action=predict&d=' + encodeURIComponent(d) +
+        '&show_details=0&sign=' + encodeURIComponent(signJson.sign) + '&is_mini=1';
+      const raw = await httpsGet(url, 12000);
+      let json = null;
+      try { json = JSON.parse(lcxDecrypt(raw)); } catch (e) { try { json = JSON.parse(raw); } catch (e2) { json = null; } }
+      if (!json) return { ok: false, reason: 'decode_failed' };
+      return { ok: true, data: json, fetchedAt: Date.now() };
+    } catch (e) {
+      return { ok: false, reason: 'error', message: String(e && e.message || e) };
+    }
+  }
 
   // ── 订阅上报 ──
   if (event.action === 'sub') {

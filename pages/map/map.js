@@ -124,12 +124,13 @@ Page({
     } else {
       this.setData({ tiles: [], layerImage: layer.image });
     }
-    // 点位（缓存优先）
+    // 点位（缓存优先，3 天过期）
     var file = layer.id === 'surface' ? 'points-mainland.json' : 'points-' + layer.id + '.json';
     var CACHE_KEY = 'roco_maps_pts_v11_' + layer.id;
+    var TTL = 3 * 24 * 60 * 60 * 1000;
     try {
       var c = wx.getStorageSync(CACHE_KEY);
-      if (c && Array.isArray(c.data) && c.data.length) {
+      if (c && Array.isArray(c.data) && c.data.length && c.at && (Date.now() - c.at) < TTL) {
         that._layerPoints = c.data;
         if (done) done();
         return;

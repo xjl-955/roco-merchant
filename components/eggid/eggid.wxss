@@ -206,3 +206,14 @@
   margin: 4rpx 0 10rpx;
   line-height: 1.4;
 }
+
+.m-label {
+  display: inline-block;
+  margin-left: 12rpx;
+  padding: 2rpx 10rpx;
+  font-size: 20rpx;
+  font-weight: normal;
+  color: #7FD8A0;
+  background: rgba(127, 216, 160, 0.12);
+  border-radius: 8rpx;
+}

@@ -67,23 +67,31 @@ Component({
         return;
       }
 
+      // ── 打分模型（对齐社区实现 rocom-egg-oracle / Lindaz）：归一化中心距离 ──
+      //  ds = |输入 - 区间中心| / 半宽  ∈ [0,1]（区间内）
+      //  dw 同理解算体重
+      //  distance = sqrt(0.5·ds² + 0.5·dw²)  → 越靠区间中心越可信
+      //  weight = 1 - distance ，再归一化成百分比（合计 100%）
+      var normDist = function (v, min, max) {
+        var center = (min + max) / 2;
+        var half = Math.max((max - min) / 2, 1e-6);
+        return Math.abs(v - center) / half;
+      };
       var raw = this.sizes.filter(function (s) {
         var okH = !hasH || (s.eggHeightMin <= h && h <= s.eggHeightMax);
         var okW = !hasW || (s.eggWeightMin <= w && w <= s.eggWeightMax);
         return okH && okW;
       }).map(function (s) {
-        // 概率密度：假设每个精灵的蛋体型在该范围内均匀分布
-        // 范围越窄 → 命中给定的数值概率越高
-        var hSpan = s.eggHeightMax - s.eggHeightMin;
-        var wSpan = s.eggWeightMax - s.eggWeightMin;
-        var dens = 1;
-        if (hasH) dens *= 1 / Math.max(hSpan, 1e-4);
-        if (hasW) dens *= 1 / Math.max(wSpan, 1e-4);
+        var acc = 0, cnt = 0;
+        if (hasH) { var ds = normDist(h, s.eggHeightMin, s.eggHeightMax); acc += ds * ds; cnt++; }
+        if (hasW) { var dw = normDist(w, s.eggWeightMin, s.eggWeightMax); acc += dw * dw; cnt++; }
+        var distance = Math.sqrt(acc / (cnt || 1));
         return {
           name: s.name,
           pic: s.pic,
           key: s.name,
-          dens: dens,
+          distance: distance,
+          weight: Math.max(1 - distance, 0.001),
           range: hasH && hasW
             ? '蛋高 ' + s.eggHeightMin + '~' + s.eggHeightMax + 'm · 蛋重 ' + s.eggWeightMin + '~' + s.eggWeightMax + 'kg'
             : (hasH ? '蛋高 ' + s.eggHeightMin + '~' + s.eggHeightMax + 'm'
@@ -91,19 +99,22 @@ Component({
         };
       });
 
-      // 归一化为百分比
+      // 归一化为百分比（合计 100%）
       var sum = 0;
-      for (var i = 0; i < raw.length; i++) sum += raw[i].dens;
+      for (var i = 0; i < raw.length; i++) sum += raw[i].weight;
       if (!sum) sum = 1;
       var matched = raw.map(function (it) {
-        var p = it.dens / sum * 100;
-        // 概率极小时保留两位有效数字，避免显示 0.00%
-        var txt = p >= 0.01 ? p.toFixed(2) + '%'
-          : (p > 0 ? '<0.01%' : '0%');
-        return { name: it.name, pic: it.pic, key: it.key, range: it.range, prob: p, probText: txt };
+        var p = it.weight / sum * 100;
+        var txt = p >= 0.01 ? p.toFixed(2) + '%' : (p > 0 ? '<0.01%' : '0%');
+        // 匹配等级（按中心距离阈值，来源：rocom-egg-oracle confidence.ts）
+        var label = it.distance <= 0.05 ? '极有可能'
+          : it.distance <= 0.3 ? '很可能'
+          : it.distance <= 0.6 ? '可能'
+          : '边缘命中';
+        return { name: it.name, pic: it.pic, key: it.key, range: it.range, distance: it.distance, prob: p, probText: txt, label: label };
       });
-      // 按概率从高到低排序
-      matched.sort(function (a, b) { return b.prob - a.prob; });
+      // 按中心距离升序（越靠中心越前）
+      matched.sort(function (a, b) { return a.distance - b.distance; });
 
       this.setData({
         error: '',

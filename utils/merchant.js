@@ -151,7 +151,7 @@ function getLiveToday() {
   return liveToday;
 }
 
-/** 价格文案：'3000' → '3,000'；'16w' → '16万' */
+/** 价格文案：'3000' → '3,000'；'16w' → '160,000'（带万单位统一转完整数字） */
 function formatPrice(raw) {
   var s = String(raw || '').trim();
   if (!s) return '';
@@ -524,13 +524,18 @@ function buildLiveView(view, nowSec, nowMin) {
   }
 
   // 当日全部商品（去重），带价格/限购/图标
+  // 【去重】按规范化名称（忽略 ·、空格、全半角问号）防止源数据标点差异造成重复
   view.items = [];
   var seen = {};
   var hasPrice = false;
+  var normKey = function (n) {
+    return String(n || '').replace(/[·・\s?？]/g, '').replace(/（/g, '(').replace(/）/g, ')');
+  };
   for (var a = 0; a < liveToday.items.length; a++) {
     var src = liveToday.items[a];
-    if (seen[src.name]) continue;
-    seen[src.name] = true;
+    var nk = normKey(src.name);
+    if (!nk || seen[nk]) continue;
+    seen[nk] = true;
     if (src.price) hasPrice = true;
     view.items.push({
       name: src.name,
@@ -542,7 +547,7 @@ function buildLiveView(view, nowSec, nowMin) {
       windowText: (src.rounds && src.rounds.length)
         ? src.rounds.map(function (r2) { return '第' + r2 + '轮'; }).join('、')
         : '',
-      key: src.name
+      key: nk
     });
   }
   view.priceVisible = hasPrice;

@@ -73,7 +73,7 @@ Page({
   _applyIndex: function (index) {
     this._index = index;
     var cats = (index.categories || []).map(function (c) {
-      return { name: c.name, genre: c.genre, icon: c.icon, count: c.count, file: c.file };
+      return { name: c.name, genre: c.genre, icon: c.icon, count: c.count, file: c.file, classId: c.classId, subs: c.subs || [] };
     });
     this._cats = cats; // 【必须】同步私有字段，供 onCatTap 使用
     this.setData({ loading: false, cats: cats, total: index.total });
@@ -111,8 +111,7 @@ Page({
     });
   },
 
-  /** 加载空间层（地表默认；地下层列表在 index.layers）
-   *  点位文件缓存到 storage（points-mainland 2MB+，避免每次切换重复下载）*/
+  /** 加载空间层（地表用按大类拆分的小文件，不再下载 2MB 全量；地下层单文件）*/
   _loadLayer: function (layerIndex, done) {
     var that = this;
     var layers = (this._index && this._index.layers) || [];
@@ -125,8 +124,14 @@ Page({
     } else {
       this.setData({ tiles: [], layerImage: layer.image });
     }
-    // 点位（缓存优先，3 天过期）
-    var file = layer.id === 'surface' ? 'points-mainland.json' : 'points-' + layer.id + '.json';
+    // 地表：点位由 _loadCat 按大类加载（无需预取）
+    if (layer.kind === 'surface') {
+      that._layerPoints = [];
+      if (done) done();
+      return;
+    }
+    // 地下层：小文件（各处 <15KB）
+    var file = 'points-' + layer.id + '.json';
     var CACHE_KEY = 'roco_maps_pts_v11_' + layer.id;
     var TTL = 3 * 24 * 60 * 60 * 1000;
     try {
@@ -139,7 +144,7 @@ Page({
     } catch (e) { }
     wx.request({
       url: MAPS_BASE + file,
-      timeout: 30000,
+      timeout: 20000,
       success: function (res) {
         that._layerPoints = (res.statusCode === 200 && res.data) ? res.data : [];
         try { wx.setStorageSync(CACHE_KEY, { data: that._layerPoints, at: Date.now() }); } catch (e) { }
@@ -149,15 +154,51 @@ Page({
     });
   },
 
+  /** 按大类加载点位：地表走 points-surface-<classId>.json（几十KB~1MB），地下层内存过滤 */
   _loadCat: function (cat) {
-    // 大类过滤：className 归一匹配（WIKI "对战 NPC" ↔ 分类名 "对战NPC"）
+    var that = this;
     var norm = function (s) { return String(s || '').replace(/\s+/g, ''); };
-    var points = Array.isArray(this._layerPoints) ? this._layerPoints : [];
-    var catName = cat && cat.name ? cat.name : '';
-    var list = points.filter(function (p) { return norm(p.className) === norm(catName); });
-    this._allPoints = list;
-    this._buildMarkers(cat || { name: catName, subs: [] });
-    this.setData({ loading: false });
+    var catName = (cat && cat.name) || '';
+    var layer = ((this._index && this._index.layers) || [])[this.data.layerIndex] || {};
+    var apply = function (points) {
+      that._allPoints = points;
+      that._buildMarkers(cat || { name: catName, subs: [] });
+      that.setData({ loading: false });
+    };
+    // 地下层：内存过滤
+    if (layer.kind !== 'surface') {
+      var pts = Array.isArray(this._layerPoints) ? this._layerPoints : [];
+      apply(pts.filter(function (p) { return norm(p.className) === norm(catName); }));
+      return;
+    }
+    // 地表：按 classId 请求小文件
+    var cid = cat && cat.classId;
+    if (!cid) {
+      var pts2 = Array.isArray(this._layerPoints) ? this._layerPoints : [];
+      apply(pts2.filter(function (p) { return norm(p.className) === norm(catName); }));
+      return;
+    }
+    var file = 'points-surface-' + cid + '.json';
+    var CACHE_KEY = 'roco_maps_cls_v11_' + cid;
+    var TTL = 3 * 24 * 60 * 60 * 1000;
+    try {
+      var c = wx.getStorageSync(CACHE_KEY);
+      if (c && Array.isArray(c.data) && c.at && (Date.now() - c.at) < TTL) {
+        apply(c.data);
+        return;
+      }
+    } catch (e) { }
+    this.setData({ loading: true });
+    wx.request({
+      url: MAPS_BASE + file,
+      timeout: 25000,
+      success: function (res) {
+        var arr = (res.statusCode === 200 && Array.isArray(res.data)) ? res.data : [];
+        try { wx.setStorageSync(CACHE_KEY, { data: arr, at: Date.now() }); } catch (e) { }
+        apply(arr);
+      },
+      fail: function () { apply([]); }
+    });
   },
 
   _buildMarkers: function (cat) {

@@ -28,12 +28,14 @@
       {{result.count > 0 ? '可能孵出的精灵' : '暂无结果'}}
       <text class="r-sub" wx:if="{{result.count > 0}}">（输入 {{result.inputText}}，匹配 {{result.count}} 个）</text>
     </view>
+    <view class="prob-hint" wx:if="{{result.count > 1}}">概率按各精灵蛋体型区间的均匀分布估算，范围越窄命中概率越高</view>
     <view class="match" wx:for="{{result.matched}}" wx:key="key">
       <image class="m-img" src="{{item.pic}}" mode="aspectFit" lazy-load="true"></image>
       <view class="m-info">
         <view class="m-name">{{item.name}}</view>
         <view class="m-range">{{item.range}}</view>
       </view>
+      <view class="m-prob">{{item.probText}}</view>
     </view>
     <view class="empty" wx:if="{{result.count === 0}}">没有匹配的蛋体型，请检查数值或提交数据修正</view>
   </block>

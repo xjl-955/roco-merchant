@@ -67,21 +67,43 @@ Component({
         return;
       }
 
-      var matched = this.sizes.filter(function (s) {
+      var raw = this.sizes.filter(function (s) {
         var okH = !hasH || (s.eggHeightMin <= h && h <= s.eggHeightMax);
         var okW = !hasW || (s.eggWeightMin <= w && w <= s.eggWeightMax);
         return okH && okW;
       }).map(function (s) {
+        // 概率密度：假设每个精灵的蛋体型在该范围内均匀分布
+        // 范围越窄 → 命中给定的数值概率越高
+        var hSpan = s.eggHeightMax - s.eggHeightMin;
+        var wSpan = s.eggWeightMax - s.eggWeightMin;
+        var dens = 1;
+        if (hasH) dens *= 1 / Math.max(hSpan, 1e-4);
+        if (hasW) dens *= 1 / Math.max(wSpan, 1e-4);
         return {
           name: s.name,
           pic: s.pic,
           key: s.name,
+          dens: dens,
           range: hasH && hasW
             ? '蛋高 ' + s.eggHeightMin + '~' + s.eggHeightMax + 'm · 蛋重 ' + s.eggWeightMin + '~' + s.eggWeightMax + 'kg'
             : (hasH ? '蛋高 ' + s.eggHeightMin + '~' + s.eggHeightMax + 'm'
                     : '蛋重 ' + s.eggWeightMin + '~' + s.eggWeightMax + 'kg')
         };
       });
+
+      // 归一化为百分比
+      var sum = 0;
+      for (var i = 0; i < raw.length; i++) sum += raw[i].dens;
+      if (!sum) sum = 1;
+      var matched = raw.map(function (it) {
+        var p = it.dens / sum * 100;
+        // 概率极小时保留两位有效数字，避免显示 0.00%
+        var txt = p >= 0.01 ? p.toFixed(2) + '%'
+          : (p > 0 ? '<0.01%' : '0%');
+        return { name: it.name, pic: it.pic, key: it.key, range: it.range, prob: p, probText: txt };
+      });
+      // 按概率从高到低排序
+      matched.sort(function (a, b) { return b.prob - a.prob; });
 
       this.setData({
         error: '',

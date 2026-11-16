@@ -134,6 +134,7 @@
               data-index="{{index}}" bindtap="onToggleOption">
           <view class="check {{item.checked ? 'checked' : ''}}">{{item.checked ? '✓' : ''}}</view>
           <view class="dialog-name">{{item.name}}</view>
+          <view class="dialog-price {{item.price ? '' : 'price-unknown'}}">{{item.price ? '💰 ' + item.price : '待测'}}</view>
         </view>
       </scroll-view>
       <view class="dialog-btns">

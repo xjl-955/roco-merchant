@@ -494,3 +494,20 @@
   color: #7A8CA3;
   margin-top: 6rpx;
 }
+
+.dialog-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.dialog-price {
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  font-size: 24rpx;
+  color: #F0C94A;
+}
+
+.price-unknown {
+  color: #6E7F94;
+  font-size: 22rpx;
+}
